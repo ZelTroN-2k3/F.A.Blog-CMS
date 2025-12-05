@@ -8,7 +8,7 @@ install/config.php.example
 .vscode/
 
 # Ignorer les dépendances (Composer) - Elles se réinstallent via composer.json
-vendor/
+#vendor/
 
 # Ignorer les uploads (Images, fichiers utilisateurs)
 # On garde généralement la structure des dossiers mais pas le contenu
