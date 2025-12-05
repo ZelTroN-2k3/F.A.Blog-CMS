@@ -1,0 +1,7 @@
+{
+    "require": {
+        "hybridauth/hybridauth": "^3.12",
+        "ezyang/htmlpurifier": "^4.17",
+        "phpmailer/phpmailer": "^7.0"
+    }
+}

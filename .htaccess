@@ -1,0 +1,41 @@
+# [cite_start]1. Sécurité : Empêcher le listage des fichiers dans les dossiers [cite: 1]
+Options -Indexes
+
+RewriteEngine On
+
+# --- NOUVEAU : PROTECTION DU DOSSIER CORE ---
+# Interdire l'accès direct HTTP à tout ce qui se trouve dans le dossier /core
+RewriteRule ^core($|/) - [F,L]
+# --------------------------------------------
+
+# 2. Sécurité : Interdire l'accès direct aux fichiers sensibles
+# Exception pour admin.php à la racine qui a besoin de config.php
+<Files "config.php">
+    # Autoriser l'accès si la requête vient de admin.php (à la racine)
+    # ou de l'adresse IP de l'admin si elle est fixe et connue.
+    # [cite_start]Ceci est une implémentation simplifiée. [cite: 2]
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Les autres fichiers sensibles restent interdits pour tous
+<FilesMatch "^(composer\.json|composer\.lock)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 3. URLs Propres : Supprime l'extension .php
+# Si ce n'est pas un fichier existant (!-f)
+RewriteCond %{REQUEST_FILENAME} !-f
+# Et si ce n'est pas un dossier existant (!-d)
+RewriteCond %{REQUEST_FILENAME} !-d
+# Alors on ajoute .php à la fin
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# 4. Gestion des erreurs
+ErrorDocument 404 /error404
+ErrorDocument 403 /index
+
+# [cite_start]Optionnel : Forcer le HTTPS (Décommentez les lignes ci-dessous si votre site a un SSL) [cite: 7]
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
