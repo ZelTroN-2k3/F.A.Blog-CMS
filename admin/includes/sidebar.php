@@ -253,6 +253,21 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="projects.php" class="nav-link ...">
+                                <i class="nav-icon fas fa-list"></i> <p>All Projects</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="project_categories.php" class="nav-link <?php if ($current_page == 'project_categories.php') echo 'active'; ?>">
+                                <i class="nav-icon fas fa-list-alt"></i> <p>Categories</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="add_project.php" ...>...</a>
+                        </li>
+                    </ul>                
                 </li>
                 <!--- FIN MENU PROJECTS -->
                 

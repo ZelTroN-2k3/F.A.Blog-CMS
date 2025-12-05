@@ -44,6 +44,7 @@ DROP TABLE IF EXISTS `chat_status`;
 DROP TABLE IF EXISTS `activity_logs`;
 DROP TABLE IF EXISTS `visitor_analytics`;
 DROP TABLE IF EXISTS `projects`;
+DROP TABLE IF EXISTS `project_categories`;
 
 -- --------------------------------------------------------
 -- Base de données : `localhost`
@@ -795,7 +796,6 @@ CREATE TABLE `visitor_analytics` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- --------------------------------------------------------
 
-
 --
 -- Structure de la table `projects`
 --
@@ -803,6 +803,7 @@ CREATE TABLE `visitor_analytics` (
 CREATE TABLE `projects` (
   `id` int(11) NOT NULL,
   `author_id` int(11) NOT NULL,
+  `project_category_id` int(11) NOT NULL DEFAULT '0',
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `pitch` text COLLATE utf8mb4_unicode_ci COMMENT 'Short summary',
@@ -825,10 +826,33 @@ CREATE TABLE `projects` (
 -- Déchargement des données de la table `projects`
 --
 
-INSERT INTO `projects` (`id`, `author_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `views`, `created_at`) VALUES
-(1, 1, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '<ol><li>Led red x2</li><li>Breadboard x1</li></ol>', '<ol><li>Arduino IDE</li></ol>', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Yes', 11, '2025-01-01 12:00:00'),
-(2, 1, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', '<p>In this project, we will build a connected weather station...</p>', '#', 'https://github.com/', NULL, 'Draft', 42, '2025-01-02 14:30:00'),
-(3, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ul><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ul>', '<ul><li>Arduino IDE</li></ul>', '<p>The classic blinking LED project to get started with electronics.</p>', '#', '#', NULL, 'Draft', 5, '2025-01-03 09:15:00');
+INSERT INTO `projects` (`id`, `author_id`, `project_category_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `views`, `created_at`) VALUES
+(1, 1, 0, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '<ol><li>Led red x2</li><li>Breadboard x1</li></ol>', '<ol><li>Arduino IDE</li></ol>', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Yes', 13, '2025-01-01 12:00:00'),
+(2, 1, 0, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', '<p>In this project, we will build a connected weather station...</p>', '#', 'https://github.com/', NULL, 'Draft', 42, '2025-01-02 14:30:00'),
+(3, 1, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ul><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ul>', '<ul><li>Arduino IDE</li></ul>', '<p>The classic blinking LED project to get started with electronics.</p>', 'http://freelance_addons.net', 'https://github.com/', NULL, 'Draft', 5, '2025-01-03 09:15:00');
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `project_categories`
+--
+
+-- 1. Créer la table des catégories de projets
+CREATE TABLE `project_categories` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text,
+  `image` varchar(255) DEFAULT NULL,
+  `author_id` int(11) NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `project_categories`
+--
+
+INSERT INTO `project_categories` (`id`, `category`, `slug`, `description`, `image`, `author_id`, `created_at`) VALUES
+(1, 'Table Projects', 'table-projects', 'Brief description of the project', '', 1, '2025-12-05 18:35:41');
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
@@ -1107,6 +1131,11 @@ ALTER TABLE `visitor_analytics`
 ALTER TABLE `projects`
   ADD PRIMARY KEY (`id`);
 
+--
+-- Index pour la table `project_categories`
+--
+ALTER TABLE `project_categories`
+  ADD PRIMARY KEY (`id`);
 -- --------------------------------------------------------
 -- AUTO_INCREMENT pour les tables déchargées
 -- --------------------------------------------------------
@@ -1350,4 +1379,10 @@ ALTER TABLE `visitor_analytics`
 --
 ALTER TABLE `projects`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `project_categories`
+--
+ALTER TABLE `project_categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2
 COMMIT;

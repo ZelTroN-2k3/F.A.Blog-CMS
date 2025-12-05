@@ -217,7 +217,7 @@ echo '
                 <input type="checkbox" name="post_ids[]" value="' . $row['id'] . '">
             </td>
             <td class="text-center">
-                <img src="' . htmlspecialchars($img_src) . '" width="50" height="50" style="object-fit: cover; border-radius: 4px;" alt="Image" onerror="this.onerror=null; this.src=\'../assets/img/no-image.png\';" />
+                <img src="' . htmlspecialchars($img_src) . '" width="80" height="50" style="object-fit: cover; border-radius: 4px;" alt="Image" onerror="this.onerror=null; this.src=\'../assets/img/no-image.png\';" />
             </td>
             <td>' . htmlspecialchars($row['title']) . ' ' . $featured . '</td>
             <td><small class="text-muted">/' . htmlspecialchars($row['slug']) . '</small></td>

@@ -8,7 +8,12 @@ if (empty($slug)) {
     exit();
 }
 
-$stmt = mysqli_prepare($connect, "SELECT p.*, u.username, u.avatar FROM projects p LEFT JOIN users u ON p.author_id = u.id WHERE p.slug=? AND p.active='Yes' LIMIT 1");
+$stmt = mysqli_prepare($connect, "SELECT p.*, u.username, u.avatar, c.category as cat_name, c.slug as cat_slug 
+    FROM projects p 
+    LEFT JOIN users u ON p.author_id = u.id 
+    LEFT JOIN project_categories c ON p.project_category_id = c.id
+    WHERE p.slug=? AND p.active='Yes' LIMIT 1");
+
 mysqli_stmt_bind_param($stmt, "s", $slug);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
@@ -56,11 +61,19 @@ $purifier = get_purifier();
                     <div class="col-md-8 position-relative bg-light" style="min-height: 300px;">
                          <img src="<?php echo htmlspecialchars($img_src); ?>" class="w-100 h-100" style="object-fit: cover; position: absolute; top:0; left:0;" alt="Cover">
                     </div>
+                    
                     <div class="col-md-4 bg-white p-4 d-flex flex-column justify-content-center">
                         <div class="mb-2">
-                            <span class="badge bg-<?php echo $diff_color; ?> mb-2"><?php echo htmlspecialchars($project['difficulty']); ?></span>
+                            <?php if(!empty($project['cat_name'])): ?>
+                                <a href="projects?category=<?php echo htmlspecialchars($project['cat_slug']); ?>" class="text-decoration-none badge bg-light text-primary border me-1">
+                                    <i class="fas fa-tag me-1"></i> <?php echo htmlspecialchars($project['cat_name']); ?>
+                                </a>
+                            <?php endif; ?>
+                            
+                            <span class="badge bg-<?php echo $diff_color; ?>"><?php echo htmlspecialchars($project['difficulty']); ?></span>
+                            
                             <?php if(!empty($project['duration'])): ?>
-                                <span class="badge bg-light text-dark border mb-2"><i class="far fa-clock"></i> <?php echo htmlspecialchars($project['duration']); ?></span>
+                                <span class="badge bg-light text-dark border ms-1"><i class="far fa-clock"></i> <?php echo htmlspecialchars($project['duration']); ?></span>
                             <?php endif; ?>
                         </div>
                         

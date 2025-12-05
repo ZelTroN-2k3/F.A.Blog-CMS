@@ -38,7 +38,8 @@ if (isset($_POST['edit_project'])) {
     $difficulty = $_POST['difficulty'];
     $duration = $_POST['duration'];
     $active = $_POST['active'];
-    
+    $cat_id = (int)$_POST['project_category_id'];
+
     // 2. Team
     $team = $_POST['team_credits'];
     
@@ -80,9 +81,9 @@ if (isset($_POST['edit_project'])) {
     }
 
     // Requête UPDATE
-    $stmt = mysqli_prepare($connect, "UPDATE projects SET title=?, slug=?, pitch=?, image=?, difficulty=?, duration=?, team_credits=?, hardware_parts=?, software_apps=?, story=?, schematics_link=?, code_link=?, active=? WHERE id=?");
+    $stmt = mysqli_prepare($connect, "UPDATE projects SET project_category_id=?, title=?, slug=?, pitch=?, image=?, difficulty=?, duration=?, team_credits=?, hardware_parts=?, software_apps=?, story=?, schematics_link=?, code_link=?, active=? WHERE id=?");
     
-    mysqli_stmt_bind_param($stmt, "sssssssssssssi", $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active, $id);
+    mysqli_stmt_bind_param($stmt, "isssssssssssssi", $cat_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active, $id);
     
     if (mysqli_stmt_execute($stmt)) {
         echo '<div class="alert alert-success m-3">Project updated successfully!</div>';
@@ -142,6 +143,19 @@ if (isset($_POST['edit_project'])) {
                                         <label>Project Title</label>
                                         <input type="text" name="title" class="form-control form-control-lg" required value="<?php echo htmlspecialchars($row['title']); ?>">
                                     </div>
+                                    <div class="form-group">
+                                        <label>Project Category</label>
+                                        <select name="project_category_id" class="form-control">
+                                            <option value="0">Uncategorized</option>
+                                            <?php
+                                            $qc = mysqli_query($connect, "SELECT * FROM project_categories ORDER BY category ASC");
+                                            while($rc = mysqli_fetch_assoc($qc)){
+                                                $sel = ($row['project_category_id'] == $rc['id']) ? 'selected' : '';
+                                                echo '<option value="'.$rc['id'].'" '.$sel.'>'.htmlspecialchars($rc['category']).'</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>                                    
                                     <div class="form-group">
                                         <label>Pitch (One sentence summary)</label>
                                         <textarea name="pitch" class="form-control" rows="2"><?php echo htmlspecialchars($row['pitch']); ?></textarea>

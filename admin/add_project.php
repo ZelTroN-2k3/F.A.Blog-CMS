@@ -11,7 +11,8 @@ if (isset($_POST['add_project'])) {
     $difficulty = $_POST['difficulty'];
     $duration = $_POST['duration'];
     $active = $_POST['active'];
-    
+    $cat_id = (int)$_POST['project_category_id'];
+
     // 2. Team
     $team = $_POST['team_credits'];
     
@@ -34,9 +35,9 @@ if (isset($_POST['add_project'])) {
     
     $author_id = $user['id'];
 
-    $stmt = mysqli_prepare($connect, "INSERT INTO projects (author_id, title, slug, pitch, image, difficulty, duration, team_credits, hardware_parts, software_apps, story, schematics_link, code_link, active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    $stmt = mysqli_prepare($connect, "INSERT INTO projects (author_id, project_category_id, title, slug, pitch, image, difficulty, duration, team_credits, hardware_parts, software_apps, story, schematics_link, code_link, active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
     
-    mysqli_stmt_bind_param($stmt, "isssssssssssss", $author_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active);
+    mysqli_stmt_bind_param($stmt, "iisssssssssssss", $author_id, $cat_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active);
     
     if (mysqli_stmt_execute($stmt)) {
         echo '<div class="alert alert-success m-3">Project created successfully!</div>';
@@ -89,6 +90,18 @@ if (isset($_POST['add_project'])) {
                                         <label>Project Title</label>
                                         <input type="text" name="title" class="form-control form-control-lg" required placeholder="Ex: Smart Home Assistant">
                                     </div>
+                                    <div class="form-group">
+                                        <label>Project Category</label>
+                                        <select name="project_category_id" class="form-control">
+                                            <option value="0">Uncategorized</option>
+                                            <?php
+                                            $qc = mysqli_query($connect, "SELECT * FROM project_categories ORDER BY category ASC");
+                                            while($rc = mysqli_fetch_assoc($qc)){
+                                                echo '<option value="'.$rc['id'].'">'.htmlspecialchars($rc['category']).'</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>                                    
                                     <div class="form-group">
                                         <label>Pitch (One sentence summary)</label>
                                         <textarea name="pitch" class="form-control" rows="2" placeholder="What is this project about?"></textarea>

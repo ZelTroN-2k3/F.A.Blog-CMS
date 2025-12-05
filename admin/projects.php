@@ -1,14 +1,14 @@
 <?php
 include "header.php";
 
-// --- GESTION STATUT URL (Pour garder le filtre après une action) ---
+// --- GESTION STATUT URL ---
 $status_url = '';
 $current_status = $_GET['status'] ?? 'all';
 if ($current_status != 'all') {
     $status_url = '?status=' . htmlspecialchars($current_status);
 }
 
-// --- LOGIQUE ACTIONS EN MASSE (NOUVEAU) ---
+// --- LOGIQUE ACTIONS EN MASSE ---
 if (isset($_POST['apply_bulk_action'])) {
     validate_csrf_token();
     $action = $_POST['bulk_action'];
@@ -20,9 +20,6 @@ if (isset($_POST['apply_bulk_action'])) {
         $placeholders = implode(',', array_fill(0, count($ids_clean), '?'));
         $types = str_repeat('i', count($ids_clean));
         
-        // SÉCURITÉ : Suppression réservée ou vérifiée (ici Admin ou Auteur pour simplification en masse)
-        // Note: Pour la suppression en masse, on restreint souvent aux Admins pour éviter les erreurs, 
-        // ou alors il faudrait vérifier chaque ID pour voir si l'utilisateur est l'auteur.
         if ($action == 'delete' && $user['role'] != 'Admin') {
              echo '<div class="alert alert-danger m-3">Access Denied. Only Admins can delete projects in bulk.</div>';
         } else {
@@ -53,7 +50,6 @@ if (isset($_GET['delete-id'])) {
     validate_csrf_token_get();
     $id = (int)$_GET['delete-id'];
     
-    // Vérification Auteur/Admin
     $check = mysqli_query($connect, "SELECT author_id FROM projects WHERE id=$id");
     $pdata = mysqli_fetch_assoc($check);
     
@@ -112,7 +108,7 @@ if (isset($_GET['delete-id'])) {
                                 </th>
                                 <th style="width:60px">Cover</th>
                                 <th>Project Title</th>
-                                <th>Difficulty</th>
+                                <th>Category</th> <th>Difficulty</th>
                                 <th class="text-center">Status</th>
                                 <th>Date</th>
                                 <th class="text-center" style="width:140px">Actions</th>
@@ -123,9 +119,17 @@ if (isset($_GET['delete-id'])) {
                             // FILTRE SQL
                             $where_clause = "";
                             if ($st == 'published') { $where_clause = "WHERE p.active='Yes'"; }
-                            if ($st == 'draft') { $where_clause = "WHERE p.active!='Yes'"; } // 'No' ou 'Draft'
+                            if ($st == 'draft') { $where_clause = "WHERE p.active!='Yes'"; }
 
-                            $q = mysqli_query($connect, "SELECT p.*, u.username FROM projects p LEFT JOIN users u ON p.author_id = u.id $where_clause ORDER BY p.id DESC");
+                            // REQUÊTE MISE À JOUR (JOIN avec categories)
+                            $q = mysqli_query($connect, "
+                                SELECT p.*, u.username, c.category as cat_name 
+                                FROM projects p 
+                                LEFT JOIN users u ON p.author_id = u.id 
+                                LEFT JOIN project_categories c ON p.project_category_id = c.id 
+                                $where_clause 
+                                ORDER BY p.id DESC
+                            ");
                             
                             while ($row = mysqli_fetch_assoc($q)) {
                                 
@@ -145,6 +149,9 @@ if (isset($_GET['delete-id'])) {
                                 if($row['difficulty'] == 'Advanced') $badge_color = 'warning';
                                 if($row['difficulty'] == 'Expert') $badge_color = 'danger';
                                 
+                                // Nom Catégorie
+                                $cat_display = !empty($row['cat_name']) ? htmlspecialchars($row['cat_name']) : '<span class="text-muted small">Uncategorized</span>';
+
                                 // Permissions
                                 $can_edit = ($user['role'] == 'Admin' || $row['author_id'] == $user['id']);
 
@@ -153,12 +160,13 @@ if (isset($_GET['delete-id'])) {
                                     <td class="text-center">
                                         <input type="checkbox" name="project_ids[]" value="' . $row['id'] . '">
                                     </td>
-                                    <td class="text-center"><img src="' . htmlspecialchars($img_src) . '" width="80" height="50" style="object-fit:cover; border-radius:4px;" onerror="this.src=\'../assets/img/project-no-image.png\';"></td>
+                                    <td class="text-center"><img src="' . htmlspecialchars($img_src) . '" width="80" height="50" style="object-fit:cover; border-radius:4px;" onerror="this.src=\'../assets/img/no-image.png\';"></td>
                                     <td>
                                         <strong>' . htmlspecialchars($row['title']) . '</strong><br>
                                         <small class="text-muted">' . htmlspecialchars(short_text($row['pitch'], 80)) . '</small>
                                     </td>
-                                    <td><span class="badge bg-' . $badge_color . '">' . htmlspecialchars($row['difficulty']) . '</span></td>
+                                    
+                                    <td>' . $cat_display . '</td> <td><span class="badge bg-' . $badge_color . '">' . htmlspecialchars($row['difficulty']) . '</span></td>
                                     <td class="text-center">' . $status_badge . '</td>
                                     <td>' . date('d M Y', strtotime($row['created_at'])) . '</td>
                                     <td class="text-center">';
@@ -202,9 +210,9 @@ $(document).ready(function() {
     var table = $('#dt-projects').DataTable({ 
         "responsive": true, 
         "autoWidth": false, 
-        "order": [[ 5, "desc" ]], // Tri par Date (Colonne 5)
+        "order": [[ 6, "desc" ]], // Tri par Date (Colonne 6 maintenant, car ajout de catégorie)
         "columnDefs": [
-            { "orderable": false, "targets": [0, 1, 6] } // Pas de tri sur Checkbox, Image, Actions
+            { "orderable": false, "targets": [0, 1, 7] } // Pas de tri sur Checkbox, Image, Actions
         ]
     }); 
 

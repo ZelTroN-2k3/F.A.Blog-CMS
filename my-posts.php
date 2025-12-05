@@ -68,7 +68,7 @@ if (mysqli_num_rows($user_posts_result) <= 0) {
         else {
             $image = '<svg class="bd-placeholder-img rounded-start" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: No Image" preserveAspectRatio="xMidYMid slice" focusable="false">
             <title>No Image</title><rect width="100%" height="100%" fill="#55595c"/>
-            <text x="37%" y="50%" fill="#eceeef" dy=".3em">No Image</text></svg>';
+            <text x="50%" y="50%" fill="#eceeef" dy=".3em" text-anchor="middle" font-size="1.2rem">No Image</text></svg>';
         }
 
         // 2. Gestion du statut (Badge)

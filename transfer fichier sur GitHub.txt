@@ -1,0 +1,53 @@
+1. Initialiser Git:
+git init
+
+2. Ajouter tous les fichiers (sauf ceux du .gitignore):
+git add .
+
+3. Faire le premier "Commit" (Sauvegarde locale):
+git commit -m "Initial commit - v3.3.2 Complete CMS"
+
+4. Renommer la branche principale (Standard actuel):
+git branch -M main
+
+5. Lier votre projet local à GitHub: (Remplacez l'URL ci-dessous par celle que GitHub vous a donnée à l'étape 3)
+git remote add origin https://github.com/ZelTroN-2k3/F.A.Blog-CMS.git
+
+6. Envoyer vers GitHub:
+git push -u origin main
+
+**************
+Et après ?
+Si vous faites des modifications (par exemple une correction de bug), voici la routine pour mettre à jour :
+
+1. git add .
+2. git commit -m "Description de la modif"
+3. git push
+
+Votre projet est maintenant en ligne, sauvegardé et prêt à être partagé !
+*************
+
+Option 1: Forcer l'envoi (Recommandé si le dépôt en ligne est vide/inutile)
+Si vous venez de créer le dépôt sur GitHub et que les fichiers qui s'y trouvent (comme un README vide) 
+ne vous importent pas, vous pouvez écraser la version en ligne avec cette commande:
+git push -u origin main --force
+
+Option 2: Fusionner (Si vous voulez garder les fichiers de GitHub)
+Si vous voulez récupérer le fichier README ou LICENSE qui est sur GitHub avant d'envoyer votre code :
+
+1. Récupérez les modifications distantes:
+git pull origin main --allow-unrelated-histories
+
+(Cette commande spéciale permet de fusionner deux projets qui n'avaient pas d'historique commun).
+2. Si une fenêtre d'éditeur de texte s'ouvre (Vim ou Nano) pour valider le message de fusion :
+
+Tapez :q puis Entrée (pour quitter Vim).
+Ou Ctrl+X (pour quitter Nano).
+
+3. Envoyez le tout:
+git push -u origin main
+
+Je vous recommande l'Option 1 (--force) si vous venez juste de créer le dépôt pour y mettre votre projet, 
+c'est le plus rapide et le plus propre.
+
+**************

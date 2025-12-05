@@ -639,7 +639,22 @@ if ($settings['layout'] == 'Wide') {
 						</a>
 						<ul class="dropdown-menu">
 							<li><a class="dropdown-item" href="projects"><i class="fas fa-th-large me-2"></i> View all projects</a></li>
+                            
                             <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">By Category</h6></li>';
+                            
+                            // Récupération des catégories de projets
+                            $q_p_cats = mysqli_query($connect, "SELECT category, slug FROM project_categories ORDER BY category ASC");
+                            
+                            if(mysqli_num_rows($q_p_cats) > 0) {
+                                while($pc = mysqli_fetch_assoc($q_p_cats)) {
+                                    echo '<li><a class="dropdown-item" href="projects?category='.htmlspecialchars($pc['slug']).'"><i class="fas fa-angle-right me-2 text-muted"></i> '.htmlspecialchars($pc['category']).'</a></li>';
+                                }
+                            } else {
+                                echo '<li><span class="dropdown-item text-muted small">No categories yet</span></li>';
+                            }
+
+            echo '          <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">By Difficulty</h6></li>
                             
                             <li><a class="dropdown-item" href="projects?difficulty=Easy"><span class="badge bg-success me-2">Easy</span> Beginner</a></li>
