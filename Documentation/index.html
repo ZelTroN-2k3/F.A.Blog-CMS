@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>F.A Blog v3.3.2 – Professional CMS Documentation</title>
+
+    <link rel="stylesheet" href="assets/css/style.css" media="all">
+    <style>
+        html { background-color: #FFFFFF; color: #383838; }
+        ::-moz-selection { background: #444444; color: #DDDDDD; }
+        ::selection { background: #444444; color: #DDDDDD; }
+        #documenter_sidebar #documenter_logo { background-image: url(assets/img/logo.png); }
+        a { color: #0000FF; }
+        .btn { border-radius: 3px; }
+        .btn-primary { background-color: #0044CC; color: #FFFFFF; border-color: #0044CC; }
+        hr { border-top: 1px solid #EBEBEB; border-bottom: 1px solid #FFFFFF; }
+        #documenter_sidebar, #documenter_sidebar ul a { background-color: #DDDDDD; color: #222222; }
+        #documenter_sidebar ul a:hover { background: #444444; color: #DDDDDD; border-top: 1px solid #444444; }
+        #documenter_sidebar ul a.current { background: #444444; color: #DDDDDD; border-top: 1px solid #444444; }
+        code { background: #f4f4f4; border: 1px solid #ddd; border-left: 3px solid #0088CC; color: #666; display: block; padding: 1em; margin-bottom: 1em; word-wrap: break-word; }
+        .badge-new { background: #28a745; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; vertical-align: middle; }
+    </style>
+</head>
+
+<body class="documenter-project-project-security">
+    <div id="documenter_sidebar">
+        <a href="#documenter_cover" id="documenter_logo"></a>
+        <ul id="documenter_nav">
+            <li><a class="current" href="#documenter_cover">F.A Blog v3.3.2</a></li>
+            <li><a href="#features" title="Features">Features Overview</a></li>
+            <li><a href="#projects_module" title="Projects">Projects Module <span class="badge-new">NEW</span></a></li>
+            <li><a href="#chat_system" title="Chat">Chat System <span class="badge-new">NEW</span></a></li>
+            <li><a href="#file_sync" title="File Sync">File Synchronization <span class="badge-new">NEW</span></a></li>
+            <li><a href="#installation" title="Installation">Installation</a></li>
+            <li><a href="#rss_cron" title="Automated RSS">Automated RSS</a></li>
+            <li><a href="#updates" title="Update Instructions">Update Instructions</a></li>
+            <li><a href="#recaptcha" title="ReCaptcha v2">ReCaptcha v2</a></li>
+            <li><a href="#credits" title="Credits">Credits</a></li>
+        </ul>
+    </div>
+    
+    <div id="documenter_content">
+        <section id="documenter_cover">
+            <h1>F.A Blog v3.3.2</h1>
+            <h2>Portfolio & Social Edition</h2>
+            <hr>
+            <p>F.A Blog is a modern, secure, and feature-rich CMS. <strong>Version 3.3.2</strong> introduces a complete Portfolio system, a WhatsApp-style Chat, and advanced File Management tools.</p>
+        </section>
+
+        <section id="features">
+            <div class="page-header"><h3>Features Overview</h3><hr class="notop"></div>
+            <ul>
+                <li><strong>🛠️ Projects Portfolio (New):</strong> Create step-by-step tutorials (Hardware/Software) like Hackster.io.</li>
+                <li><strong>💬 Social Chat (New):</strong> Real-time messaging with emojis, file sharing, status updates, and read receipts.</li>
+                <li><strong>📂 File Manager 2.0:</strong> Visual library picker, FTP synchronization tool, Drag & Drop upload.</li>
+                <li><strong>🎨 Mega Menu:</strong> Responsive navigation with categories and recent posts.</li>
+                <li><strong>🛡️ Advanced Security:</strong> Anti-CSRF, HTMLPurifier, ReCAPTCHA, Activity Logs.</li>
+                <li><strong>📢 Marketing:</strong> Popups, Newsletter, Ads Manager.</li>
+                <li><strong>🚧 Maintenance Mode:</strong> Custom maintenance page for visitors with admin bypass.</li>
+            </ul>
+        </section>
+
+        <section id="projects_module">
+            <div class="page-header"><h3>Projects Module (Portfolio)</h3><hr class="notop"></div>
+            <p>The new <strong>Projects</strong> section allows you to document technical or creative projects in detail.</p>
+            
+            <h4>Structure</h4>
+            <ul>
+                <li><strong>Basics:</strong> Title, Pitch, Difficulty, Duration.</li>
+                <li><strong>Team:</strong> Credits and contributors.</li>
+                <li><strong>Things:</strong> Lists of Hardware components and Software apps.</li>
+                <li><strong>Story:</strong> Full description with rich text and images.</li>
+                <li><strong>Attachments:</strong> Links to code repositories (GitHub) or schematics.</li>
+            </ul>
+            <p><strong>Frontend:</strong> Projects are displayed in a dedicated gallery (<code>projects.php</code>) with filters by difficulty (Easy, Intermediate, Advanced, Expert).</p>
+        </section>
+
+        <section id="chat_system">
+            <div class="page-header"><h3>Chat System (WhatsApp-Style)</h3><hr class="notop"></div>
+            <p>A fully featured instant messaging system integrated into the site.</p>
+            
+            <h4>Key Features</h4>
+            <ul>
+                <li><strong>Real-time:</strong> Instant message delivery via Ajax polling.</li>
+                <li><strong>Rich Media:</strong> Send images via Drag & Drop or file selection.</li>
+                <li><strong>Emojis:</strong> Integrated modern emoji picker.</li>
+                <li><strong>Status (Stories):</strong> Post ephemeral updates visible for 24 hours.</li>
+                <li><strong>Organization:</strong> Archive conversations and Star important messages.</li>
+                <li><strong>Indicators:</strong> "Typing..." status, Online/Offline status, Read receipts (Blue ticks).</li>
+            </ul>
+        </section>
+
+        <section id="file_sync">
+            <div class="page-header"><h3>File Synchronization Tool</h3><hr class="notop"></div>
+            <p>Located in <strong>Admin > Files > Sync</strong>, this tool reconciles the database with the actual files on your server.</p>
+            
+            <h4>How it works</h4>
+            <ul>
+                <li><strong>Import:</strong> Scans the <code>/uploads/files/</code> directory. If a file exists on disk (uploaded via FTP) but not in the database, it is automatically added to the Media Library.</li>
+                <li><strong>Cleanup:</strong> Checks the database against the disk. If a file entry exists in the DB but is missing on the server, the entry is removed to prevent broken images.</li>
+            </ul>
+        </section>
+        
+        <section id="installation">
+            <div class="page-header"><h3>Installation</h3><hr class="notop"></div>
+            <ol>
+                <li>Upload all files to your server (Ensure <code>vendor/</code> folder is present).</li>
+                <li>Import <code>database.sql</code> into your MySQL database.</li>
+                <li>Rename <code>includes/db.php.example</code> to <code>includes/db.php</code> and configure DB credentials.</li>
+                <li>Set Write Permissions (755/777) on <code>uploads/</code> folders.</li>
+                <li>Login at <code>/admin</code> (Default: <code>admin@admin.com</code> / <code>password</code>).</li>
+            </ol>
+        </section>
+
+        <section id="rss_cron">
+            <div class="page-header"><h3>Automated RSS Import</h3><hr class="notop"></div>
+            <p>Set up a Cron Job to fetch feeds automatically:</p>
+            <code>wget -q -O - "https://YOUR-SITE.COM/admin/run_rss_import.php?key=YOUR_SECRET_KEY" >/dev/null 2>&1</code>
+        </section>
+        
+        <section id="updates">
+            <div class="page-header"><h3>Update Instructions (v2.9 -> v3.3)</h3><hr class="notop"></div>
+            <p>If you are upgrading from v2.9, run the following SQL commands to create the new tables for Projects and Chat:</p>
+            <code>
+            -- 1. PROJECTS<br>
+            CREATE TABLE `projects` ( ... ); <br><br>
+            -- 2. CHAT SYSTEM<br>
+            CREATE TABLE `chat_conversations` ( ... );<br>
+            CREATE TABLE `chat_messages` ( ... );<br>
+            CREATE TABLE `chat_starred` ( ... );<br>
+            CREATE TABLE `chat_status` ( ... );<br><br>
+            -- 3. USERS UPDATE<br>
+            ALTER TABLE `users` ADD `last_activity` DATETIME DEFAULT NULL;<br>
+            ALTER TABLE `users` ADD `typing_in_chat_with` INT(11) DEFAULT 0;<br>
+            </code>
+            <p><em>(See <code>database.sql</code> for the full structure)</em></p>
+        </section>
+
+        <section id="recaptcha">
+            <div class="page-header"><h3>ReCaptcha v2</h3><hr class="notop"></div>
+            <p>Get your keys from <a href="https://www.google.com/recaptcha/admin/create" target="_blank">Google ReCaptcha Admin</a>.</p>
+            <p>Select <strong>reCAPTCHA v2</strong> -> <strong>"I’m not a robot" Checkbox</strong>.</p>
+            <img src="assets/img/recaptcha.png" width="70%" style="border:1px solid #ccc; border-radius:5px; margin-top:10px;" />
+        </section>
+        
+        <section id="credits">
+            <div class="page-header"><h3>Credits</h3><hr class="notop"></div>
+            <ul>
+                <li><strong>Bootstrap 5</strong> - Frontend Framework</li>
+                <li><strong>AdminLTE 3</strong> - Backend Template</li>
+                <li><strong>PHPMailer</strong> - Email Engine</li>
+                <li><strong>HTMLPurifier</strong> - Security</li>
+                <li><strong>SummerNote</strong> - WYSIWYG Editor</li>
+                <li><strong>DataTables</strong> - Advanced Tables</li>
+            </ul>
+        </section>
+
+    </div>
+</body>
+</html>

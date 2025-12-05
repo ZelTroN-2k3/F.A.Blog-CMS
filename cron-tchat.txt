@@ -1,0 +1,12 @@
+3. Comment automatiser ?
+Pour que cela s'exécute toutes les heures, 
+vous devez configurer une "Tâche Cron" (Cron Job) sur votre hébergement web (cPanel, Plesk, etc.).
+
+Commande : wget -q -O - http://votre-site.com/cron_chat_cleanup.php (ou via le chemin PHP interne).
+
+Fréquence : 0 * * * * (Une fois par heure).
+
+Si vous ne pouvez pas configurer de Cron Job (ex: localhost), 
+vous pouvez inclure ce fichier en mode "Pseudo-Cron" dans votre index.php ou core.php 
+(avec une vérification de l'heure pour ne pas le lancer à chaque clic), mais la méthode Cron serveur 
+est la seule vraie méthode fiable.

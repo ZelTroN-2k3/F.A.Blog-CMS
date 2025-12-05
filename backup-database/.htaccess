@@ -1,0 +1,2 @@
+# Interdire l'accès web direct aux fichiers .sql
+Deny from all

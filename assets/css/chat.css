@@ -1,0 +1,277 @@
+/* --- STYLE WHATSAPP-LIKE --- */
+.chat-wrapper {
+    height: 80vh; 
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Colonne Gauche (Liste) */
+.chat-sidebar {
+    width: 350px;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column; 
+    background: #ffffff;
+    height: 100%;
+}
+
+/* Zone des onglets et recherche */
+.chat-sidebar-top {
+    background: #f0f2f5;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Zone de contenu défilante */
+.chat-sidebar-content {
+    flex: 1; 
+    overflow-y: auto; 
+    background: #fff;
+}
+
+/* Pied de page de la sidebar */
+.chat-sidebar-footer {
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    padding: 10px 0;
+    flex-shrink: 0;
+}
+
+.chat-footer-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #555;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.chat-footer-link:hover {
+    background-color: #f5f5f5;
+    color: #000;
+}
+
+.chat-footer-link i {
+    width: 25px;
+    text-align: center;
+    margin-right: 15px;
+    color: #888;
+}
+
+/* Onglets (Navigation Pills) */
+.nav-pills .nav-link {
+    /* On force le gris clair par défaut */
+    color: #b0b0b0 !important; 
+    border-radius: 50px; 
+    padding: 8px 0; 
+    font-size: 1.1rem; 
+    transition: all 0.2s ease;
+}
+
+/* On force aussi l'icône à l'intérieur à être grise */
+/* (C'est ce qui corrige votre problème si vous avez laissé des classes text-success) */
+.nav-pills .nav-link i {
+    color: #b0b0b0 !important;
+}
+
+/* Au survol */
+.nav-pills .nav-link:hover {
+    background-color: #f0f2f5;
+    color: #009688 !important; /* Vert foncé au survol */
+}
+.nav-pills .nav-link:hover i {
+    color: #009688 !important;
+}
+
+/* État Actif (Onglet sélectionné) */
+.nav-pills .nav-link.active {
+    background-color: transparent; 
+    border-bottom: 3px solid #009688; 
+    border-radius: 0;
+    /* On force le vert uniquement quand c'est actif */
+    color: #009688 !important; 
+}
+.nav-pills .nav-link.active i {
+    color: #009688 !important;
+}
+
+/* Ajustement spécifique pour l'icône "En ligne" (Le rond plein) */
+#online-tab i {
+    font-size: 0.8rem;
+    position: relative;
+    top: -1px;
+}
+
+/* Liste des chats */
+.chat-list { flex: 1; overflow-y: auto; }
+
+.chat-item {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.chat-item:hover, .chat-item.active { background-color: #ebebeb; }
+
+.chat-item img {
+    width: 45px; height: 45px; border-radius: 50%; margin-right: 15px; object-fit: cover;
+}
+
+.chat-info { flex: 1; min-width: 0; }
+.chat-name { font-weight: 600; margin-bottom: 2px; color: #333; }
+.chat-preview { font-size: 0.85rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-meta { font-size: 0.75rem; color: #999; text-align: right; min-width: 50px; }
+
+/* Colonne Droite (Messages) */
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #efe7dd url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png') repeat;
+    position: relative;
+}
+
+.chat-main-header {
+    padding: 10px 20px;
+    background: #ededed;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+}
+
+.chat-messages-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Bulles */
+.message-row { display: flex; margin-bottom: 10px; }
+
+.message-bubble {
+    max-width: 60%;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 0.95rem;
+    position: relative;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    word-wrap: break-word;
+    min-width: 80px;
+    padding-bottom: 6px;
+}
+
+.message-sent { background-color: #dcf8c6; color: #000; border-top-right-radius: 0; }
+.message-received { background-color: #fff; color: #000; border-top-left-radius: 0; }
+
+.message-meta {
+    display: flex; justify-content: flex-end; align-items: center;
+    margin-top: -5px; margin-left: 10px; float: right; padding-left: 10px;
+}
+
+.message-time { font-size: 0.65rem; color: #999; margin-right: 4px; }
+.msg-status { font-size: 0.7rem; margin-left: 3px; }
+.msg-status.text-primary { color: #34b7f1 !important; }
+
+/* Date Separator */
+.chat-date-separator { text-align: center; margin: 15px 0; position: relative; z-index: 1; }
+.chat-date-separator span {
+    background-color: #e1f3fb; color: #555; padding: 5px 12px; border-radius: 8px; font-size: 0.75rem;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1); text-transform: uppercase; font-weight: 500;
+}
+
+/* Input Area */
+.chat-input-area { padding: 15px; background: #f0f0f0; display: flex; align-items: center; }
+.chat-input-area textarea { resize: none; border-radius: 20px; padding: 10px 15px; border: none; height: 45px; }
+.chat-input-area textarea:focus { outline: none; }
+
+/* Overlay & Preview */
+.drag-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.9); z-index: 1000; display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    border: 3px dashed #007bff; color: #007bff;
+}
+.drag-active .drag-overlay { display: flex; }
+
+.image-preview-container {
+    padding: 10px 20px; background: #f0f0f0; border-bottom: 1px solid #ddd;
+    display: none; position: relative;
+}
+.image-preview-wrapper { position: relative; display: inline-block; }
+.preview-img { height: 60px; border-radius: 5px; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.remove-img-btn {
+    position: absolute; top: -8px; right: -8px; background: #dc3545; color: white;
+    border-radius: 50%; width: 20px; height: 20px; text-align: center; line-height: 18px;
+    font-size: 12px; cursor: pointer; border: 2px solid #fff;
+}
+
+/* Recherche */
+.search-results {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: white; border: 1px solid #ddd; z-index: 1000;
+    max-height: 200px; overflow-y: auto; display: none;
+}
+.search-result-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; }
+.search-result-item:hover { background: #f8f9fa; }
+
+/* Styles Sidebar Tabs spécifiques */
+.chat-sidebar .nav-tabs { border-bottom: 1px solid #e0e0e0; }
+.chat-sidebar .nav-link { border: none; border-bottom: 2px solid transparent; color: #6c757d; font-weight: 500; border-radius: 0; }
+.chat-sidebar .nav-link.active { color: #0d6efd; border-bottom: 2px solid #0d6efd; background: transparent; }
+.chat-sidebar .nav-link:hover { border-color: transparent; color: #0d6efd; }
+
+/* Input Recherche Sidebar */
+.chat-sidebar-header .input-group-text { background-color: #f0f2f5; border: none; border-radius: 20px 0 0 20px; }
+.chat-sidebar-header .form-control { background-color: #f0f2f5; border: none; border-radius: 0 20px 20px 0; }
+.chat-sidebar-header .form-control:focus { background-color: #fff; box-shadow: 0 0 0 1px #ddd; }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .chat-sidebar { width: 100%; }
+    .chat-main { display: none; width: 100%; }
+    .chat-wrapper.chat-active .chat-sidebar { display: none; }
+    .chat-wrapper.chat-active .chat-main { display: flex; }
+    .back-btn { display: block !important; }
+}
+.back-btn { display: none; cursor: pointer; margin-right: 10px; }
+
+/* --- BOUTON ARCHIVER (DANS LA LISTE) --- */
+.chat-item {
+    position: relative;
+}
+
+/* Le conteneur des actions (caché par défaut) */
+.chat-item-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none; /* Caché */
+    background: rgba(255,255,255,0.8);
+    padding-left: 10px;
+}
+
+/* On l'affiche au survol de la souris */
+.chat-item:hover .chat-item-actions {
+    display: block;
+}
+
+/* Style du bouton */
+.btn-archive {
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+}
+.btn-archive:hover {
+    color: #0d6efd; /* Bleu au survol */
+}

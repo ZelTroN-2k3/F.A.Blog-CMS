@@ -1,0 +1,93 @@
+/* Style pour l'accordéon du menu admin */
+.admin-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* La flèche (icône) par défaut (vers le bas) */
+.admin-header::after {
+    content: '\f107'; /* Code FontAwesome pour fa-angle-down */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: transform 0.3s ease;
+}
+
+/* Quand le menu est fermé (collapsed), on tourne la flèche */
+.admin-header.collapsed::after {
+    transform: rotate(-90deg);
+}
+
+/* --- STYLE DE LA SIDEBAR ADMIN FLOTTANTE --- */
+#admin-floating-sidebar {
+    position: fixed;
+    top: 120px; /* Hauteur depuis le haut de l'écran */
+    left: 0;
+    z-index: 10000; /* Au-dessus de tout */
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateX(-260px); /* Caché par défaut (largeur du contenu) */
+    display: flex;
+    align-items: flex-start;
+}
+
+/* L'onglet/Icône visible en permanence */
+.admin-sidebar-trigger {
+    width: 50px;
+    height: 50px;
+    background-color: #212529; /* Dark Bootstrap */
+    color: #fff;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    font-size: 1.2rem;
+}
+
+/* Le contenu du menu */
+.admin-sidebar-content {
+    width: 260px;
+    background-color: #212529;
+    color: #c2c7d0;
+    padding: 15px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* L'animation au survol (Hover) */
+#admin-floating-sidebar:hover {
+    transform: translateX(0);
+}
+
+/* Styles des liens dans le menu */
+.admin-link {
+    display: block;
+    color: #c2c7d0;
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    transition: all 0.2s;
+}
+.admin-link:hover {
+    background-color: #343a40;
+    color: #fff;
+    padding-left: 15px; /* Petit effet de glissement */
+}
+.admin-header {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    margin: 15px 0 5px 0;
+    border-bottom: 1px solid #495057;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+.admin-badge {
+    float: right;
+}

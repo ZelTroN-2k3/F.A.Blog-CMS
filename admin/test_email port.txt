@@ -1,0 +1,5 @@
+C'est une excellente nouvelle ! 🎉
+
+Le problème venait donc bien de la concordance entre le Port 465 et le chiffrement SSL. 
+C'est un classique: le port 465 refuse généralement les connexions 
+si on tente de lui parler en TLS (qui préfère le port 587).

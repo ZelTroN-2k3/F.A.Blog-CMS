@@ -1,0 +1,35 @@
+# Ignorer les fichiers de configuration (Mots de passe BDD)
+config.php
+install/config.php.example
+
+# Ignorer les dossiers système et IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Ignorer les dépendances (Composer) - Elles se réinstallent via composer.json
+#vendor/
+
+# Ignorer les uploads (Images, fichiers utilisateurs)
+# On garde généralement la structure des dossiers mais pas le contenu
+#uploads/*
+!uploads/.gitkeep
+!uploads/ads/.gitkeep
+!uploads/avatars/.gitkeep
+!uploads/banned_bg/.gitkeep
+!uploads/categories/.gitkeep
+!uploads/chat/.gitkeep
+!uploads/files/.gitkeep
+!uploads/gallery/.gitkeep
+!uploads/other/.gitkeep
+!uploads/popups/.gitkeep
+!uploads/posts/.gitkeep
+!uploads/products/.gitkeep
+!uploads/quiz/.gitkeep
+!uploads/slider/.gitkeep
+!uploads/status/.gitkeep
+!uploads/testimonials/.gitkeep
+
+# Ignorer les fichiers temporaires
+*.log
+tmp/

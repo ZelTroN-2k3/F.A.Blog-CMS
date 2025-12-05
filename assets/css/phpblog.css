@@ -1,0 +1,736 @@
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+.scroll-btn {
+	height: 40px;
+	width: 40px;
+	border: 2px solid #0052cc;
+	border-radius: 10%;
+	background-color: #0066ff;
+	position: fixed;
+	bottom: 25px;
+	right: 20px;
+	opacity: 0.8;
+	z-index: 9999;
+	cursor: pointer;
+	display: none;
+}
+
+.scroll-btn .scroll-btn-arrow {
+	height: 12px;
+	width: 12px;
+	border: 3px solid;
+	border-right: none;
+	border-top: none;
+	margin: 15px 12px;
+	-webkit-transform: rotate(135deg);
+	-moz-transform: rotate(135deg);
+	-ms-transform: rotate(135deg);
+	-o-transform: rotate(135deg);
+	transform: rotate(135deg);
+	color: white;
+}
+
+.notouch .scroll-btn:hover { opacity: 0.8 }
+
+@media only screen and (max-width: 700px), only screen and (max-device-width: 700px) {
+	.scroll-btn {
+		bottom: 8px;
+		right: 8px;
+	}
+}
+
+/* --- AJOUT STYLES MODE SOMBRE --- */
+.theme-switcher {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.375rem 0.75rem; /* Aligner avec les autres nav-links */
+}
+
+/* Assurer que l'icône s'aligne bien */
+.theme-switcher i {
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+/* ===================================
+   Style Popups Marketing & Global
+====================================== */
+
+/* Animation personnalisée : ZoomIn doux */
+@keyframes modalZoomIn {
+    0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal.fade.show .modal-dialog {
+    animation: modalZoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Le conteneur global */
+.modal-content {
+    border: none;
+    border-radius: 16px; /* Coins arrondis modernes */
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* --- En-tête (CORRECTION : On l'affiche et on le stylise) --- */
+.modal-header {
+    display: flex; /* On s'assure qu'il est visible */
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #6610f2 100%);
+    color: white;
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.modal-header .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%); /* Croix blanche */
+    opacity: 0.8;
+}
+
+/* --- Corps du popup --- */
+.modal-body {
+    padding: 2rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #444;
+    text-align: center;
+}
+
+/* --- Images (VOTRE CORRECTION INTÉGRÉE) --- */
+/* Force les images à prendre toute la largeur tout en restant belles */
+.modal-body img {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+    border-radius: 8px; /* Ajout esthétique */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Ajout esthétique */
+    margin-bottom: 1rem;
+}
+
+/* Pied de page */
+.modal-footer {
+    border-top: 1px solid #f0f0f0;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #f9f9f9;
+}
+
+/* --- Style Widget FAQ Leaderboard --- */
+
+/* Espacement et transition douce sur l'élément de liste */
+.faq-leaderboard .list-group-item {
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent; /* Bordure invisible par défaut */
+}
+
+/* Au survol de la souris */
+.faq-leaderboard .list-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.03); /* Fond très léger */
+    border-left-color: var(--bs-primary); /* La barre à gauche prend la couleur du thème */
+    padding-left: 10px !important; /* Petit décalage vers la droite */
+}
+
+/* Style du lien */
+.faq-leaderboard a {
+    color: inherit; /* Garde la couleur du texte par défaut */
+    font-weight: 500;
+}
+
+/* Animation de l'icône */
+.faq-leaderboard .list-group-item:hover i {
+    color: var(--bs-primary) !important; /* L'icône devient bleue (ou couleur du thème) */
+    transform: rotate(15deg) scale(1.2); /* L'icône pivote et grossit un peu */
+    transition: 0.3s;
+}
+
+/* --- Style Widget Quiz Leaderboard --- */
+
+/* Espacement général et bordures arrondies */
+.quiz-leaderboard li {
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 4px !important;
+    border-bottom: 1px solid rgba(0,0,0,0.05) !important; /* Remplacement de la bordure par défaut */
+}
+
+/* Effet au survol */
+.quiz-leaderboard li:hover {
+    background-color: #f8f9fa; /* Fond gris très clair */
+    transform: translateX(5px); /* Petit décalage vers la droite */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* --- Mise en valeur du TOP 3 --- */
+
+/* Le numéro du rang (le <span> qui contient le chiffre) */
+.quiz-leaderboard li > span.fw-bold {
+    display: inline-block;
+    width: 25px;
+    text-align: center;
+    border-radius: 50%;
+}
+
+/* 1er place : OR */
+.quiz-leaderboard li:nth-child(1) > span.fw-bold {
+    color: #d4af37; /* Or */
+    font-size: 1.2em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 2ème place : ARGENT */
+.quiz-leaderboard li:nth-child(2) > span.fw-bold {
+    color: #a9a9a9; /* Argent */
+    font-size: 1.1em;
+}
+
+/* 3ème place : BRONZE */
+.quiz-leaderboard li:nth-child(3) > span.fw-bold {
+    color: #cd7f32; /* Bronze */
+    font-size: 1.1em;
+}
+
+/* Style de l'avatar */
+.quiz-leaderboard img.rounded-circle {
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+/* Zoom sur l'avatar au survol */
+.quiz-leaderboard li:hover img.rounded-circle {
+    transform: scale(1.1);
+}
+
+/* Style du badge de score */
+.quiz-leaderboard .badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* --- Style Widget Sondage (Poll) --- */
+
+/* 1. Style des options de vote (cartes cliquables) */
+.custom-poll-options .form-check {
+    padding: 10px 10px 10px 2.5rem; /* Espace pour le rond du radio */
+    border: 1px solid rgba(0,0,0,0.1); /* Bordure grise légère */
+    border-radius: 8px; /* Bords arrondis */
+    transition: all 0.2s ease;
+    margin-bottom: 8px !important;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+/* Effet au survol d'une option */
+.custom-poll-options .form-check:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05); /* Fond légèrement coloré */
+    border-color: var(--bs-primary); /* Bordure couleur du thème */
+    transform: translateX(3px); /* Petit mouvement dynamique */
+}
+
+/* Personnalisation du bouton radio (le rond) */
+.custom-poll-options .form-check-input {
+    cursor: pointer;
+    float: left;
+    margin-left: -1.8rem; /* Ajustement de la position */
+}
+
+/* Quand une option est cochée */
+.custom-poll-options .form-check-input:checked + .form-check-label {
+    font-weight: bold;
+    color: var(--bs-primary);
+}
+
+/* 2. Style des résultats (Barres de progression) */
+/* On cible les div qui commencent par 'poll-results-' */
+[id^="poll-results-"] .progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    height: 15px !important; /* Un peu plus épais */
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+[id^="poll-results-"] .progress-bar {
+    background-color: var(--bs-primary);
+    /* Ajout de rayures pour le style */
+    background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    background-size: 1rem 1rem;
+    /* Animation de la largeur */
+    transition: width 1s ease-in-out;
+}
+
+/* Texte du pourcentage au-dessus de la barre */
+[id^="poll-results-"] small {
+    font-weight: 600;
+    color: #555;
+    display: block;
+    margin-bottom: 3px;
+    margin-top: 8px;
+}
+
+/* --- Style Widget Témoignages --- */
+
+.testimonial-widget {
+    position: relative;
+    padding-bottom: 10px;
+}
+
+/* 1. L'icône Guillemets (En arrière-plan, style filigrane) */
+.testimonial-quote-icon {
+    font-size: 2rem;
+    color: var(--bs-primary);
+    opacity: 0.2; /* Très transparent pour l'effet filigrane */
+    margin-bottom: -15px; /* Chevauche un peu le texte */
+}
+
+/* 2. Le texte du témoignage */
+.testimonial-text {
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #555;
+    position: relative;
+    z-index: 2; /* Au-dessus de l'icône */
+}
+
+/* 3. L'avatar */
+.testimonial-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Rond parfait */
+    object-fit: cover;
+    border: 2px solid #fff; /* Petit bord blanc */
+}
+
+/* Ajustement des flèches du carrousel pour qu'elles soient sur les côtés */
+.testimonial-widget .carousel-control-prev,
+.testimonial-widget .carousel-control-next {
+    width: 10%;
+    opacity: 0.2;
+}
+
+.testimonial-widget .carousel-control-prev:hover,
+.testimonial-widget .carousel-control-next:hover {
+    opacity: 0.8;
+}
+
+/* --- Style du Slider Principal (Homepage) --- */
+
+.main-slider {
+    border-radius: 12px; /* Coins arrondis pour tout le slider */
+    overflow: hidden;    /* Empêche l'image de dépasser des coins */
+}
+
+.slider-img {
+    height: 450px;       /* Hauteur fixe imposante */
+    object-fit: cover;   /* L'image remplit la zone sans être déformée */
+    transition: transform 5s ease; /* Zoom très lent (effet Ken Burns subtil) */
+}
+
+/* Petit effet de zoom lent au chargement */
+.carousel-item.active .slider-img {
+    transform: scale(1.05);
+}
+
+/* Fond dégradé pour le texte (Bien mieux qu'un fond noir uni) */
+.main-slider .carousel-caption {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-bottom: 2rem;
+    padding-top: 4rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    text-align: center; /* ou left si vous préférez */
+}
+
+.caption-content {
+    max-width: 800px;
+    margin: 0 auto;
+    animation: slideUp 0.8s ease-out; /* Animation du texte */
+}
+
+/* Animation du texte qui remonte */
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.slider-description p {
+    margin-bottom: 0; /* Évite les marges trop grandes dans la description */
+}
+
+/* Indicateurs (les petits traits) plus jolis */
+.main-slider .carousel-indicators button {
+    height: 4px;
+    border-radius: 2px;
+    background-clip: padding-box;
+    opacity: 0.5;
+    transition: opacity .6s ease;
+}
+
+.main-slider .carousel-indicators .active {
+    opacity: 1;
+    background-color: var(--bs-primary); /* Couleur du thème */
+}
+
+/* --- MEGA MENU PRO --- */
+
+/* 1. Conteneur Principal (Le panneau blanc) */
+.mega-menu-custom {
+    border: none;
+    border-top: 3px solid var(--bs-primary) !important; /* Bordure colorée en haut */
+    border-radius: 0 0 8px 8px; /* Arrondi en bas uniquement */
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important; /* Ombre portée profonde */
+    margin-top: 0;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+/* 2. Titres des Colonnes (Explore, Categories, Newest) */
+.mega-menu-custom h6 {
+    font-size: 0.8rem !important;
+    letter-spacing: 1px;
+    color: #888 !important; /* Gris doux */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Petite barre colorée sous le titre */
+.mega-menu-custom h6::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 30px;
+    height: 1px;
+    background-color: var(--bs-primary);
+}
+
+/* 3. Liens de Navigation (Colonnes de gauche) */
+.mega-menu-custom .dropdown-item {
+    font-weight: 500;
+    color: #555;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.mega-menu-custom .dropdown-item:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.08); /* Fond très léger */
+    color: var(--bs-primary);
+    padding-left: 20px; /* Petit décalage vers la droite */
+}
+
+.mega-menu-custom .dropdown-item i {
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+.mega-menu-custom .dropdown-item:hover i {
+    opacity: 1;
+}
+
+/* 4. BLOC ARTICLES RÉCENTS (Le plus important) */
+
+/* Le conteneur de l'article */
+.mega-menu-custom a.d-flex {
+    border-radius: 8px !important;
+    padding: 10px !important;
+    transition: all 0.2s ease;
+    border: 1px solid transparent; /* Pour éviter le saut au survol */
+}
+
+/* Effet au survol de l'article */
+.mega-menu-custom a.d-flex:hover {
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Effet carte levée */
+    border-color: #f0f0f0;
+    transform: translateY(-2px); /* Remonte légèrement */
+}
+
+/* L'image de l'article */
+.mega-menu-custom a.d-flex img {
+    transition: transform 0.4s ease;
+    border-radius: 6px !important;
+}
+
+/* Zoom sur l'image au survol */
+.mega-menu-custom a.d-flex:hover img {
+    transform: scale(1.08);
+}
+
+/* Le titre de l'article */
+.mega-menu-custom a.d-flex h6 {
+    border: none; /* Enlever la bordure du titre h6 définie plus haut */
+    padding: 0;
+    margin: 0;
+    color: #333 !important;
+    transition: color 0.2s;
+}
+
+.mega-menu-custom a.d-flex:hover h6 {
+    color: var(--bs-primary) !important;
+}
+
+/* La date */
+.mega-menu-custom a.d-flex small {
+    color: #999;
+}
+
+/* 5. VERSION MOBILE (Responsive) */
+@media (max-width: 991px) {
+    .mega-menu-custom {
+        position: static !important; /* Pas d'absolu sur mobile */
+        min-width: 100% !important;
+        width: 100% !important;
+        transform: none !important; /* Annuler le centrage PC */
+        box-shadow: none !important; /* Pas d'ombre */
+        border-top: none !important;
+        border-left: 4px solid var(--bs-primary); /* Bordure sur le côté à la place */
+        background-color: #f9f9f9; /* Fond légèrement gris pour distinguer du menu principal */
+        margin-top: 10px;
+    }
+    
+    /* Cacher les images sur mobile pour gagner de la place (Optionnel) */
+    /* .mega-menu-custom img { display: none; } */
+    
+    .mega-menu-custom .col-lg-2, 
+    .mega-menu-custom .col-lg-4, 
+    .mega-menu-custom .col-lg-6 {
+        margin-bottom: 20px; /* Espacement entre les blocs empilés */
+    }
+}
+
+/* ===================================
+   Style Sidebar : Catégories & Tags
+====================================== */
+
+/* --- 1. Catégories --- */
+.sidebar-categories .list-group-item {
+    border-left: 3px solid transparent; /* Bordure invisible par défaut */
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Au survol : fond gris léger, texte coloré, barre à gauche */
+.sidebar-categories .list-group-item:hover {
+    background-color: #f9f9f9;
+    color: var(--bs-primary);
+    border-left-color: var(--bs-primary); /* La barre prend la couleur du thème */
+    padding-left: 1.5rem !important; /* Petit décalage vers la droite */
+}
+
+/* Animation de la petite flèche (chevron) */
+.sidebar-categories .list-group-item:hover .category-icon {
+    color: var(--bs-primary) !important;
+    transform: translateX(3px); /* La flèche bouge un peu */
+    transition: transform 0.2s;
+}
+
+/* Style du badge (nombre d'articles) */
+.sidebar-categories .badge {
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+
+/* --- 2. Popular Tags (Nuage de mots moderne) --- */
+.tag-link {
+    display: inline-block;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 5px; /* Forme "Pillule" */
+    padding: 6px 14px;
+    margin: 4px;
+    font-size: 0.85rem;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Au survol du tag */
+.tag-link:hover {
+    background-color: var(--bs-primary); /* Fond couleur du thème */
+    border-color: var(--bs-primary);
+    color: #fff; /* Texte blanc */
+    transform: translateY(-2px); /* Remonte légèrement */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* L'icône hashtag change de couleur aussi */
+.tag-link:hover i {
+    color: rgba(255,255,255,0.8) !important;
+}
+
+/* ===================================
+   Style Sidebar : Tabs & Subscribe
+====================================== */
+
+/* --- 1. Bloc Onglets (Posts/Comments) --- */
+.sidebar-tabs-card .nav-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #6c757d;
+    font-weight: 600;
+    padding: 1rem 0;
+    background-color: #f8f9fa; /* Fond gris léger pour les inactifs */
+}
+
+.sidebar-tabs-card .nav-tabs .nav-link:hover {
+    color: var(--bs-primary);
+}
+
+.sidebar-tabs-card .nav-tabs .nav-link.active {
+    background-color: #fff;
+    color: var(--bs-primary);
+    border-bottom: 2px solid var(--bs-primary); /* Barre colorée pour l'actif */
+}
+
+/* Items de la liste */
+.sidebar-post-item, .sidebar-comment-item {
+    transition: background-color 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-post-item:hover, .sidebar-comment-item:hover {
+    background-color: #f8f9fa;
+    border-left-color: var(--bs-primary);
+}
+
+/* Titre qui change de couleur au survol */
+.sidebar-post-item:hover .title-hover {
+    color: var(--bs-primary) !important;
+}
+
+
+/* --- 2. Bloc Subscribe --- */
+.sidebar-subscribe {
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+}
+
+.sidebar-subscribe .icon-box {
+    transition: transform 0.3s;
+}
+
+/* Petit saut de l'enveloppe au survol */
+.sidebar-subscribe:hover .icon-box {
+    transform: translateY(-5px) rotate(-10deg);
+}
+
+.sidebar-subscribe .form-control:focus {
+    box-shadow: none;
+    border-color: var(--bs-primary);
+    background-color: #fff;
+}
+
+/* ===================================
+   Correction Finition Sidebar
+====================================== */
+
+/* Force le contenu (listes, images) à respecter les arrondis de la carte */
+#sidebar .card {
+    overflow: hidden; /* Coupe ce qui dépasse */
+    border-radius: 8px; /* S'assure que l'arrondi est bien défini */
+}
+
+/* S'assure que le dernier élément de la liste ne casse pas l'arrondi */
+#sidebar .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* ===================================
+   CORRECTIF FINAL DARK MODE (Sidebar)
+====================================== */
+
+/* 1. SONDAGE (Poll) : Les options de vote */
+.custom-poll-options .form-check {
+    /* Utiliser la couleur de la carte du thème au lieu du blanc */
+    background-color: var(--bs-card-bg) !important;
+    color: var(--bs-body-color) !important;
+    /* Bordure qui s'adapte au thème */
+    border-color: var(--bs-border-color) !important; 
+}
+
+/* Au survol du sondage */
+.custom-poll-options .form-check:hover {
+    /* Un fond légèrement différent (plus clair ou sombre selon le thème) */
+    background-color: var(--bs-tertiary-bg) !important; 
+}
+
+/* 2. ONGLETS (Popular/Comments) : L'onglet actif */
+.sidebar-tabs-card .nav-tabs .nav-link.active {
+    background-color: var(--bs-card-bg) !important;
+    color: var(--bs-body-color) !important;
+    border-color: var(--bs-border-color) var(--bs-border-color) transparent !important;
+}
+
+/* Les onglets inactifs */
+.sidebar-tabs-card .nav-tabs .nav-link {
+    background-color: var(--bs-tertiary-bg) !important; /* Gris ou sombre */
+    color: var(--bs-secondary-color) !important;
+}
+
+/* Les éléments de la liste (articles/commentaires) */
+.sidebar-post-item, 
+.sidebar-comment-item {
+    background-color: transparent !important; /* Fond transparent pour prendre la couleur de la carte */
+    color: var(--bs-body-color) !important;
+}
+
+.sidebar-post-item:hover, 
+.sidebar-comment-item:hover {
+    background-color: var(--bs-tertiary-bg) !important; /* Effet de survol adapté */
+}
+
+/* Titres et textes dans les listes */
+.sidebar-post-item h6, 
+.sidebar-comment-item span {
+    color: var(--bs-body-color) !important;
+}
+
+/* 3. NEWSLETTER (Subscribe) */
+.sidebar-subscribe {
+    /* Supprimer le dégradé blanc/gris fixe */
+    background: var(--bs-card-bg) !important; 
+    color: var(--bs-body-color) !important;
+}
+
+/* L'icône enveloppe (cercle) */
+.sidebar-subscribe .icon-box {
+    /* Adapter le fond du cercle */
+    background-color: var(--bs-tertiary-bg) !important; 
+}
+
+/* Les champs de saisie (Input) */
+.sidebar-subscribe input.form-control {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+    border-color: var(--bs-border-color) !important;
+}
+
+/* Letest bacground color fix */
+.bg-white {
+    --bs-bg-opacity: 1;
+    background-color: #f9f9f9 !important;
+}
+/*.bg-light {
+    --bs-bg-opacity: 1;
+    background-color: #adb5bd !important;
+}*/
