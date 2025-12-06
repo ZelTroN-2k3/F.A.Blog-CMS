@@ -237,8 +237,82 @@
     </div><!-- End Category Distribution -->
 </div>
 
+<div class="row"><!-- Top 5 Most Viewed Projects & Projects by Category -->
+    <div class="col-md-6">
+        <div class="card card-indigo">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-microchip"></i> Top 5 Most Viewed Projects</h3>
+            </div>
+            <div class="card-body">
+                <?php if (empty($chart_top_proj_titles)): ?>
+                    <div class="alert alert-light text-center text-muted">No data available yet.</div>
+                <?php else: ?>
+                    <canvas id="popularProjectsChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div><!-- End Top 5 Most Viewed Projects -->
+    
+    <div class="col-md-6"><!-- Projects by Category -->
+        <div class="card card-teal">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-tags"></i> Projects by Category</h3>
+            </div>
+            <div class="card-body">
+                <?php if (empty($chart_pcat_labels)): ?>
+                    <div class="alert alert-light text-center text-muted">No categorized projects yet.</div>
+                <?php else: ?>
+                    <canvas id="projectsCategoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div><!-- End Projects by Category -->
+</div>
+
+<div class="row"><!-- Total Likes and Favorites -->
+    <div class="col-lg-3 col-12">
+        <div class="info-box bg-gradient-danger">
+            <span class="info-box-icon"><i class="fas fa-heart"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Likes (Love)</span>
+                <span class="info-box-number" style="font-size: 1.5rem;"><?php echo number_format($total_likes); ?></span>
+                
+                <div class="progress">
+                    <div class="progress-bar" style="width: <?php echo $like_percent; ?>%"></div>
+                </div>
+                
+                <span class="progress-description" style="font-size: 0.9rem;">
+                    <i class="far fa-file-alt opacity-50"></i> <?php echo $l_posts; ?> Posts 
+                    &nbsp;|&nbsp; 
+                    <i class="fas fa-microchip opacity-50"></i> <?php echo $l_projs; ?> Projects
+                </span>
+            </div>
+        </div>
+    </div><!-- End Total Likes and Favorites -->
+
+    <div class="col-lg-3 col-12"><!-- Total Favorites -->
+        <div class="info-box bg-gradient-warning">
+            <span class="info-box-icon"><i class="fas fa-bookmark text-white"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text text-white">Total Saves (Favorites)</span>
+                <span class="info-box-number text-white" style="font-size: 1.5rem;"><?php echo number_format($total_favorites); ?></span>
+                
+                <div class="progress">
+                    <div class="progress-bar" style="width: <?php echo $fav_percent; ?>%"></div>
+                </div>
+                
+                <span class="progress-description text-white" style="font-size: 0.9rem;">
+                    <i class="far fa-file-alt opacity-50"></i> <?php echo $f_posts; ?> Posts 
+                    &nbsp;|&nbsp; 
+                    <i class="fas fa-microchip opacity-50"></i> <?php echo $f_projs; ?> Projects
+                </span>
+            </div>
+        </div>
+    </div><!-- End Total Favorites -->
+</div>
+
 <div class="row"><!-- Latest Projects -->
-    <div class="col-md-12">
+    <div class="col-lg-6 col-md-12">
         <div class="card card-indigo card-outline collapsed-card">
             <div class="card-header">
                 <h3 class="card-title">

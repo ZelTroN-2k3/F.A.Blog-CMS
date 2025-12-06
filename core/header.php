@@ -876,6 +876,14 @@ if ($settings['layout'] == 'Wide') {
                                     <i class="fas fa-file-alt"></i> My submitted articles
                                 </a>
                             </li>
+                            
+                            <li>
+                                <a class="dropdown-item <?php if ($current_page == 'my-projects.php') { echo ' active'; } ?>" href="my-projects.php"> 
+                                    <i class="fas fa-microchip"></i> My submitted projects
+                                </a>
+                            </li>
+
+                            
                             <li>
 								<a class="dropdown-item <?php
 if ($current_page == 'submit_post.php') { 

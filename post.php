@@ -249,7 +249,7 @@ echo '
 				$user_has_liked = check_user_has_liked($post_id);
 				
 				$like_class = $user_has_liked ? 'btn-primary' : 'btn-outline-primary';
-				$like_text = $user_has_liked ? 'Aimé' : 'J\'aime';
+				$like_text = $user_has_liked ? 'Liked' : 'Like';
 				?>
 				
 				<button class="btn <?php echo $like_class; ?> mt-2" id="like-button" data-post-id="<?php echo $post_id; ?>">
@@ -262,7 +262,7 @@ echo '
                 if ($logged == 'Yes'):
                     $fav_class = $user_has_favorited ? 'btn-warning' : 'btn-outline-warning';
                     $fav_icon = $user_has_favorited ? 'fas fa-bookmark' : 'far fa-bookmark';
-                    $fav_text = $user_has_favorited ? 'Enregistré' : 'Enregistrer';
+                    $fav_text = $user_has_favorited ? 'Saved' : 'Save';
                 ?>
                     <button class="btn <?php echo $fav_class; ?> mt-2 ms-2" id="favorite-button" data-post-id="<?php echo $post_id; ?>">
                         <i class="<?php echo $fav_icon; ?>"></i>

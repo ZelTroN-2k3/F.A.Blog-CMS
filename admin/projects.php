@@ -155,18 +155,28 @@ if (isset($_GET['delete-id'])) {
                                 // Permissions
                                 $can_edit = ($user['role'] == 'Admin' || $row['author_id'] == $user['id']);
 
+                                // --- NOUVEAU : GESTION DU BADGE "FEATURED" (Étoile) ---
+                                $featured_badge = '';
+                                if ($row['featured'] == 'Yes') {
+                                    $featured_badge = '<span class="badge bg-warning ms-1" title="Featured in Slider"><i class="fas fa-star"></i></span>';
+                                }
+                                // ------------------------------------------------------
+
                                 echo '
                                 <tr>
                                     <td class="text-center">
                                         <input type="checkbox" name="project_ids[]" value="' . $row['id'] . '">
                                     </td>
-                                    <td class="text-center"><img src="' . htmlspecialchars($img_src) . '" width="80" height="50" style="object-fit:cover; border-radius:4px;" onerror="this.src=\'../assets/img/no-image.png\';"></td>
+                                    <td class="text-center"><img src="' . htmlspecialchars($img_src) . '" width="60" height="40" style="object-fit:cover; border-radius:4px;" onerror="this.src=\'../assets/img/no-image.png\';"></td>
+                                    
                                     <td>
-                                        <strong>' . htmlspecialchars($row['title']) . '</strong><br>
+                                        <strong>' . htmlspecialchars($row['title']) . '</strong>' . $featured_badge . '<br>
                                         <small class="text-muted">' . htmlspecialchars(short_text($row['pitch'], 80)) . '</small>
                                     </td>
                                     
-                                    <td>' . $cat_display . '</td> <td><span class="badge bg-' . $badge_color . '">' . htmlspecialchars($row['difficulty']) . '</span></td>
+                                    <td>' . $cat_display . '</td>
+                                    
+                                    <td><span class="badge bg-' . $badge_color . '">' . htmlspecialchars($row['difficulty']) . '</span></td>
                                     <td class="text-center">' . $status_badge . '</td>
                                     <td>' . date('d M Y', strtotime($row['created_at'])) . '</td>
                                     <td class="text-center">';

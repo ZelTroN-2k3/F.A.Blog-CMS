@@ -253,11 +253,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.liked) {
               likeButton.classList.remove('btn-outline-primary');
               likeButton.classList.add('btn-primary');
-              likeText.innerText = 'Aimé';
+              likeText.innerText = 'Liked';
             } else {
               likeButton.classList.remove('btn-primary');
               likeButton.classList.add('btn-outline-primary');
-              likeText.innerText = 'J\'aime';
+              likeText.innerText = 'Like';
             }
           } else {
             console.error(data.message);
@@ -295,13 +295,13 @@ document.addEventListener('DOMContentLoaded', function () {
               favButton.classList.add('btn-warning');
               favIcon.classList.remove('far');
               favIcon.classList.add('fas');
-              favText.innerText = 'Enregistré';
+              favText.innerText = 'Saved';
             } else {
               favButton.classList.remove('btn-warning');
               favButton.classList.add('btn-outline-warning');
               favIcon.classList.remove('fas');
               favIcon.classList.add('far');
-              favText.innerText = 'Enregistrer';
+              favText.innerText = 'Save';
             }
           } else {
             console.error(data.message);

@@ -30,6 +30,8 @@ if (isset($_GET['q'])) {
     } else {
         
         $search_word = '%' . $word . '%';
+        $count_proj = 0;
+        $numrows = 0;
 
         // ============================================================
         // 1. RECHERCHE DANS LES PROJETS (NOUVEAU)

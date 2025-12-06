@@ -38,6 +38,10 @@ $my_pending = 0;
 $my_views = 0;
 $my_comments = 0;
 
+// --- NOUVEAU : Variables Engagement ---
+$total_likes = 0;
+$total_favorites = 0;
+
 
 // =========================================================================
 // 1. TRAITEMENT DES ACTIONS (ADMIN)
@@ -194,9 +198,45 @@ if ($user['role'] == "Admin") {
         $last_backup_date = date("d M Y, H:i", filemtime($backup_files[0]));
     }
 
-    // --- Compteur Projets ---
+    // --- Compteur Projets (Déjà présent dans votre version) ---
     $q_projects = mysqli_query($connect, "SELECT COUNT(id) as count FROM projects");
     $count_projects = mysqli_fetch_assoc($q_projects)['count'];
+
+    // --- STATISTIQUES ENGAGEMENT (AMÉLIORÉ) ---
+    
+    // 1. Likes (Articles + Projets)
+    $l_posts = 0;
+    $q_lp = mysqli_query($connect, "SELECT COUNT(id) as c FROM post_likes");
+    if($q_lp) { $l_posts = mysqli_fetch_assoc($q_lp)['c']; }
+    
+    $l_projs = 0;
+    $q_check_pl = mysqli_query($connect, "SHOW TABLES LIKE 'project_likes'");
+    if(mysqli_num_rows($q_check_pl) > 0) {
+        $q_lpj = mysqli_query($connect, "SELECT COUNT(id) as c FROM project_likes");
+        if($q_lpj) { $l_projs = mysqli_fetch_assoc($q_lpj)['c']; }
+    }
+    $total_likes = $l_posts + $l_projs;
+    
+    // Calcul du pourcentage (Part des Articles sur le total)
+    $like_percent = ($total_likes > 0) ? round(($l_posts / $total_likes) * 100) : 0;
+
+
+    // 2. Favoris (Articles + Projets)
+    $f_posts = 0;
+    $q_fp = mysqli_query($connect, "SELECT COUNT(id) as c FROM user_favorites");
+    if($q_fp) { $f_posts = mysqli_fetch_assoc($q_fp)['c']; }
+    
+    $f_projs = 0;
+    $q_check_pf = mysqli_query($connect, "SHOW TABLES LIKE 'user_project_favorites'");
+    if(mysqli_num_rows($q_check_pf) > 0) {
+        $q_fpj = mysqli_query($connect, "SELECT COUNT(id) as c FROM user_project_favorites");
+        if($q_fpj) { $f_projs = mysqli_fetch_assoc($q_fpj)['c']; }
+    }
+    $total_favorites = $f_posts + $f_projs;
+    
+    // Calcul du pourcentage (Part des Articles sur le total)
+    $fav_percent = ($total_favorites > 0) ? round(($f_posts / $total_favorites) * 100) : 0;
+    // ------------------------------------------
 
     // --- GRAPHIQUES ADMIN (Données) ---
     $chart_top_posts_titles = []; $chart_top_posts_views = [];
@@ -238,6 +278,30 @@ if ($user['role'] == "Admin") {
     $chart_cat_data_json = json_encode($chart_cat_data);
     $chart_authors_labels_json = json_encode($chart_authors_labels);
     $chart_authors_data_json = json_encode($chart_authors_data);
+
+    // --- STATISTIQUES PROJETS (GRAPHIQUES) ---
+    $chart_top_proj_titles = []; $chart_top_proj_views = [];
+    $chart_pcat_labels = []; $chart_pcat_data = [];
+
+    // 1. Top 5 Projets
+    $q_top_proj = mysqli_query($connect, "SELECT title, views FROM projects WHERE active='Yes' AND views > 0 ORDER BY views DESC LIMIT 5");
+    while ($row = mysqli_fetch_assoc($q_top_proj)) {
+        $chart_top_proj_titles[] = short_text($row['title'], 20); 
+        $chart_top_proj_views[] = $row['views'];
+    }
+
+    // 2. Projets par Catégorie
+    $q_pcat = mysqli_query($connect, "SELECT c.category, COUNT(p.id) AS count FROM project_categories c JOIN projects p ON c.id = p.project_category_id WHERE p.active = 'Yes' GROUP BY c.id HAVING count > 0");
+    while ($row = mysqli_fetch_assoc($q_pcat)) {
+        $chart_pcat_labels[] = $row['category'];
+        $chart_pcat_data[] = $row['count'];
+    }
+
+    // Encodage JSON Projets
+    $chart_top_proj_labels_json = json_encode($chart_top_proj_titles);
+    $chart_top_proj_data_json   = json_encode($chart_top_proj_views);
+    $chart_pcat_labels_json     = json_encode($chart_pcat_labels);
+    $chart_pcat_data_json       = json_encode($chart_pcat_data);
 }
 
 // =========================================================================

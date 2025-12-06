@@ -108,7 +108,7 @@ if (isset($_POST['save'])) {
                             facebook = ?, instagram = ?, twitter = ?, youtube = ?, 
                             linkedin = ?, discord = ?, rtl = ?, date_format = ?, 
                             layout = ?, latestposts_bar = ?, homepage_slider = ?, sidebar_position = ?, 
-                            posts_per_row = ?, theme = ?, posts_per_page = ?, 
+                            posts_per_row = ?, theme = ?, posts_per_page = ?, projects_per_page = ?, 
                             background_image = ?, 
                             meta_title = ?, favicon_url = ?, apple_touch_icon_url = ?,
                             meta_author = ?, meta_generator = ?, meta_robots = ?,
@@ -125,9 +125,9 @@ if (isset($_POST['save'])) {
             $stmt = mysqli_prepare($connect, $sql);
             if ($stmt === false) { throw new Exception("MySQL preparation error: " . mysqli_error($connect)); }
 
-            // Définition des types pour bind_param
-            // 32 premiers champs (strings) + 13 nouveaux champs (mixte) = 45
-            $types = "sssssssssssssssssssssssssssssssss" . "ssssisssisis"; 
+            // Correction : 46 caractères pour 46 variables
+            // 38 's' (strings) + 'i' (int) + 'sss' + 'i' + 's' + 'i' + 's'
+            $types = str_repeat('s', 38) . 'isssisis';
             
             // Encodage pour éviter les conflits de caractères (HTML/JS)
             $head_customcode_encoded = base64_encode($_POST['head_customcode']);
@@ -145,7 +145,7 @@ if (isset($_POST['save'])) {
                 $_POST['twitter'], $_POST['youtube'], $_POST['linkedin'], $_POST['discord'], $_POST['rtl'],
                 $_POST['date_format'], $_POST['layout'], $_POST['latestposts_bar'],
                 $_POST['homepage_slider'], $_POST['sidebar_position'], $_POST['posts_per_row'],
-                $_POST['theme'], $_POST['posts_per_page'], $new_background_image,
+                $_POST['theme'], $_POST['posts_per_page'], $_POST['projects_per_page'], $new_background_image,
                 $_POST['meta_title'], $_POST['favicon_url'], $_POST['apple_touch_icon_url'],
                 $_POST['meta_author'], $_POST['meta_generator'], $_POST['meta_robots'],
                 $_POST['sticky_header'], $google_maps_encoded, $new_site_logo,

@@ -123,5 +123,49 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         });
     }
+
+    // --- 5. GRAPHIQUE BARRES (Top Projets) ---
+    const ctxBarProj = document.getElementById('popularProjectsChart');
+    if (ctxBarProj) {
+        new Chart(ctxBarProj.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: <?php echo $chart_top_proj_labels_json; ?>,
+                datasets: [{
+                    label: 'Views',
+                    data: <?php echo $chart_top_proj_data_json; ?>,
+                    backgroundColor: '#6610f2' // Indigo
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    // --- 6. GRAPHIQUE DOUGHNUT (Catégories Projets) ---
+    const ctxPieProj = document.getElementById('projectsCategoryChart');
+    if (ctxPieProj) {
+        new Chart(ctxPieProj.getContext('2d'), {
+            type: 'doughnut', // Type différent pour varier (ou 'pie')
+            data: {
+                labels: <?php echo $chart_pcat_labels_json; ?>,
+                datasets: [{
+                    data: <?php echo $chart_pcat_data_json; ?>,
+                    backgroundColor: [
+                        '#20c997', '#17a2b8', '#ffc107', '#e83e8c', '#6f42c1'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }    
 });
 </script>

@@ -45,6 +45,8 @@ DROP TABLE IF EXISTS `activity_logs`;
 DROP TABLE IF EXISTS `visitor_analytics`;
 DROP TABLE IF EXISTS `projects`;
 DROP TABLE IF EXISTS `project_categories`;
+DROP TABLE IF EXISTS `project_likes`;
+DROP TABLE IF EXISTS `user_project_favorites`;
 
 -- --------------------------------------------------------
 -- Base de données : `localhost`
@@ -273,6 +275,7 @@ INSERT INTO `menu` (`id`, `page`, `path`, `fa_icon`, `active`) VALUES
 (11, 'Privacy Policy', 'privacy-policy', 'fas fa-user-shield me-2 text-info', 'No'),
 (12, 'Newsletter', 'newsletter', 'fas fa-envelope text-danger', 'No'),
 (13, 'Chats', 'chat', 'fab fa-whatsapp fa-lg text-success', 'Yes');
+
 -- --------------------------------------------------------
 
 --
@@ -445,6 +448,7 @@ CREATE TABLE `posts` (
 
 INSERT INTO `posts` (`id`, `category_id`, `title`, `slug`, `meta_title`, `meta_description`, `image`, `content`, `imported_guid`, `author_id`, `active`, `featured`, `download_link`, `github_link`, `publish_at`, `views`, `created_at`) VALUES
 (1, 1, 'Demo Test Post', 'demo-test-post', 'demo test Post', 'demo meta description', '', '<p>demo test post 1</p>', NULL, 1, 'Yes', 'Yes', 'https://localhost/download/test1.zip', 'https://github.com/', '2025-01-01 12:00:00', 0, '2025-01-01 12:00:00');
+
 -- --------------------------------------------------------
 
 --
@@ -552,6 +556,7 @@ CREATE TABLE `settings` (
   `theme` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `background_image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `posts_per_page` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `projects_per_page` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '9',
   `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `favicon_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `apple_touch_icon_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -585,8 +590,8 @@ CREATE TABLE `settings` (
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`id`, `site_url`, `sitename`, `description`, `email`, `gcaptcha_sitekey`, `gcaptcha_secretkey`, `head_customcode`, `head_customcode_enabled`, `facebook`, `instagram`, `twitter`, `youtube`, `linkedin`, `discord`, `comments`, `rtl`, `date_format`, `layout`, `latestposts_bar`, `sidebar_position`, `posts_per_row`, `theme`, `background_image`, `posts_per_page`, `meta_title`, `favicon_url`, `apple_touch_icon_url`, `meta_author`, `meta_generator`, `meta_robots`, `sticky_header`, `maintenance_mode`, `maintenance_title`, `maintenance_message`, `homepage_slider`, `google_maps_code`, `site_logo`, `maintenance_image`, `ban_bg_image`, `mail_protocol`, `mail_from_name`, `mail_from_email`, `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_enc`, `comments_approval`, `comments_blacklist`, `cookie_consent_enabled`, `cookie_message`) VALUES
-(1, 'http://localhost/FA-Blog', 'F.A-Blog', 'Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.', 'admin@esemple.com', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==', 'Off', 'https://www.facebook.com/', 'https://www.instagram.com/', '', 'https://www.youtube.com/', '', 'https://discord.com/', 'guests', 'No', 'd.m.Y', 'Fixed', 'Enabled', 'Right', '2', 'Bootstrap 5', '', '4', 'F.A Blog - Titre SEO', 'assets/img/favicon.png', 'assets/img/favicon.png', 'ZelTroN2K3_WEB', 'faBlog', 'index, follow', 'Off', 'Off', 'Site Under Maintenance', '<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>', 'Featured', 'PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==', 'uploads/other/logo_693034e757e31.png', 'assets/img/maintenance.jpg', 'default.jpg', 'smtp', '', '', '', 0, '', '', 'tls', 0, 'viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,whatsapp,telegram,dm me,cash app,paypal,marketing,seo,ranking,traffic,website,domain,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,viagra,pÃ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,marketing,seo,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,pÃ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,suicide,kill yourself,die,http,https,www,.com,.net,.org,.biz,.info', 1, 'This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.');
+INSERT INTO `settings` (`id`, `site_url`, `sitename`, `description`, `email`, `gcaptcha_sitekey`, `gcaptcha_secretkey`, `head_customcode`, `head_customcode_enabled`, `facebook`, `instagram`, `twitter`, `youtube`, `linkedin`, `discord`, `comments`, `rtl`, `date_format`, `layout`, `latestposts_bar`, `sidebar_position`, `posts_per_row`, `theme`, `background_image`, `posts_per_page`, `projects_per_page`, `meta_title`, `favicon_url`, `apple_touch_icon_url`, `meta_author`, `meta_generator`, `meta_robots`, `sticky_header`, `maintenance_mode`, `maintenance_title`, `maintenance_message`, `homepage_slider`, `google_maps_code`, `site_logo`, `maintenance_image`, `ban_bg_image`, `mail_protocol`, `mail_from_name`, `mail_from_email`, `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_enc`, `comments_approval`, `comments_blacklist`, `cookie_consent_enabled`, `cookie_message`) VALUES
+(1, 'http://localhost/F.A.Blog-CMS', 'F.A-Blog', 'Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.', 'admin@exemple.com', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==', 'Off', 'https://www.facebook.com/', 'https://www.instagram.com/', '', 'https://www.youtube.com/', '', 'https://discord.com/', 'guests', 'No', 'd.m.Y', 'Fixed', 'Enabled', 'Right', '2', 'Bootstrap 5', '', '4', '3', 'F.A Blog - Titre SEO', 'assets/img/favicon.png', 'assets/img/favicon.png', 'ZelTroN2K3_WEB', 'faBlog', 'index, follow', 'Off', 'Off', 'Site Under Maintenance', '<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>', 'Featured', 'PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==', 'uploads/other/logo_693034e757e31.png', 'assets/img/maintenance.jpg', 'default.jpg', 'smtp', '', '', '', 0, '', '', 'tls', 0, 'viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,whatsapp,telegram,dm me,cash app,paypal,marketing,seo,ranking,traffic,website,domain,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,viagra,pÃƒÂ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,marketing,seo,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,pÃƒÂ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,suicide,kill yourself,die,http,https,www,.com,.net,.org,.biz,.info', 1, 'This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.');
 
 -- --------------------------------------------------------
 
@@ -702,6 +707,7 @@ INSERT INTO `widgets` (`id`, `title`, `widget_type`, `content`, `config_data`, `
 (5, 'FAQ Leaderboard', 'faq_leaderboard', NULL, NULL, 'Sidebar', 'No'),
 (6, 'Slider Testimonials', 'testimonials', NULL, NULL, 'Sidebar', 'No'),
 (7, 'Newsletter', 'newsletter', NULL, NULL, 'Sidebar', 'No');
+
 -- --------------------------------------------------------
 
 --
@@ -730,6 +736,7 @@ CREATE TABLE `chat_conversations` (
   `archived_user_1` enum('No','Yes') DEFAULT 'No',
   `archived_user_2` enum('No','Yes') DEFAULT 'No'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -744,6 +751,7 @@ CREATE TABLE `chat_messages` (
   `is_read` enum('Yes','No') DEFAULT 'No',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -755,6 +763,7 @@ CREATE TABLE `chat_starred` (
   `message_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -768,6 +777,7 @@ CREATE TABLE `chat_status` (
   `caption` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 --
 -- Structure de la table `activity_logs`
@@ -780,6 +790,7 @@ CREATE TABLE `activity_logs` (
   `ip_address` varchar(45) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -794,6 +805,7 @@ CREATE TABLE `visitor_analytics` (
   `user_agent` varchar(255) NOT NULL,
   `visit_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -818,6 +830,7 @@ CREATE TABLE `projects` (
   `code_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `files_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active` enum('Yes','No','Draft') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Draft',
+  `featured` enum('Yes','No') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
   `views` int(11) NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -826,10 +839,11 @@ CREATE TABLE `projects` (
 -- Déchargement des données de la table `projects`
 --
 
-INSERT INTO `projects` (`id`, `author_id`, `project_category_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `views`, `created_at`) VALUES
-(1, 1, 0, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '<ol><li>Led red x2</li><li>Breadboard x1</li></ol>', '<ol><li>Arduino IDE</li></ol>', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Yes', 13, '2025-01-01 12:00:00'),
-(2, 1, 0, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', '<p>In this project, we will build a connected weather station...</p>', '#', 'https://github.com/', NULL, 'Draft', 42, '2025-01-02 14:30:00'),
-(3, 1, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ul><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ul>', '<ul><li>Arduino IDE</li></ul>', '<p>The classic blinking LED project to get started with electronics.</p>', 'http://freelance_addons.net', 'https://github.com/', NULL, 'Draft', 5, '2025-01-03 09:15:00');
+INSERT INTO `projects` (`id`, `author_id`, `project_category_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `featured`, `views`, `created_at`) VALUES
+(1, 1, 1, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '<ol><li>Led red x2</li><li>Breadboard x1</li></ol>', '<ol><li>Arduino IDE</li></ol>', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Yes', 'Yes', 0, '2025-01-01 12:00:00'),
+(2, 1, 1, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', '<p>In this project, we will build a connected weather station...</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-02 14:30:00'),
+(3, 1, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ul><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ul>', '<ul><li>Arduino IDE</li></ul>', '<p>The classic blinking LED project to get started with electronics.</p>', 'http://freelance_addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-03 09:15:00');
+
 -- --------------------------------------------------------
 
 --
@@ -852,8 +866,37 @@ CREATE TABLE `project_categories` (
 --
 
 INSERT INTO `project_categories` (`id`, `category`, `slug`, `description`, `image`, `author_id`, `created_at`) VALUES
-(1, 'Table Projects', 'table-projects', 'Brief description of the project', '', 1, '2025-12-05 18:35:41');
+(1, 'Table Projects', 'table-projects', 'Brief description of the project', '', 1, '2025-01-01 12:00:00');
+
 -- --------------------------------------------------------
+
+--
+-- Déchargement des données de la table `project_likes`
+--
+
+CREATE TABLE `project_likes` (
+  `id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `session_id` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Déchargement des données de la table `user_project_favorites`
+--
+
+CREATE TABLE `user_project_favorites` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
 
 -- --------------------------------------------------------
 -- Index pour les tables déchargées
@@ -1136,6 +1179,20 @@ ALTER TABLE `projects`
 --
 ALTER TABLE `project_categories`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `project_likes`
+--
+ALTER TABLE `project_likes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `user_project_favorites`
+--
+ALTER TABLE `user_project_favorites`
+  ADD PRIMARY KEY (`id`);
+
+
 -- --------------------------------------------------------
 -- AUTO_INCREMENT pour les tables déchargées
 -- --------------------------------------------------------
@@ -1384,5 +1441,17 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT pour la table `project_categories`
 --
 ALTER TABLE `project_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `project_likes`
+--
+ALTER TABLE `project_likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `user_project_favorites`
+--
+ALTER TABLE `user_project_favorites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;

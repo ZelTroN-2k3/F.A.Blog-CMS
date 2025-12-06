@@ -86,7 +86,8 @@ if (isset($_GET['difficulty']) && !empty($_GET['difficulty'])) {
             <div class="row">
 <?php
 // --- PAGINATION ---
-$perpage = 9;
+// Utilisation du paramètre admin, ou 3 par défaut si vide
+$perpage = !empty($settings['projects_per_page']) ? (int)$settings['projects_per_page'] : 3;
 $pageNum = 1;
 if (isset($_GET['page'])) { $pageNum = (int)$_GET['page']; }
 if ($pageNum < 1) $pageNum = 1;
@@ -165,9 +166,17 @@ if ($count <= 0) {
                     </p>
                     
                     <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-auto">
+                        <div>
+                            <small class="text-muted me-2" title="Views">
+                                <i class="fas fa-eye"></i> ' . $row['views'] . '
+                            </small>
+                            <small class="text-muted" title="Likes">
+                                <i class="fas fa-thumbs-up"></i> ' . get_project_like_count($row['id']) . '
+                            </small>
+                        </div>
                         <small class="text-muted"><i class="fas fa-user-circle"></i> ' . htmlspecialchars($row['username']) . '</small>
-                        <a href="project?name=' . htmlspecialchars($row['slug']) . '" class="btn btn-sm btn-outline-success rounded-pill">View</a>
-                    </div>
+                        <a href="project?name=' . htmlspecialchars($row['slug']) . '" class="btn btn-sm btn-outline-success /*rounded-pill*/">View</a>
+                    </div>                    
                 </div>
             </div>
         </div>';

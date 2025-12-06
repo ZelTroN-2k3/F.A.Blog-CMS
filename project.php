@@ -183,7 +183,32 @@ $purifier = get_purifier();
                 </div>
             </div>
             <?php endif; ?>
-            
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body text-center">
+                    <?php
+                    $likes = get_project_like_count($project['id']);
+                    $has_liked = check_user_has_liked_project($project['id']);
+                    $like_class = $has_liked ? 'btn-primary' : 'btn-outline-primary';
+                    $like_text = $has_liked ? 'Liked' : 'Like';
+                    
+                    $has_fav = check_user_has_favorited_project($project['id']);
+                    $fav_class = $has_fav ? 'btn-warning' : 'btn-outline-warning';
+                    $fav_icon = $has_fav ? 'fas' : 'far';
+                    ?>
+                    
+                    <button class="btn <?php echo $like_class; ?> me-2" id="project-like-btn" data-id="<?php echo $project['id']; ?>">
+                        <i class="fas fa-thumbs-up me-1"></i> <span id="like-text"><?php echo $like_text; ?></span> (<span id="like-count"><?php echo $likes; ?></span>)
+                    </button>
+                    
+                    <?php if($logged == 'Yes'): ?>
+                    <button class="btn <?php echo $fav_class; ?>" id="project-fav-btn" data-id="<?php echo $project['id']; ?>">
+                        <i class="<?php echo $fav_icon; ?> fa-bookmark me-1"></i> <span id="fav-text"><?php echo $has_fav ? 'Saved' : 'Save'; ?></span>
+                    </button>
+                    <?php endif; ?>
+                </div>
+            </div>
+
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center">
                     <h6 class="fw-bold mb-3">Share this project</h6>
@@ -196,4 +221,47 @@ $purifier = get_purifier();
     </div>
 </div>
 
+<script>
+$(document).ready(function() {
+    // LIKE
+    $('#project-like-btn').click(function() {
+        var btn = $(this);
+        var id = btn.data('id');
+        
+        $.post('ajax_interactions.php', { action: 'like_project', id: id }, function(res) {
+            if(res.status === 'success') {
+                $('#like-count').text(res.count);
+                if(res.liked) {
+                    btn.removeClass('btn-outline-primary').addClass('btn-primary');
+                    $('#like-text').text('Liked');
+                } else {
+                    btn.removeClass('btn-primary').addClass('btn-outline-primary');
+                    $('#like-text').text('Like');
+                }
+            }
+        }, 'json');
+    });
+
+    // FAVORITE
+    $('#project-fav-btn').click(function() {
+        var btn = $(this);
+        var id = btn.data('id');
+        var icon = btn.find('i');
+        
+        $.post('ajax_interactions.php', { action: 'favorite_project', id: id }, function(res) {
+            if(res.status === 'success') {
+                if(res.favorited) {
+                    btn.removeClass('btn-outline-warning').addClass('btn-warning');
+                    icon.removeClass('far').addClass('fas');
+                    $('#fav-text').text('Saved');
+                } else {
+                    btn.removeClass('btn-warning').addClass('btn-outline-warning');
+                    icon.removeClass('fas').addClass('far');
+                    $('#fav-text').text('Save');
+                }
+            }
+        }, 'json');
+    });
+});
+</script>
 <?php footer(); ?>

@@ -11,6 +11,7 @@ if (isset($_POST['add_project'])) {
     $difficulty = $_POST['difficulty'];
     $duration = $_POST['duration'];
     $active = $_POST['active'];
+    $featured = $_POST['featured'];
     $cat_id = (int)$_POST['project_category_id'];
 
     // 2. Team
@@ -35,9 +36,11 @@ if (isset($_POST['add_project'])) {
     
     $author_id = $user['id'];
 
-    $stmt = mysqli_prepare($connect, "INSERT INTO projects (author_id, project_category_id, title, slug, pitch, image, difficulty, duration, team_credits, hardware_parts, software_apps, story, schematics_link, code_link, active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    // Mise à jour de la requête INSERT avec 'featured'
+    $stmt = mysqli_prepare($connect, "INSERT INTO projects (author_id, title, slug, pitch, image, difficulty, duration, team_credits, hardware_parts, software_apps, story, schematics_link, code_link, active, featured, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
     
-    mysqli_stmt_bind_param($stmt, "iisssssssssssss", $author_id, $cat_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active);
+    // Ajout d'un 's' dans le type (15 paramètres au total : i + 14 s)
+    mysqli_stmt_bind_param($stmt, "issssssssssssss", $author_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active, $featured);    
     
     if (mysqli_stmt_execute($stmt)) {
         echo '<div class="alert alert-success m-3">Project created successfully!</div>';
@@ -184,6 +187,14 @@ if (isset($_POST['add_project'])) {
                                     <option value="Draft">Draft</option>
                                     <option value="Yes">Public</option>
                                     <option value="No">Private</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Featured Project?</label>
+                                <select name="featured" class="form-control custom-select" style="max-width: 200px;">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes (Show in Slider)</option>
                                 </select>
                             </div>
                             

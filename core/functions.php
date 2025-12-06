@@ -173,6 +173,7 @@ function render_comment_html_internal($comment, $margin_left = 0) {
     return render_comment_html($comment['id'], $margin_left);
 }
 
+// Fonction principale pour rendre le HTML d'un commentaire
 function render_comment_html($comment_id, $margin_left = 0) {
     global $connect, $settings, $logged, $rowu;
     
@@ -239,6 +240,46 @@ function post_commentscount($id) { global $connect; $stmt = mysqli_prepare($conn
 
 function get_post_like_count($post_id) { global $connect; $stmt = mysqli_prepare($connect, "SELECT COUNT(id) as count FROM `post_likes` WHERE post_id=?"); mysqli_stmt_bind_param($stmt, "i", $post_id); mysqli_stmt_execute($stmt); $res = mysqli_stmt_get_result($stmt); $row = mysqli_fetch_assoc($res); return $row['count']; }
 function check_user_has_liked($post_id) { global $connect, $logged, $rowu; if($logged=='Yes'){$uid=$rowu['id']; $stmt=mysqli_prepare($connect,"SELECT id FROM post_likes WHERE post_id=? AND user_id=?"); mysqli_stmt_bind_param($stmt,"ii",$post_id,$uid);} else {$sid=session_id(); $stmt=mysqli_prepare($connect,"SELECT id FROM post_likes WHERE post_id=? AND session_id=?"); mysqli_stmt_bind_param($stmt,"is",$post_id,$sid);} mysqli_stmt_execute($stmt); $res=mysqli_stmt_get_result($stmt); return mysqli_num_rows($res)>0; }
+
+// --- FONCTIONS LIKES PROJETS ---
+function get_project_like_count($project_id) {
+    global $connect;
+    $stmt = mysqli_prepare($connect, "SELECT COUNT(id) as count FROM `project_likes` WHERE project_id=?");
+    mysqli_stmt_bind_param($stmt, "i", $project_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($res)['count'];
+}
+
+function check_user_has_liked_project($project_id) {
+    global $connect, $logged, $rowu;
+    if ($logged == 'Yes') {
+        $uid = $rowu['id'];
+        $stmt = mysqli_prepare($connect, "SELECT id FROM project_likes WHERE project_id=? AND user_id=?");
+        mysqli_stmt_bind_param($stmt, "ii", $project_id, $uid);
+    } else {
+        $sid = session_id();
+        $stmt = mysqli_prepare($connect, "SELECT id FROM project_likes WHERE project_id=? AND session_id=?");
+        mysqli_stmt_bind_param($stmt, "is", $project_id, $sid);
+    }
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_num_rows($res) > 0;
+}
+
+// --- FONCTION FAVORIS PROJETS ---
+function check_user_has_favorited_project($project_id) {
+    global $connect, $logged, $rowu;
+    if ($logged == 'Yes') {
+        $uid = $rowu['id'];
+        $stmt = mysqli_prepare($connect, "SELECT id FROM user_project_favorites WHERE project_id=? AND user_id=?");
+        mysqli_stmt_bind_param($stmt, "ii", $project_id, $uid);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        return mysqli_num_rows($res) > 0;
+    }
+    return false;
+}
 
 function get_user_comment_badge($user_id) { global $connect; $stmt = mysqli_prepare($connect, "SELECT COUNT(id) as count FROM comments WHERE user_id=? AND guest='No' AND approved='Yes'"); mysqli_stmt_bind_param($stmt, "i", $user_id); mysqli_stmt_execute($stmt); $res = mysqli_stmt_get_result($stmt); $cnt = mysqli_fetch_assoc($res)['count']; if($cnt>=50) return '<span class="badge bg-warning text-dark ms-1"><i class="fas fa-star"></i> Veteran</span>'; if($cnt>=20) return '<span class="badge bg-success ms-1"><i class="fas fa-comments"></i> Loyal</span>'; if($cnt>=5) return '<span class="badge bg-info ms-1"><i class="fas fa-comment-dots"></i> Active</span>'; return ''; }
 function get_reading_time($content) { $w = str_word_count(strip_tags(html_entity_decode($content))); $m = ceil($w/200); return '<i class="far fa-clock"></i> Read: '. ($m<1?1:$m) .' min'; }

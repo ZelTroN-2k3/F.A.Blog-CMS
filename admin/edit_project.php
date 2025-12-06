@@ -38,6 +38,7 @@ if (isset($_POST['edit_project'])) {
     $difficulty = $_POST['difficulty'];
     $duration = $_POST['duration'];
     $active = $_POST['active'];
+    $featured = $_POST['featured'];
     $cat_id = (int)$_POST['project_category_id'];
 
     // 2. Team
@@ -80,10 +81,11 @@ if (isset($_POST['edit_project'])) {
         }
     }
 
-    // Requête UPDATE
-    $stmt = mysqli_prepare($connect, "UPDATE projects SET project_category_id=?, title=?, slug=?, pitch=?, image=?, difficulty=?, duration=?, team_credits=?, hardware_parts=?, software_apps=?, story=?, schematics_link=?, code_link=?, active=? WHERE id=?");
+    // Mise à jour de la requête UPDATE
+    $stmt = mysqli_prepare($connect, "UPDATE projects SET title=?, slug=?, pitch=?, image=?, difficulty=?, duration=?, team_credits=?, hardware_parts=?, software_apps=?, story=?, schematics_link=?, code_link=?, active=?, featured=? WHERE id=?");
     
-    mysqli_stmt_bind_param($stmt, "isssssssssssssi", $cat_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active, $id);
+    // Ajout d'un 's' pour featured (avant le 'i' de l'id)
+    mysqli_stmt_bind_param($stmt, "ssssssssssssssi", $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active, $featured, $id);    
     
     if (mysqli_stmt_execute($stmt)) {
         echo '<div class="alert alert-success m-3">Project updated successfully!</div>';
@@ -255,6 +257,14 @@ if (isset($_POST['edit_project'])) {
                                     <option value="Draft" <?php if($row['active']=='Draft') echo 'selected'; ?>>Draft</option>
                                     <option value="Yes" <?php if($row['active']=='Yes') echo 'selected'; ?>>Public</option>
                                     <option value="No" <?php if($row['active']=='No') echo 'selected'; ?>>Private</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Featured Project?</label>
+                                <select name="featured" class="form-control custom-select" style="max-width: 200px;">
+                                    <option value="No" <?php if($row['featured']=='No') echo 'selected'; ?>>No</option>
+                                    <option value="Yes" <?php if($row['featured']=='Yes') echo 'selected'; ?>>Yes (Show in Slider)</option>
                                 </select>
                             </div>
                             

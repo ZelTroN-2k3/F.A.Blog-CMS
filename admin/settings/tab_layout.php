@@ -53,13 +53,20 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="form-group">
             <label>Posts per Page (Blog)</label>
             <input type="number" name="posts_per_page" class="form-control" value="<?php echo (int) $settings['posts_per_page']; ?>" min="1" required>
         </div>
     </div>
-    <div class="col-md-3">
+    
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>Projects per Page (Blog)</label>
+            <input type="number" name="projects_per_page" class="form-control" value="<?php echo (int) $settings['projects_per_page']; ?>" min="1" required>
+        </div>
+    </div>
+    <div class="col-md-2">
         <div class="form-group">
             <label>"Latest News" Bar</label>
             <select name="latestposts_bar" class="form-control custom-select" required>
