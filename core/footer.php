@@ -518,6 +518,29 @@ function footer()
     <?php 
     } // Fin if logged
     ?>
+
+    <?php if ($settings['event_effect'] == 'Snow'): ?>
+    <div class="snowflakes" aria-hidden="true">
+      <div class="snowflake">❅</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+      <div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+      <div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+    </div>
+<?php endif; ?>
+
+<?php if ($settings['event_effect'] == 'Confetti'): ?>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+    // Lance des confettis pendant 3 secondes au chargement
+    var duration = 3000;
+    var end = Date.now() + duration;
+    (function frame() {
+      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+      if (Date.now() < end) { requestAnimationFrame(frame); }
+    }());
+    </script>
+<?php endif; ?>
     </body>
     </html>
 <?php

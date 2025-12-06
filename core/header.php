@@ -388,6 +388,33 @@ if($settings['background_image'] != "") {
         
     }
 ?>
+
+<?php if ($settings['event_effect'] == 'Grayscale'): ?>
+    <style>
+        html { filter: grayscale(100%); }
+        /* On garde les images produits/projets en couleur au survol si on veut */
+        img:hover { filter: grayscale(0%); transition: filter 0.3s; }
+    </style>
+    <?php endif; ?>
+
+    <?php if ($settings['event_effect'] == 'Snow'): ?>
+    <style>
+        /* Simple CSS Snow Effect */
+        .snowflake { color: #fff; font-size: 1em; font-family: Arial; text-shadow: 0 0 1px #000; position: fixed; top: -10%; z-index: 9999; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: default; animation-name: snowflakes-fall,snowflakes-shake; animation-duration: 10s,3s; animation-timing-function: linear,ease-in-out; animation-iteration-count: infinite,infinite; }
+        @keyframes snowflakes-fall { 0% { top: -10% } 100% { top: 100% } }
+        @keyframes snowflakes-shake { 0% { transform: translateX(0px) } 50% { transform: translateX(80px) } 100% { transform: translateX(0px) } }
+        .snowflake:nth-of-type(0) { left: 1%; animation-delay: 0s,0s }
+        .snowflake:nth-of-type(1) { left: 10%; animation-delay: 1s,1s }
+        .snowflake:nth-of-type(2) { left: 20%; animation-delay: 6s,.5s }
+        .snowflake:nth-of-type(3) { left: 30%; animation-delay: 4s,2s }
+        .snowflake:nth-of-type(4) { left: 40%; animation-delay: 2s,2s }
+        .snowflake:nth-of-type(5) { left: 50%; animation-delay: 8s,3s }
+        .snowflake:nth-of-type(6) { left: 60%; animation-delay: 6s,2s }
+        .snowflake:nth-of-type(7) { left: 70%; animation-delay: 2.5s,1s }
+        .snowflake:nth-of-type(8) { left: 80%; animation-delay: 1s,0s }
+        .snowflake:nth-of-type(9) { left: 90%; animation-delay: 3s,1.5s }
+    </style>
+    <?php endif; ?>
 </head>
 
 <body <?php 
@@ -395,6 +422,23 @@ if ($settings['rtl'] == "Yes") {
 	echo 'dir="rtl"';
 }
 ?>>
+
+<?php 
+// --- BANNIÈRE ÉVÉNEMENTIELLE ---
+// 1. On initialise le purificateur s'il n'existe pas encore
+if (!isset($purifier)) {
+    $purifier = get_purifier();
+}
+
+// 2. On vérifie si l'option existe et est activée (avec sécurité isset)
+if (isset($settings['event_banner_active']) && $settings['event_banner_active'] == 'Yes'): 
+?>
+    <div style="background-color: <?php echo htmlspecialchars($settings['event_banner_color']); ?>; color: #fff; text-align: center; padding: 10px; font-size: 1.1rem; position: relative; z-index: 10000;">
+        <div class="container">
+            <?php echo $purifier->purify(html_entity_decode($settings['event_banner_content'])); ?>
+        </div>
+    </div>
+<?php endif; ?>
 
 <!-- NAVIGATION ADMIN -->
 <?php

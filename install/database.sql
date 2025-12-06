@@ -825,6 +825,7 @@ CREATE TABLE `projects` (
   `team_credits` text COLLATE utf8mb4_unicode_ci COMMENT 'List of contributors',
   `hardware_parts` longtext COLLATE utf8mb4_unicode_ci COMMENT 'HTML list or JSON',
   `software_apps` longtext COLLATE utf8mb4_unicode_ci COMMENT 'HTML list or JSON',
+  `hand_tools` longtext COLLATE utf8mb4_unicode_ci COMMENT 'JSON list',
   `story` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `schematics_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `code_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -839,10 +840,10 @@ CREATE TABLE `projects` (
 -- Déchargement des données de la table `projects`
 --
 
-INSERT INTO `projects` (`id`, `author_id`, `project_category_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `featured`, `views`, `created_at`) VALUES
-(1, 1, 1, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '<ol><li>Led red x2</li><li>Breadboard x1</li></ol>', '<ol><li>Arduino IDE</li></ol>', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Yes', 'Yes', 0, '2025-01-01 12:00:00'),
-(2, 1, 1, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', '<p>In this project, we will build a connected weather station...</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-02 14:30:00'),
-(3, 1, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ul><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ul>', '<ul><li>Arduino IDE</li></ul>', '<p>The classic blinking LED project to get started with electronics.</p>', 'http://freelance_addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-03 09:15:00');
+INSERT INTO `projects` (`id`, `author_id`, `project_category_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `hand_tools`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `featured`, `views`, `created_at`) VALUES
+(1, 1, 1, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '[{\"name\":\"Arduino Uno\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.amazon.fr\\/Arduino-A000066-M%C3%A9moire-flash-32\\/dp\\/B008GRTSV6\\/\",\"img\":\"\"}]', '[{\"name\":\"Arduino IDE\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.arduino.cc\\/en\\/software\\/\",\"img\":\"\"}]', '[{\"name\":\"Fer \\u00e0 Souder\",\"qty\":\"1\",\"link\":\"\",\"img\":\"\"},{\"name\":\"Eteins\",\"qty\":\"1\",\"link\":\"\",\"img\":\"\"}]', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', '', 'Yes', 'Yes', 0, '2025-01-01 12:00:00'),
+(2, 1, 1, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', NULL, '<p>In this project, we will build a connected weather station...</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-02 14:30:00'),
+(3, 1, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ol><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ol>', '<ol><li>Arduino IDE</li></ol>', NULL, '<p>The classic blinking LED project to get started with electronics.</p>', 'http://freelance_addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-03 09:15:00');
 
 -- --------------------------------------------------------
 

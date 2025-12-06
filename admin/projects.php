@@ -155,12 +155,13 @@ if (isset($_GET['delete-id'])) {
                                 // Permissions
                                 $can_edit = ($user['role'] == 'Admin' || $row['author_id'] == $user['id']);
 
-                                // --- NOUVEAU : GESTION DU BADGE "FEATURED" (Étoile) ---
+                                // --- GESTION DU BADGE "FEATURED" (Étoile) ---
                                 $featured_badge = '';
                                 if ($row['featured'] == 'Yes') {
-                                    $featured_badge = '<span class="badge bg-warning ms-1" title="Featured in Slider"><i class="fas fa-star"></i></span>';
+                                    // Ajout de style="margin-left: 5px;" pour forcer l'espace
+                                    $featured_badge = '<span class="badge bg-warning" style="margin-left: 5px;" title="Featured in Slider"><i class="fas fa-star"></i></span>';
                                 }
-                                // ------------------------------------------------------
+                                // -----------------------------------
 
                                 echo '
                                 <tr>

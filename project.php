@@ -149,27 +149,47 @@ $purifier = get_purifier();
         <div class="col-lg-4">
             
             <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-light py-3">
-                    <h5 class="mb-0 fw-bold"><i class="fas fa-tools text-secondary me-2"></i> Things used</h5>
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-boxes text-secondary me-2"></i> Things used in this project</h5>
                 </div>
                 <div class="card-body">
-                    <?php if(!empty($project['hardware_parts'])): ?>
-                        <h6 class="text-uppercase text-muted small fw-bold mt-2">Hardware components</h6>
-                        <div class="mb-4">
-                            <?php echo $purifier->purify(html_entity_decode($project['hardware_parts'])); ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if(!empty($project['software_apps'])): ?>
-                        <h6 class="text-uppercase text-muted small fw-bold border-top pt-3">Software apps</h6>
-                        <div>
-                            <?php echo $purifier->purify(html_entity_decode($project['software_apps'])); ?>
-                        </div>
-                    <?php endif; ?>
                     
-                    <?php if(empty($project['hardware_parts']) && empty($project['software_apps'])): ?>
-                        <p class="text-muted small fst-italic">No components listed.</p>
-                    <?php endif; ?>
+                    <?php
+                    // Fonction locale pour afficher une liste JSON
+                    function render_bom_list($title, $json) {
+                        $items = json_decode($json, true);
+                        if (!empty($items) && is_array($items)) {
+                            echo '<h6 class="fw-bold mt-3 mb-2 border-bottom pb-2">'.$title.'</h6>';
+                            echo '<ul class="list-group list-group-flush mb-3">';
+                            foreach ($items as $item) {
+                                $img = !empty($item['img']) ? $item['img'] : 'assets/img/no-image-icon.png';
+                                $link_start = !empty($item['link']) ? '<a href="'.$item['link'].'" target="_blank" class="text-decoration-none text-dark">' : '';
+                                $link_end = !empty($item['link']) ? '</a>' : '';
+                                $cart_btn = !empty($item['link']) ? '<a href="'.$item['link'].'" target="_blank" class="btn btn-outline-secondary btn-sm ms-2"><i class="fas fa-shopping-cart"></i></a>' : '';
+                                
+                                echo '
+                                <li class="list-group-item px-0 d-flex align-items-center justify-content-between border-bottom-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded border p-1 me-3 d-flex align-items-center justify-content-center" style="width:50px; height:50px;">
+                                            <img src="'.$img.'" style="max-width:100%; max-height:100%;" onerror="this.src=\'assets/img/no-image-icon.png\'">
+                                        </div>
+                                        <div>
+                                            '.$link_start.'<span class="fw-bold">'.htmlspecialchars($item['name']).'</span>'.$link_end.'
+                                            <div class="small text-muted">'.htmlspecialchars($item['qty']).'</div>
+                                        </div>
+                                    </div>
+                                    '.$cart_btn.'
+                                </li>';
+                            }
+                            echo '</ul>';
+                        }
+                    }
+
+                    render_bom_list('Hardware components', $project['hardware_parts']);
+                    render_bom_list('Software apps and online services', $project['software_apps']);
+                    render_bom_list('Hand tools and fabrication machines', $project['hand_tools']);
+                    ?>
+                    
                 </div>
             </div>
 

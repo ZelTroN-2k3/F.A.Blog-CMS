@@ -121,6 +121,7 @@ if (isset($_GET['delete-id'])) {
                                 <i class="fa fa-plus"></i> Add New Post
                             </a>
                         </h3>
+                        
                         <div class="card-tools">
                             <!--<div class="btn-group">
                                 <a href="posts.php" class="btn btn-sm btn-default">All</a>

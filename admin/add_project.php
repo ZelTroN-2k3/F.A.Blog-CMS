@@ -17,9 +17,11 @@ if (isset($_POST['add_project'])) {
     // 2. Team
     $team = $_POST['team_credits'];
     
-    // 3. Things
-    $hardware = $_POST['hardware_parts'];
-    $software = $_POST['software_apps'];
+    // 3. Things (Conversion Array -> JSON)
+    // On vérifie si c'est un tableau, sinon on met un tableau JSON vide
+    $hardware = isset($_POST['hardware']) ? json_encode($_POST['hardware']) : '[]';
+    $software = isset($_POST['software']) ? json_encode($_POST['software']) : '[]';
+    $tools    = isset($_POST['tools']) ? json_encode($_POST['tools']) : '[]';
     
     // 4. Story
     $story = $_POST['story'];
@@ -37,10 +39,10 @@ if (isset($_POST['add_project'])) {
     $author_id = $user['id'];
 
     // Mise à jour de la requête INSERT avec 'featured'
-    $stmt = mysqli_prepare($connect, "INSERT INTO projects (author_id, title, slug, pitch, image, difficulty, duration, team_credits, hardware_parts, software_apps, story, schematics_link, code_link, active, featured, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    $stmt = mysqli_prepare($connect, "INSERT INTO projects (author_id, title, slug, pitch, image, difficulty, duration, team_credits, hardware_parts, software_apps, hand_tools, story, schematics_link, code_link, active, featured, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
     
     // Ajout d'un 's' dans le type (15 paramètres au total : i + 14 s)
-    mysqli_stmt_bind_param($stmt, "issssssssssssss", $author_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $story, $schematics, $code, $active, $featured);    
+    mysqli_stmt_bind_param($stmt, "issssssssssssssss", $author_id, $title, $slug, $pitch, $image, $difficulty, $duration, $team, $hardware, $software, $tools, $story, $schematics, $code, $active, $featured);    
     
     if (mysqli_stmt_execute($stmt)) {
         echo '<div class="alert alert-success m-3">Project created successfully!</div>';
@@ -145,21 +147,29 @@ if (isset($_POST['add_project'])) {
                         </div>
 
                         <div class="tab-pane fade" id="tab-things">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Hardware Components (BOM)</label>
-                                        <textarea name="hardware_parts" id="summernote_hw" class="form-control"></textarea>
-                                        <small class="text-muted">List: Arduino, Sensors, Wires...</small>
-                                    </div>
+                            <div class="card card-outline card-secondary mb-3">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="fas fa-microchip"></i> Hardware components</h5>
+                                    <button type="button" class="btn btn-sm btn-primary float-right" onclick="addBomRow('hardware-container', 'hardware')">+ Add Component</button>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Software & Apps</label>
-                                        <textarea name="software_apps" id="summernote_sw" class="form-control"></textarea>
-                                        <small class="text-muted">List: IDE, Libraries, Cloud services...</small>
+                                <div class="card-body bg-light" id="hardware-container">
                                     </div>
+                            </div>
+
+                            <div class="card card-outline card-info mb-3">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="fas fa-code"></i> Software apps & online services</h5>
+                                    <button type="button" class="btn btn-sm btn-primary float-right" onclick="addBomRow('software-container', 'software')">+ Add App</button>
                                 </div>
+                                <div class="card-body bg-light" id="software-container"></div>
+                            </div>
+
+                            <div class="card card-outline card-warning mb-3">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="fas fa-tools"></i> Hand tools & fabrication machines</h5>
+                                    <button type="button" class="btn btn-sm btn-primary float-right" onclick="addBomRow('tools-container', 'tools')">+ Add Tool</button>
+                                </div>
+                                <div class="card-body bg-light" id="tools-container"></div>
                             </div>
                         </div>
 
@@ -238,5 +248,5 @@ function selectFile(dbValue, fullPath) {
     $('#filesModal').modal('hide');
 }
 </script>
-
+<script src="js/bom_manager.js"></script>
 <?php include "footer.php"; ?>

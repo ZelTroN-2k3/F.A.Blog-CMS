@@ -166,7 +166,8 @@ if (!empty($slides_data)) {
                 }
                 ?>
                 <div class="col-12 text-end">
-                    <a href="projects" class="text-success text-decoration-none small fw-bold">View all projects <i class="fas fa-arrow-right"></i></a>
+                    <!--<a href="projects" class="text-success text-decoration-none small fw-bold">View all projects <i class="fas fa-arrow-right"></i></a>-->
+                    <a href="projects" class="btn btn-outline-success col-12 mt-3 mb-5"><i class="fas fa-arrow-alt-circle-right"></i> View all projects</a>
                 </div>
             </div>
             <hr class="my-4 text-muted opacity-25">
