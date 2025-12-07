@@ -93,14 +93,14 @@ const sprites = {
     enemy: new Image(),
     bg: new Image()
 };
-sprites.player.src = 'assets/img/player.png';
-sprites.enemy.src = 'assets/img/alien.png';
-sprites.bg.src = 'assets/img/bg.jpg';
+sprites.player.src = 'assets/img/invaders/player.png';
+sprites.enemy.src = 'assets/img/invaders/alien.png';
+sprites.bg.src = 'assets/img/invaders/bg.jpg';
 
 const sounds = {
-    shoot: new Audio('assets/sound/shoot.mp3'),
-    explosion: new Audio('assets/sound/explosion.mp3'),
-    music: new Audio('assets/sound/music.mp3')
+    shoot: new Audio('assets/sound/invaders/shoot.mp3'),
+    explosion: new Audio('assets/sound/invaders/explosion.mp3'),
+    music: new Audio('assets/sound/invaders/music.mp3')
 };
 sounds.music.loop = true;
 sounds.music.volume = 0.5;

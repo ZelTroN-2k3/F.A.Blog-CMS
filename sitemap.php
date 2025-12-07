@@ -1,64 +1,83 @@
 <?php
 include "core.php";
 
-header('Content-type: application/xml');
-echo "<?xml version='1.0' encoding='UTF-8'?>" . "\n";
-// --- LIGNE À AJOUTER ICI ---
-echo '<?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>' . "\n"; 
-// ---------------------------
-echo "<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>" . "\n";
+header("Content-type: text/xml");
 
-// 1. Page d'accueil
-echo "<url>" . "\n";
-echo '  <loc>' . $settings['site_url'] . '/</loc>' . "\n";
-echo "  <changefreq>daily</changefreq>" . "\n";
-echo "  <priority>1.0</priority>" . "\n";
-echo "</url>" . "\n";
-
-// 2. Tous les Articles (Posts)
-$posts_query = mysqli_query($connect, "SELECT slug, publish_at FROM posts WHERE active='Yes' AND publish_at <= NOW() ORDER BY publish_at DESC");
-while($post = mysqli_fetch_array($posts_query)) {
-    // Formatage de la date au format W3C (requis pour <lastmod>)
-    $lastmod = date('c', strtotime($post['publish_at']));
-    
-    echo "<url>" . "\n";
-    echo '  <loc>' . $settings['site_url'] . '/post?name=' . htmlspecialchars($post['slug']) . '</loc>' . "\n";
-    echo '  <lastmod>' . $lastmod . '</lastmod>' . "\n";
-    echo "  <changefreq>weekly</changefreq>" . "\n";
-    echo "  <priority>0.9</priority>" . "\n";
-    echo "</url>" . "\n";
-}
-
-// 3. Toutes les Pages
-$pages_query = mysqli_query($connect, "SELECT * FROM `pages`");
-while($page = mysqli_fetch_array($pages_query)) {
-    echo "<url>" . "\n";
-    echo '  <loc>' . $settings['site_url'] . '/page?name=' . htmlspecialchars($page['slug']) . '</loc>' . "\n";
-    echo "  <changefreq>monthly</changefreq>" . "\n";
-    echo "  <priority>0.7</priority>" . "\n";
-    echo "</url>" . "\n";
-}
-
-// 4. Toutes les Catégories
-$categories = mysqli_query($connect, "SELECT * FROM `categories`");
-while($cat = mysqli_fetch_array($categories)) {
-    echo "<url>" . "\n";
-    echo '  <loc>' . $settings['site_url'] . '/category?name=' . htmlspecialchars($cat['slug']) . '</loc>' . "\n";
-    echo "  <changefreq>weekly</changefreq>" . "\n";
-    echo "  <priority>0.8</priority>" . "\n";
-    echo "</url>" . "\n";
-}
-
-// 5. Pages statiques (Galerie, Contact, etc.)
-// Nous incluons les autres liens du menu qui ne sont pas des pages ou des articles
-$menu_query = mysqli_query($connect, "SELECT * FROM `menu` WHERE path != 'index.php' AND path NOT LIKE 'page?name=%' AND path NOT LIKE 'post?name=%' AND path NOT LIKE 'category?name=%' AND path != 'blog'");
-while($link = mysqli_fetch_array($menu_query)) {
-	echo "<url>" . "\n";
-	echo '  <loc>' . $settings['site_url'] . '/' . htmlspecialchars($link['path']) . '</loc>' . "\n";
-	echo "  <changefreq>monthly</changefreq>" . "\n";
-	echo "  <priority>0.5</priority>" . "\n";
-	echo "</url>" . "\n";
-}
-
-echo "</urlset>";
+// On génère l'en-tête via PHP pour éviter le conflit "short_open_tag"
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+echo '<?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>' . "\n";
 ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url>
+        <loc><?php echo $settings['site_url']; ?></loc>
+        <priority>1.00</priority>
+    </url>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/blog</loc>
+        <priority>0.90</priority>
+    </url>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/projects</loc>
+        <priority>0.90</priority>
+    </url>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/contact</loc>
+        <priority>0.50</priority>
+    </url>
+
+    <?php
+    $sql = mysqli_query($connect, "SELECT slug FROM pages WHERE active='Yes'");
+    while ($row = mysqli_fetch_assoc($sql)) {
+    ?>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/page?name=<?php echo $row['slug']; ?></loc>
+        <priority>0.60</priority>
+    </url>
+    <?php } ?>
+
+    <?php
+    $sql = mysqli_query($connect, "SELECT slug, created_at FROM posts WHERE active='Yes' AND publish_at <= NOW()");
+    while ($row = mysqli_fetch_assoc($sql)) {
+        $date = date('Y-m-d', strtotime($row['created_at']));
+    ?>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/post?name=<?php echo $row['slug']; ?></loc>
+        <lastmod><?php echo $date; ?></lastmod>
+        <priority>0.80</priority>
+    </url>
+    <?php } ?>
+
+    <?php
+    $sql = mysqli_query($connect, "SELECT slug FROM categories");
+    while ($row = mysqli_fetch_assoc($sql)) {
+    ?>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/category?name=<?php echo $row['slug']; ?></loc>
+        <priority>0.70</priority>
+    </url>
+    <?php } ?>
+
+    <?php
+    $sql = mysqli_query($connect, "SELECT slug, created_at FROM projects WHERE active='Yes'");
+    while ($row = mysqli_fetch_assoc($sql)) {
+        $date = date('Y-m-d', strtotime($row['created_at']));
+    ?>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/project?name=<?php echo $row['slug']; ?></loc>
+        <lastmod><?php echo $date; ?></lastmod>
+        <priority>0.85</priority>
+    </url>
+    <?php } ?>
+
+    <?php
+    $sql = mysqli_query($connect, "SELECT slug FROM project_categories");
+    while ($row = mysqli_fetch_assoc($sql)) {
+    ?>
+    <url>
+        <loc><?php echo $settings['site_url']; ?>/projects?category=<?php echo $row['slug']; ?></loc>
+        <priority>0.70</priority>
+    </url>
+    <?php } ?>
+
+</urlset>

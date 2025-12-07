@@ -47,7 +47,7 @@
 
                 <div class="form-group">
                     <label>Banner Background Color</label>
-                    <input type="color" name="event_banner_color" class="form-control" value="<?php echo htmlspecialchars($settings['event_banner_color']); ?>">
+                    <input type="color" name="event_banner_color" class="form-control" value="<?php echo !empty($settings['event_banner_color']) ? htmlspecialchars($settings['event_banner_color']) : '#dc3545'; ?>">
                 </div>
 
                 <div class="form-group">

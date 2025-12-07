@@ -1,4 +1,6 @@
 [cite_start]User-agent: * [cite: 8]
+
+# Indiquer le plan du site (Adaptez l'URL si vous êtes en ligne)
 Sitemap: /sitemap.php
 
 # Bloquer les dossiers d'administration, système et dépendances
@@ -7,28 +9,32 @@ Disallow: /install/
 Disallow: /vendor/
 Disallow: /cache/
 Disallow: /core/      # 
-Disallow: /uploads/   # Optionnel : si vous ne voulez pas indexer les fichiers bruts
+# NOTE : On laisse Disallow: /uploads/ accessible pour que Google Images indexe vos projets !
 
 # Bloquer les fichiers de configuration et les points d'API
 Disallow: /core.php
 Disallow: /config.php
+Disallow: /ajax_chat.php 
 Disallow: /ajax_favorite_post.php
+Disallow: /ajax_interactions.php
 Disallow: /ajax_like_post.php
 Disallow: /ajax_submit_comment.php
 Disallow: /ajax_vote_poll.php
-Disallow: /ajax_chat.php 
+
 
 # Bloquer les redirections et callbacks techniques
 Disallow: /click_ad.php
 Disallow: /social_callback.php
 
-# Bloquer les pages de compte utilisateur et d'action
+# Bloquer les pages de compte utilisateur et d'action (Contenu privé ou sans intérêt SEO)
 Disallow: /login.php
 Disallow: /logout.php
 Disallow: /profile.php
 Disallow: /my-comments.php
 Disallow: /my-favorites.php
 Disallow: /my-posts.php
+Disallow: /my-projects.php
 Disallow: /edit-comment.php
 Disallow: /submit_post.php
+Disallow: /submit_testimonial.php
 Disallow: /unsubscribe.php

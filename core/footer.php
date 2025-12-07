@@ -78,6 +78,7 @@ function footer()
         }
         // ---------------------------
     ?>    
+    <!-- FOOTER START -->
     <footer class="bg-dark text-light pt-5 pb-3 mt-3">
         <div class="<?php echo ($settings['layout'] == 'Wide') ? 'container-fluid' : 'container'; ?>">
             <div class="row gy-4">
@@ -95,13 +96,42 @@ function footer()
                     <p class="text-white-50"><?php echo htmlspecialchars($settings['description']); ?></p>
                     
                     <h5 class="text-uppercase fw-bold mt-4 mb-3">Follow us</h5>
-                    <div class="mt-3">
-                        <?php if ($settings['facebook'] != ''): ?><a href="<?php echo htmlspecialchars($settings['facebook']); ?>" target="_blank" class="text-white-50 me-3"><i class="bi bi-facebook fs-4"></i></a><?php endif; ?>
-                        <?php if ($settings['twitter'] != ''): ?><a href="<?php echo htmlspecialchars($settings['twitter']); ?>" target="_blank" class="text-white-50 me-3"><i class="bi bi-twitter-x fs-4"></i></a><?php endif; ?>
-                        <?php if ($settings['instagram'] != ''): ?><a href="<?php echo htmlspecialchars($settings['instagram']); ?>" target="_blank" class="text-white-50 me-3"><i class="bi bi-instagram fs-4"></i></a><?php endif; ?>
-                        <?php if ($settings['youtube'] != ''): ?><a href="<?php echo htmlspecialchars($settings['youtube']); ?>" target="_blank" class="text-white-50 me-3"><i class="bi bi-youtube fs-4"></i></a><?php endif; ?>
-                        <?php if ($settings['linkedin'] != ''): ?><a href="<?php echo htmlspecialchars($settings['linkedin']); ?>" target="_blank" class="text-white-50 me-3"><i class="bi bi-linkedin fs-4"></i></a><?php endif; ?>
-                        <?php if ($settings['discord'] != ''): ?><a href="<?php echo htmlspecialchars($settings['discord']); ?>" target="_blank" class="text-white-50 me-3"><i class="bi bi-discord fs-4"></i></a><?php endif; ?>
+                        <div class="mt-3">
+                            <?php if ($settings['facebook'] != ''): ?>
+                                <a href="<?php echo htmlspecialchars($settings['facebook']); ?>" target="_blank" class="me-3 text-decoration-none" style="color: #1877F2;">
+                                    <i class="bi bi-facebook fs-4"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($settings['twitter'] != ''): ?>
+                                <a href="<?php echo htmlspecialchars($settings['twitter']); ?>" target="_blank" class="me-3 text-decoration-none" style="color: #ffffff;">
+                                    <i class="bi bi-twitter-x fs-4"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($settings['instagram'] != ''): ?>
+                                <a href="<?php echo htmlspecialchars($settings['instagram']); ?>" target="_blank" class="me-3 text-decoration-none" style="color: #E1306C;">
+                                    <i class="bi bi-instagram fs-4"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($settings['youtube'] != ''): ?>
+                                <a href="<?php echo htmlspecialchars($settings['youtube']); ?>" target="_blank" class="me-3 text-decoration-none" style="color: #FF0000;">
+                                    <i class="bi bi-youtube fs-4"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($settings['linkedin'] != ''): ?>
+                                <a href="<?php echo htmlspecialchars($settings['linkedin']); ?>" target="_blank" class="me-3 text-decoration-none" style="color: #0077b5;">
+                                    <i class="bi bi-linkedin fs-4"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($settings['discord'] != ''): ?>
+                                <a href="<?php echo htmlspecialchars($settings['discord']); ?>" target="_blank" class="me-3 text-decoration-none" style="color: #5865F2;">
+                                    <i class="bi bi-discord fs-4"></i>
+                                </a>
+                            <?php endif; ?>
                         </div>
                     <div class="mt-3">
                         <h5 class="text-uppercase fw-bold mb-4">Others</h5>
@@ -167,6 +197,7 @@ function footer()
             <div class="scroll-btn"><div class="scroll-btn-arrow"></div></div>
         </div>
     </footer>
+    <!-- FOOTER END -->
 
     <?php
         // --- LOGIQUE POPUPS ---

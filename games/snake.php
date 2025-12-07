@@ -90,13 +90,13 @@ const assets = {
     body: new Image(),
     apple: new Image(),
     bg: new Image(),
-    soundEat: new Audio('assets/sound/eat.mp3'),
-    soundDie: new Audio('assets/sound/die.mp3')
+    soundEat: new Audio('assets/sound/snake/eat.mp3'),
+    soundDie: new Audio('assets/sound/snake/die.mp3')
 };
-assets.head.src = 'assets/img/snake_head.png';
-assets.body.src = 'assets/img/snake_body.png';
-assets.apple.src = 'assets/img/apple.png';
-assets.bg.src = 'assets/img/grass.jpg';
+assets.head.src = 'assets/img/snake/snake_head.png';
+assets.body.src = 'assets/img/snake/snake_body.png';
+assets.apple.src = 'assets/img/snake/apple.png';
+assets.bg.src = 'assets/img/snake/grass.jpg';
 
 // --- CONFIGURATION ---
 const gridSize = 25; // Plus gros pour les sprites

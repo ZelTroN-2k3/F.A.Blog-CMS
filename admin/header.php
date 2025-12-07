@@ -15,8 +15,8 @@ include "includes/header_logic.php";
     <title>F.A Blog - Admin Panel</title>
     <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
     <meta name="author" content="ZelTroN2k3_WEB" />
-    <link rel="shortcut icon" href="../assets/img/favicon.png" />
-    <link rel="stylesheet" href="admin/css/admin-header.css">
+    <link rel="shortcut icon" href="<?php echo $settings['site_url']; ?>/assets/img/favicon.png" />
+    <link rel="stylesheet" href="<?php echo $settings['site_url']; ?>/admin/css/admin-header.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="assets/adminlte/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="assets/adminlte/dist/css/adminlte.min.css">
