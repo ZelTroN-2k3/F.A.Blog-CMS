@@ -1,3 +1,28 @@
+## [v3.4.0] - 2025-12-07
+### 🎮 Nouveautés Majeures : Arcade & Engagement
+Cette version transforme le site en un véritable hub de divertissement et maximise le SEO.
+
+#### 🕹️ Salle d'Arcade (Games Hub)
+* **Nouveau Module :** `games/` avec une page d'accueil dédiée "Arcade Room".
+* **3 Jeux Complets :**
+    * **Space Invaders Deluxe :** Sprites, Sons, Score, Vagues d'ennemis.
+    * **Snake Deluxe :** Graphismes (Tête, Corps, Pomme), Accélération progressive.
+    * **Tetris :** Moteur complet avec rotation, niveaux et score.
+* **Intégration :** Les jeux sont isolés dans un sous-dossier mais conservent le Header/Footer du site grâce aux chemins absolus.
+
+#### 🎉 Gestionnaire d'Événements (Marketing)
+* **Modes Saisonniers :** Activation en 1 clic de thèmes (Noël/Neige, Confettis, Noir & Blanc).
+* **Top Banner :** Bannière d'annonce promotionnelle (Black Friday, Soldes) personnalisable (Couleur, HTML).
+* **Administration :** Nouvel onglet dédié dans les Réglages Généraux.
+
+#### 🚀 SEO & Technique
+* **Sitemap & RSS Unifiés :** Les flux XML incluent désormais les **Projets** (Portfolio) en plus des Articles de Blog.
+* **Flux RSS 2.0 :** Ajout des images (`<enclosure>`) pour les lecteurs de flux modernes.
+* **Architecture :** Passage complet aux URLs absolues (`$settings['site_url']`) dans le Header/Footer pour éviter les bugs de liens relatifs (404) dans les sous-dossiers.
+* **Footer Pro :** Liens sociaux aux couleurs officielles, badges de confiance (SSL, Responsive) sécurisés.
+
+---
+
 # Journal des modifications (Changelog)
 
 Tous les changements notables apportés à ce projet seront documentés dans ce fichier.

@@ -1,3 +1,21 @@
+# Mon CMS - v3.4.0 (Arcade & Portfolio Edition)
+
+Ce projet est un Content Management System (CMS) développé en PHP procédural, moderne et performant.
+Il offre une solution complète pour gérer un **Blog**, un **Portfolio Technique**, une **Communauté** et désormais une **Salle d'Arcade**.
+
+---
+
+## 🚀 Dernière version majeure (v3.4.0) - "Fun & Engagement"
+
+Cette version introduit une dimension ludique et marketing au CMS :
+
+* **Arcade Room :** Une section jeux vidéo complète (Space Invaders, Snake, Tetris) pour retenir les visiteurs.
+* **Events Manager :** Des outils pour animer le site lors des fêtes (Noël, Black Friday) avec des effets visuels et des bannières.
+* **Module Projets :** Documentation technique avancée (BOM, Schémas, Fichiers 3D).
+* **Tchat & Social :** Messagerie instantanée et commentaires.
+
+---
+
 # Mon CMS - v3.3.2 (Portfolio Edition)
 
 Ce projet est un Content Management System (CMS) développé en PHP procédural, moderne et performant.
