@@ -27,9 +27,17 @@ function footer()
         mysqli_stmt_execute($stmt_footer);
         $result_footer = mysqli_stmt_get_result($stmt_footer);
         while ($page = mysqli_fetch_assoc($result_footer)) {
+            
+            // 1. Récupérer le contenu brut
+            $content_raw = $page['content'];
+            
+            // 2. Remplacer le code {{SITE_URL}} par la vraie URL
+            $content_fixed = str_replace('{{SITE_URL}}', $settings['site_url'], $content_raw);
+            
+            // 3. Purifier et Stocker
             $footer_content[$page['page_key']] = [
                 'title' => htmlspecialchars($page['title']),
-                'content' => $purifier->purify($page['content'])
+                'content' => $purifier->purify($content_fixed)
             ];
         }
         mysqli_stmt_close($stmt_footer);
@@ -99,8 +107,8 @@ function footer()
                         <h5 class="text-uppercase fw-bold mb-4">Others</h5>
                         <ul class="list-unstyled mb-0">
                             <div class="d-flex gap-2 justify-content-start flex-wrap">
-                                <a href="sitemap.php" class="btn btn-outline-light btn-sm"><i class="fas fa-sitemap fa-lg text-info"></i> <span class="small">Sitemap</span></a>
-                                <a href="rss.php" class="btn btn-outline-light btn-sm"><i class="fas fa-rss fa-lg text-warning"></i> <span class="small">RSS Feed</span></a>
+                                <a href="<?php echo $settings['site_url']; ?>/sitemap.php" class="btn btn-outline-light btn-sm"><i class="fas fa-sitemap fa-lg text-info"></i> <span class="small">Sitemap</span></a>
+                                <a href="<?php echo $settings['site_url']; ?>/rss.php" class="btn btn-outline-light btn-sm"><i class="fas fa-rss fa-lg text-warning"></i> <span class="small">RSS Feed</span></a>
                             </div>
                         </ul>
                     </div>
@@ -358,7 +366,7 @@ function footer()
                     <div class="mb-2 mb-md-0">
                         <i class="fas fa-cookie-bite text-warning me-2" style="font-size: 1.5rem;"></i>
                         <span class="small"><?php echo htmlspecialchars($cookie_msg); ?></span>
-                        <a href="privacy-policy.php" class="text-white text-decoration-underline small ms-1">Learn more</a>
+                        <a href="<?php echo $settings['site_url']; ?>/privacy-policy.php" class="text-white text-decoration-underline small ms-1">Learn more</a>
                     </div>
                     <div><button id="acceptCookiesBtn" class="btn btn-primary btn-sm fw-bold px-4"><i class="fas fa-check"></i> I accept</button></div>
                 </div>
@@ -470,7 +478,7 @@ function footer()
                             $(document).Toasts('create', {
                                 title: 'New Message',
                                 // J'ajoute un lien cliquable direct vers le tchat
-                                body: 'You have ' + count + ' new message(s).<br><a href="chat.php" class="text-white text-decoration-underline fw-bold mt-2 d-inline-block">Click here to reply</a>',
+                                body: 'You have ' + count + ' new message(s).<br><a href="<?php echo $settings['site_url']; ?>/chat.php" class="text-white text-decoration-underline fw-bold mt-2 d-inline-block">Click here to reply</a>',
                                 class: 'bg-success',
                                 icon: 'fas fa-comments',
                                 position: 'bottomRight',
@@ -492,7 +500,7 @@ function footer()
                                         <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2em; line-height:1;">&times;</button>
                                     </div>
                                     <div style="margin-bottom:10px;">You have ${count} new message(s) waiting.</div>
-                                    <a href="chat.php" style="display:block; text-align:center; background:white; color:#28a745; text-decoration:none; padding:8px; border-radius:4px; font-weight:bold;">
+                                    <a href="<?php echo $settings['site_url']; ?>/chat.php" style="display:block; text-align:center; background:white; color:#28a745; text-decoration:none; padding:8px; border-radius:4px; font-weight:bold;">
                                         <i class="fas fa-reply"></i> Reply Now
                                     </a>
                                 </div>`;

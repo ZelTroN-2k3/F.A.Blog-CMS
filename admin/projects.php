@@ -168,7 +168,7 @@ if (isset($_GET['delete-id'])) {
                                     <td class="text-center">
                                         <input type="checkbox" name="project_ids[]" value="' . $row['id'] . '">
                                     </td>
-                                    <td class="text-center"><img src="' . htmlspecialchars($img_src) . '" width="60" height="40" style="object-fit:cover; border-radius:4px;" onerror="this.src=\'../assets/img/no-image.png\';"></td>
+                                    <td class="text-center"><img src="' . htmlspecialchars($img_src) . '" width="80" height="50" style="object-fit:cover; border-radius:4px;" onerror="this.src=\'../assets/img/no-image.png\';"></td>
                                     
                                     <td>
                                         <strong>' . htmlspecialchars($row['title']) . '</strong>' . $featured_badge . '<br>

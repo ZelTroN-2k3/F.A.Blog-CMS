@@ -456,7 +456,7 @@ if ($logged == 'Yes' && ($rowu['role'] == 'Admin' || $rowu['role'] == 'Editor'))
     $status_icon = ($maintenance_status == 'On') ? 'text-danger' : 'text-success';
     $status_text = ($maintenance_status == 'On') ? 'Maintenance ON' : 'Maintenance OFF';
 ?>
-    <link rel="stylesheet" href="admin/css/admin-sidebar.css">
+    <link rel="stylesheet" href="<?php echo htmlspecialchars($settings['site_url']); ?>/admin/css/admin-sidebar.css">
     
     <style>
         .admin-header[data-bs-toggle="collapse"] { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
@@ -470,34 +470,36 @@ if ($logged == 'Yes' && ($rowu['role'] == 'Admin' || $rowu['role'] == 'Editor'))
             
             <div class="text-center text-white mb-3 pb-2 border-bottom border-secondary">
                 <?php
-                // Gestion Avatar Sidebar Admin
-                $sb_avatar = 'assets/img/avatar.png';
+                // Gestion Avatar Sidebar Admin (Correction Chemins Absolus)
+                $sb_avatar = $settings['site_url'] . '/assets/img/avatar.png'; // Par défaut (Absolu)
+                
                 if (!empty($rowu['avatar'])) {
                     $clean_path = str_replace('../', '', $rowu['avatar']);
-                    if (file_exists($clean_path) || strpos($clean_path, 'http') === 0) {
-                        $sb_avatar = $clean_path;
+                    if (strpos($clean_path, 'http') === 0) {
+                        $sb_avatar = $clean_path; // URL externe (Google)
+                    } else {
+                        $sb_avatar = $settings['site_url'] . '/' . $clean_path; // Image locale
                     }
                 }
                 ?>
-                <img src="<?php echo htmlspecialchars($sb_avatar); ?>" class="rounded-circle mb-2" width="80" height="80" alt="Avatar" style="object-fit: cover;" onerror="this.src='assets/img/avatar.png';">
-                <h5 class="mb-0"><?php echo htmlspecialchars($rowu['username']); ?></h5>
+                <img src="<?php echo htmlspecialchars($sb_avatar); ?>" class="rounded-circle mb-2" width="80" height="80" alt="Avatar" style="object-fit: cover;" onerror="this.src='<?php echo $settings['site_url']; ?>/assets/img/avatar.png';">                <h5 class="mb-0"><?php echo htmlspecialchars($rowu['username']); ?></h5>
                 <span>
                     <?php echo ($rowu['role'] == 'Admin') ? '<span class="badge bg-success"><i class="fas fa-user-shield"></i> Admin</span>' : '<span class="badge bg-primary"><i class="fas fa-user-edit"></i> Editor</span>'; ?>
                 </span>
             </div>
 
-            <a class="admin-link text-white" href="admin/dashboard.php">
+            <a class="admin-link text-white" href="<?php echo $settings['site_url']; ?>/admin/dashboard.php">
                 <i class="fas fa-columns fa-fw me-2 text-primary"></i> Dashboard
             </a>
 
             <?php if ($rowu['role'] == 'Admin') { ?>
-            <a class="admin-link text-white" href="admin/stats.php">
+            <a class="admin-link text-white" href="<?php echo $settings['site_url']; ?>/admin/stats.php">
                 <i class="fas fa-chart-line fa-fw me-2 text-warning"></i> Analytics
             </a>
             <?php } ?>
 
             <?php if ($rowu['role'] == 'Editor') { ?>
-                <a class="admin-link text-warning" href="admin/edit_user.php?id=<?php echo $rowu['id']; ?>">
+                <a class="admin-link text-warning" href="<?php echo $settings['site_url']; ?>/admin/edit_user.php?id=<?php echo $rowu['id']; ?>">
                     <i class="fas fa-user-circle fa-fw me-2"></i> My Profile
                 </a>
             <?php } ?>
@@ -508,22 +510,22 @@ if ($logged == 'Yes' && ($rowu['role'] == 'Admin' || $rowu['role'] == 'Editor'))
             <!-- AJOUT DE LA CLASSE class="collapse show" POUR AVOIR LE MENU ouvert PAR DÉFAUT -->
             <div class="collapse" id="collapseManage">
                 <?php if ($rowu['role'] == 'Admin') { ?>
-                    <a class="admin-link" href="admin/settings.php"><i class="fas fa-cogs fa-fw me-2"></i> Settings</a>
-                    <a class="admin-link" href="admin/menu_editor.php"><i class="fas fa-bars fa-fw me-2"></i> Menu</a>
-                    <a class="admin-link" href="admin/widgets.php"><i class="fas fa-th-large fa-fw me-2"></i> Widgets</a>
-                    <a class="admin-link" href="admin/users.php"><i class="fas fa-users fa-fw me-2"></i> Users</a>
-                    <a class="admin-link" href="admin/newsletter.php"><i class="fas fa-envelope-open-text fa-fw me-2"></i> Newsletter</a>
-                    <a class="admin-link" href="admin/chats.php"><i class="fas fa-comments fa-fw me-2"></i> Chats</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/settings.php"><i class="fas fa-cogs fa-fw me-2"></i> Settings</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/menu_editor.php"><i class="fas fa-bars fa-fw me-2"></i> Menu</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/widgets.php"><i class="fas fa-th-large fa-fw me-2"></i> Widgets</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/users.php"><i class="fas fa-users fa-fw me-2"></i> Users</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/newsletter.php"><i class="fas fa-envelope-open-text fa-fw me-2"></i> Newsletter</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/chats.php"><i class="fas fa-comments fa-fw me-2"></i> Chats</a>
                 <?php } ?>
                 
-                <a class="admin-link" href="admin/files.php"><i class="fas fa-folder-open fa-fw me-2"></i> Files</a>
-                <a class="admin-link" href="admin/posts.php"><i class="fas fa-file-alt fa-fw me-2"></i> Posts</a>
-                <a class="admin-link" href="admin/categorys.php"><i class="fas fa-list-alt fa-fw me-2"></i> Categories</a>
-                <a class="admin-link" href="admin/gallery.php"><i class="fas fa-images fa-fw me-2"></i> Gallery</a>
-                <a class="admin-link" href="admin/albums.php"><i class="fas fa-list-ol fa-fw me-2"></i> Albums</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/files.php"><i class="fas fa-folder-open fa-fw me-2"></i> Files</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/posts.php"><i class="fas fa-file-alt fa-fw me-2"></i> Posts</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/categorys.php"><i class="fas fa-list-alt fa-fw me-2"></i> Categories</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/gallery.php"><i class="fas fa-images fa-fw me-2"></i> Gallery</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/albums.php"><i class="fas fa-list-ol fa-fw me-2"></i> Albums</a>
                 
                 <?php if ($rowu['role'] == 'Admin') { ?>
-                    <a class="admin-link" href="admin/pages.php"><i class="fas fa-file fa-fw me-2"></i> Pages</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/pages.php"><i class="fas fa-file fa-fw me-2"></i> Pages</a>
                 <?php } ?>
             </div>
 
@@ -533,17 +535,17 @@ if ($logged == 'Yes' && ($rowu['role'] == 'Admin' || $rowu['role'] == 'Editor'))
                 </div>
                 <!-- AJOUT DE LA CLASSE class="collapse show" POUR AVOIR LE MENU ouvert PAR DÉFAUT -->
                 <div class="collapse" id="collapseSystem">
-                    <a class="admin-link" href="admin/messages.php">
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/messages.php">
                         <i class="fas fa-envelope fa-fw me-2"></i> Messages
                         <?php if($unread_messages > 0): ?>
                             <span class="badge bg-danger admin-badge"><?php echo $unread_messages; ?></span>
                         <?php endif; ?>
                     </a>
                     
-                    <a class="admin-link" href="admin/system-information.php">
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/system-information.php">
                         <i class="fas fa-server fa-fw me-2"></i> System Info
                     </a>
-                    <a class="admin-link" href="admin/logs.php">
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/logs.php">
                         <i class="fas fa-history fa-fw me-2"></i> Activity Logs
                     </a>
                 </div>
@@ -554,7 +556,7 @@ if ($logged == 'Yes' && ($rowu['role'] == 'Admin' || $rowu['role'] == 'Editor'))
             </div>
             <!-- AJOUT DE LA CLASSE class="collapse show" POUR AVOIR LE MENU ouvert PAR DÉFAUT -->
             <div class="collapse" id="collapseModeration">
-                 <a class="admin-link" href="admin/comments.php"><i class="fas fa-comment-dots fa-fw me-2"></i> Comments</a>
+                 <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/comments.php"><i class="fas fa-comment-dots fa-fw me-2"></i> Comments</a>
             </div>
 
             <div class="admin-header mt-2" data-bs-toggle="collapse" data-bs-target="#collapseCreate" aria-expanded="true">
@@ -562,17 +564,17 @@ if ($logged == 'Yes' && ($rowu['role'] == 'Admin' || $rowu['role'] == 'Editor'))
             </div>
             <!-- AJOUT DE LA CLASSE class="collapse show" POUR AVOIR LE MENU ouvert PAR DÉFAUT -->
             <div class="collapse" id="collapseCreate">
-                <a class="admin-link" href="admin/add_post.php"><i class="fas fa-plus-circle fa-fw me-2 text-success"></i> Post</a>
-                <a class="admin-link" href="admin/add_category.php"><i class="fas fa-plus fa-fw me-2"></i> Category</a>
-                <a class="admin-link" href="admin/add_image.php"><i class="fas fa-camera fa-fw me-2"></i> Image</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/add_post.php"><i class="fas fa-plus-circle fa-fw me-2 text-success"></i> Post</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/add_category.php"><i class="fas fa-plus fa-fw me-2"></i> Category</a>
+                <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/add_image.php"><i class="fas fa-camera fa-fw me-2"></i> Image</a>
                 
                 <?php if ($rowu['role'] == 'Admin') { ?>
-                    <a class="admin-link" href="admin/add_page.php"><i class="fas fa-plus-square fa-fw me-2"></i> Page</a>
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/add_page.php"><i class="fas fa-plus-square fa-fw me-2"></i> Page</a>
                 <?php } ?>
             </div>
             <?php if ($rowu['role'] == 'Admin') { ?>
                 <div class="mt-3 pt-2 border-top border-secondary">
-                    <a class="admin-link" href="admin/maintenance.php">
+                    <a class="admin-link" href="<?php echo $settings['site_url']; ?>/admin/maintenance.php">
                         <i class="fas fa-circle <?php echo $status_icon; ?> fa-fw me-2"></i> <?php echo $status_text; ?>
                     </a>
                 </div>
@@ -606,7 +608,7 @@ if ($settings['layout'] == 'Wide') {
                 <?php endif; ?>
             </a>
 			
-			<form class="col-12 col-lg-auto mb-3 mb-lg-0" action="search" method="GET">
+			<form class="col-12 col-lg-auto mb-3 mb-lg-0" action="<?php echo htmlspecialchars($settings['site_url']); ?>/search" method="GET">
 				<div class="input-group">
 					<input type="search" class="form-control" placeholder="Search" name="q" value="<?php
 if (isset($_GET['q'])) {
@@ -638,61 +640,57 @@ if ($settings['layout'] == 'Wide') {
 				<ul class="navbar-nav me-auto">
 <?php
     // Requête simple sans variable externe
-	$runq = mysqli_query($connect, "SELECT * FROM `menu` WHERE active = 'Yes' ORDER BY id ASC"); // Supposant que l'ordre est géré par ID
+	$runq = mysqli_query($connect, "SELECT * FROM `menu` WHERE active = 'Yes' ORDER BY id ASC"); 
+    
+    // On prépare l'URL de base pour simplifier le code
+    $base_url = htmlspecialchars($settings['site_url']); 
+
     while ($row = mysqli_fetch_assoc($runq)) {
 
         if ($row['path'] == 'blog') {
 			
             echo '	<li class="nav-item link-body-emphasis dropdown">
-						<a href="blog" class="nav-link link-dark dropdown-toggle px-2';
+						<a href="' . $base_url . '/blog" class="nav-link link-dark dropdown-toggle px-2';
             if ($current_page == 'blog.php' || $current_page == 'category.php' || $current_page == 'tag.php') {
                 echo ' active';
             }
-            // Utiliser htmlspecialchars pour les icônes et le texte
             echo '" data-bs-toggle="dropdown">
 							<i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . ' 
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="blog">View all posts</a></li>
-                            <li><a class="dropdown-item" href="categories">View all Categories</a></li>';
+							<li><a class="dropdown-item" href="' . $base_url . '/blog">View all posts</a></li>
+                            <li><a class="dropdown-item" href="' . $base_url . '/categories">View all Categories</a></li>';
             
-            // Requête simple sans variable externe
             $run2 = mysqli_query($connect, "SELECT * FROM `categories` ORDER BY category ASC");
             while ($row2 = mysqli_fetch_array($run2)) {
-                // Utiliser htmlspecialchars
-                echo '		<li><a class="dropdown-item" href="category?name=' . htmlspecialchars($row2['slug']) . '"><i class="fas fa-chevron-right"></i> ' . htmlspecialchars($row2['category']) . '</a></li>';
+                echo '		<li><a class="dropdown-item" href="' . $base_url . '/category?name=' . htmlspecialchars($row2['slug']) . '"><i class="fas fa-chevron-right"></i> ' . htmlspecialchars($row2['category']) . '</a></li>';
             }
             echo '		</ul>
 					</li>';
 
         } else if ($row['path'] == 'projects') {
             
-            // --- MENU DÉROULANT POUR PROJECTS ---
+            // --- MENU PROJETS (Avec liens absolus) ---
             echo '	<li class="nav-item link-body-emphasis dropdown">
-						<a href="projects" class="nav-link link-dark dropdown-toggle px-2';
+						<a href="' . $base_url . '/projects" class="nav-link link-dark dropdown-toggle px-2';
             
-            // Active si on est sur projects.php ou project.php
-            if ($current_page == 'projects.php' || $current_page == 'project.php') {
-                echo ' active';
-            }
+            if ($current_page == 'projects.php' || $current_page == 'project.php') { echo ' active'; }
             
             echo '" data-bs-toggle="dropdown">
 							<i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . ' 
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="projects"><i class="fas fa-th-large me-2"></i> View all projects</a></li>
+							<li><a class="dropdown-item" href="' . $base_url . '/projects"><i class="fas fa-th-large me-2"></i> View all projects</a></li>
                             
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">By Category</h6></li>';
                             
-                            // Récupération des catégories de projets
                             $q_p_cats = mysqli_query($connect, "SELECT category, slug FROM project_categories ORDER BY category ASC");
-                            
                             if(mysqli_num_rows($q_p_cats) > 0) {
                                 while($pc = mysqli_fetch_assoc($q_p_cats)) {
-                                    echo '<li><a class="dropdown-item" href="projects?category='.htmlspecialchars($pc['slug']).'"><i class="fas fa-angle-right me-2 text-muted"></i> '.htmlspecialchars($pc['category']).'</a></li>';
+                                    echo '<li><a class="dropdown-item" href="' . $base_url . '/projects?category='.htmlspecialchars($pc['slug']).'"><i class="fas fa-angle-right me-2 text-muted"></i> '.htmlspecialchars($pc['category']).'</a></li>';
                                 }
                             } else {
                                 echo '<li><span class="dropdown-item text-muted small">No categories yet</span></li>';
@@ -701,33 +699,31 @@ if ($settings['layout'] == 'Wide') {
             echo '          <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">By Difficulty</h6></li>
                             
-                            <li><a class="dropdown-item" href="projects?difficulty=Easy"><span class="badge bg-success me-2">Easy</span> Beginner</a></li>
-                            <li><a class="dropdown-item" href="projects?difficulty=Intermediate"><span class="badge bg-primary me-2">Medium</span> Intermediate</a></li>
-                            <li><a class="dropdown-item" href="projects?difficulty=Advanced"><span class="badge bg-warning me-2">Hard</span> Advanced</a></li>
-                            <li><a class="dropdown-item" href="projects?difficulty=Expert"><span class="badge bg-danger me-2">Expert</span> Master</a></li>
+                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Easy"><span class="badge bg-success me-2">Easy</span> Beginner</a></li>
+                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Intermediate"><span class="badge bg-primary me-2">Medium</span> Intermediate</a></li>
+                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Advanced"><span class="badge bg-warning me-2">Hard</span> Advanced</a></li>
+                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Expert"><span class="badge bg-danger me-2">Expert</span> Master</a></li>
 						</ul>
 					</li>';
         } else {
+            // --- MENU STANDARD (Avec liens absolus) ---
+            // On gère le cas où le chemin contient déjà http (lien externe)
+            $href = (strpos($row['path'], 'http') === 0) ? $row['path'] : $base_url . '/' . $row['path'];
 
 			echo '	<li class="nav-item link-body-emphasis">
-						<a href="' . htmlspecialchars($row['path']) . '" class="nav-link link-dark px-2';
+						<a href="' . htmlspecialchars($href) . '" class="nav-link link-dark px-2';
             
             $current_slug = $_GET['name'] ?? '';
-            if ($current_page == 'page.php'
-				&& ($current_slug == ltrim(strstr($row['path'], '='), '='))
-			) {
+            if ($current_page == 'page.php' && ($current_slug == ltrim(strstr($row['path'], '='), '='))) {
                 echo ' active';
-			
             } else if ($current_page != 'page.php' && $current_page == $row['path'] . '.php') {
                 echo ' active';
             }
-            // Utiliser htmlspecialchars
             echo '">
 							<i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . '
 						</a>
 					</li>';
         }
-    // ... fin de la boucle des menus standards ...
     }
 ?>
 <?php
@@ -882,19 +878,21 @@ if ($settings['layout'] == 'Wide') {
             ?>
 
 <?php
-                    // --- GESTION AVATAR ROBUSTE (Navbar) ---
-                    $nav_avatar = 'assets/img/avatar.png';
+                    // --- GESTION AVATAR NAVBAR (Correction Chemins Absolus) ---
+                    $nav_avatar = $settings['site_url'] . '/assets/img/avatar.png'; // Par défaut
+                    
                     if (!empty($rowu['avatar'])) {
                         $clean_path = str_replace('../', '', $rowu['avatar']);
-                        if (file_exists($clean_path) || strpos($clean_path, 'http') === 0) {
+                        if (strpos($clean_path, 'http') === 0) {
                             $nav_avatar = $clean_path;
+                        } else {
+                            $nav_avatar = $settings['site_url'] . '/' . $clean_path;
                         }
                     }
             ?>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link link-dark dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                            <img src="<?php echo htmlspecialchars($nav_avatar); ?>" alt="Avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px;" onerror="this.src='assets/img/avatar.png';">
-                            
+                            <img src="<?php echo htmlspecialchars($nav_avatar); ?>" alt="Avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px;" onerror="this.src='<?php echo $settings['site_url']; ?>/assets/img/avatar.png';">                            
                             <span style="width: 10px; height: 10px; background-color: <?php echo $dot_color; ?>; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 3px rgba(0,0,0,0.3);" title="<?php echo $dot_title; ?>"></span>
                             
                             Profile <span class="caret"></span>
@@ -1001,14 +999,15 @@ if ($settings['latestposts_bar'] == 'Enabled') {
                         
                         if (mysqli_num_rows($run) > 0) {
                             while ($row = mysqli_fetch_assoc($run)) {
-                                // Gestion de l'image
-                                $img_url = !empty($row['image']) ? htmlspecialchars($row['image']) : 'assets/img/no-image.png';
+                                // Gestion de l'image (Absolue)
+                                $raw_img = !empty($row['image']) ? $row['image'] : 'assets/img/no-image.png';
+                                $clean_img = str_replace('../', '', $raw_img);
+                                $img_url = $settings['site_url'] . '/' . $clean_img;
                                 $date = date('d M', strtotime($row['created_at']));
                                 
-                                echo '
+                            echo '
                                 <span class="d-inline-flex align-items-center me-5">
-                                    <img src="' . $img_url . '" class="rounded border" style="width: 35px; height: 35px; object-fit: cover; margin-right: 4px;">
-                                    <a href="post?name=' . htmlspecialchars($row['slug']) . '" class="text-dark text-decoration-none fw-bold" style="font-size: 0.9rem;">
+                                    <img src="' . htmlspecialchars($img_url) . '" class="rounded border" style="width: 35px; height: 35px; object-fit: cover; margin-right: 4px;" onerror="this.src=\'' . $settings['site_url'] . '/assets/img/no-image.png\';">                                    <a href="post?name=' . htmlspecialchars($row['slug']) . '" class="text-dark text-decoration-none fw-bold" style="font-size: 0.9rem;">
                                         ' . htmlspecialchars($row['title']) . '
                                     </a>
                                     <span class="badge bg-secondary ms-2" style="font-size: 0.7em;">' . $date . '</span>

@@ -109,9 +109,9 @@ while ($row = mysqli_fetch_assoc($sql)) {
     $badge_color = ($article_count > 0) ? 'badge-info' : 'badge-secondary';
 
     // 2. Logique Image Catégorie
-    $img_src = '<img src="../assets/img/category_default.jpg" width="80" height="60" style="object-fit: cover; border-radius: 3px;">';
+    $img_src = '<img src="../assets/img/category_default.jpg" width="80" height="50" style="object-fit: cover; border-radius: 3px;">';
     if ($row['image'] != '') {
-        $img_src = '<img src="../' . htmlspecialchars($row['image']) . '" width="80" height="60" style="object-fit: cover; border-radius: 3px;">';
+        $img_src = '<img src="../' . htmlspecialchars($row['image']) . '" width="80" height="50" style="object-fit: cover; border-radius: 3px;">';
     }
 
     // 3. Logique Auteur (Avatar + Badge Role)
