@@ -215,7 +215,15 @@ function render_comment_html($comment_id, $margin_left = 0) {
             <div class="mb-2 d-flex flex-start align-items-center">
                 <img class="rounded-circle shadow-1-strong mt-1 me-3" src="<?php echo htmlspecialchars($aavatar); ?>" width="50" height="50" />
                 <div class="mt-1 mb-1">
-                    <h6 class="fw-bold mt-1 mb-1"><i class="fa fa-user"></i> <?php echo htmlspecialchars($aauthor_name); ?> <?php echo $arole; ?> <?php echo $comment_badge; ?> </h6>
+                    <h6 class="fw-bold mt-1 mb-1">
+                        <?php if($comment['guest'] != 'Yes'): ?>
+                            <a href="user.php?name=<?php echo urlencode($aauthor_name); ?>" class="text-dark text-decoration-none">
+                                <i class="fa fa-user"></i> <?php echo htmlspecialchars($aauthor_name); ?>
+                            </a>
+                        <?php else: ?>
+                            <i class="fa fa-user"></i> <?php echo htmlspecialchars($aauthor_name); ?>
+                        <?php endif; ?>
+                    </h6>
                     <p class="small mb-0"><i><i class="fas fa-calendar"></i> <?php echo date($settings['date_format'] . ' H:i', strtotime($comment['created_at'])); ?></i></p>
                 </div>
             </div>

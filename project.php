@@ -87,7 +87,11 @@ $purifier = get_purifier();
                             <img src="<?php echo htmlspecialchars($avatar); ?>" class="rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
                             <div>
                                 <small class="text-muted d-block">Created by</small>
-                                <span class="fw-bold"><?php echo htmlspecialchars($project['username']); ?></span>
+                                <span class="fw-bold">
+                                    <a href="user.php?name=<?php echo urlencode($project['username']); ?>" class="text-dark text-decoration-none">
+                                        <?php echo htmlspecialchars($project['username']); ?>
+                                    </a>
+                                </span>
                             </div>
                             <div class="ms-auto text-end">
                                 <small class="text-muted d-block">Published</small>

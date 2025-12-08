@@ -80,7 +80,7 @@ if (isset($_POST['save'])) {
     // 3. Mise à jour BDD
     if ($uploadOk == 1) {
         try {
-            // AJOUT DES CHAMPS "EVENTS" À LA FIN DE LA REQUÊTE
+            // REQUÊTE SQL COMPLÈTE (55 variables)
             $sql = "UPDATE settings SET 
                             site_url = ?, sitename = ?, description = ?, email = ?, 
                             gcaptcha_sitekey = ?, gcaptcha_secretkey = ?, head_customcode = ?, 
@@ -99,29 +99,42 @@ if (isset($_POST['save'])) {
                             comments_approval = ?, comments_blacklist = ?,
                             cookie_consent_enabled = ?, cookie_message = ?,
 
-                            event_mode = ?, event_effect = ?, event_banner_active = ?, event_banner_content = ?, event_banner_color = ?
+                            event_mode = ?, event_effect = ?, event_banner_active = ?, event_banner_content = ?, event_banner_color = ?,
+                            
+                            design_font = ?, design_color_primary = ?, design_color_secondary = ?, design_custom_css = ?
 
                         WHERE id = 1";
                         
             $stmt = mysqli_prepare($connect, $sql);
             if ($stmt === false) { throw new Exception("MySQL preparation error: " . mysqli_error($connect)); }
 
-            // MISE À JOUR DES TYPES : On ajoute 5 's' à la fin pour les 5 nouveaux champs
-            // Ancien total : 46. Nouveau total : 51
-            $types = str_repeat('s', 38) . 'isssisis' . 'sssss'; 
+            // MISE À JOUR DES TYPES : 55 caractères
+            // 38 string + 1 int + 3 string + 1 int + 1 string + 1 int + 1 string = 46 (Base)
+            // + 5 string (Event) = 51
+            // + 4 string (Design) = 55
+            // Code Type : "s" x 38 . "isssisis" . "sssss" . "ssss"
+            $types = str_repeat('s', 38) . 'isssisis' . 'sssss' . 'ssss'; 
             
+            // Encodage Base64
             $head_customcode_encoded = base64_encode($_POST['head_customcode']);
             $google_maps_encoded = base64_encode($_POST['google_maps_code']);
 
+            // Valeurs numériques et Checkbox
             $comments_approval_val = isset($_POST['comments_approval']) ? (int)$_POST['comments_approval'] : 0;
             $cookie_consent_val = isset($_POST['cookie_consent_enabled']) ? (int)$_POST['cookie_consent_enabled'] : 0;
             $smtp_port_val = (int)$_POST['smtp_port'];
             
-            // Récupération sécurisée des valeurs Event (avec valeurs par défaut)
+            // Valeurs Event (avec défauts)
             $event_effect = $_POST['event_effect'] ?? 'None';
             $event_banner_active = $_POST['event_banner_active'] ?? 'No';
             $event_banner_content = $_POST['event_banner_content'] ?? '';
             $event_banner_color = $_POST['event_banner_color'] ?? '#dc3545';
+
+            // Valeurs Design (avec défauts) - V3.4.4
+            $design_font = $_POST['design_font'] ?? 'Nunito';
+            $design_primary = $_POST['design_color_primary'] ?? '#0d6efd';
+            $design_secondary = $_POST['design_color_secondary'] ?? '#6c757d';
+            $design_css = $_POST['design_custom_css'] ?? '';
 
             mysqli_stmt_bind_param($stmt, $types,
                 $_POST['site_url'], $_POST['sitename'], $_POST['description'], $_POST['email'],
@@ -141,33 +154,44 @@ if (isset($_POST['save'])) {
                 $comments_approval_val, $_POST['comments_blacklist'],
                 $cookie_consent_val, $_POST['cookie_message'],
 
-                // NOUVEAUX PARAMÈTRES BINDÉS
-                $event_effect,        // event_mode (on utilise le même que l'effet pour simplifier)
-                $event_effect,        // event_effect
+                // EVENTS
+                $event_effect, 
+                $event_effect,
                 $event_banner_active,
                 $event_banner_content,
-                $event_banner_color
+                $event_banner_color,
+
+                // DESIGN (V3.8)
+                $design_font,
+                $design_primary,
+                $design_secondary,
+                $design_css
             );
 
-            mysqli_stmt_execute($stmt);
-            // --- AJOUT LOG & CACHE FLUSH ---
-            if(function_exists('log_activity')) {
-                log_activity("Update Settings", "Updated global site settings.");
-            }
-            if(function_exists('clear_site_cache')) {
-                clear_site_cache(); // Vide le dossier cache/
-            }
-            // -------------------------------          
-            mysqli_stmt_close($stmt);
+            if (mysqli_stmt_execute($stmt)) {
+                
+                // --- AJOUT LOGS & CACHE (V3.4.3) ---
+                if(function_exists('log_activity')) {
+                    log_activity("Update Settings", "Updated global site settings.");
+                }
+                if(function_exists('clear_site_cache')) {
+                    clear_site_cache(); // Vide le cache pour appliquer le nouveau thème immédiatement
+                }
+                // ---------------------------------
 
-            echo '
-            <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <h5><i class="icon fas fa-check"></i> Success!</h5>
-                Settings saved successfully.
-            </div>';
+                echo '
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-check"></i> Success!</h5>
+                    Settings saved successfully.
+                </div>';
+            } else {
+                echo '<div class="alert alert-danger">Execute Error: ' . mysqli_stmt_error($stmt) . '</div>';
+            }
+
+            mysqli_stmt_close($stmt);
             
-            // Rechargement immédiat
+            // Rechargement immédiat des settings pour l'affichage
             $stmt_reload = mysqli_prepare($connect, "SELECT * FROM settings WHERE id = 1");
             mysqli_stmt_execute($stmt_reload);
             $result_reload = mysqli_stmt_get_result($stmt_reload);

@@ -33,6 +33,11 @@ if (isset($_POST['submit'])) {
     mysqli_stmt_bind_param($stmt_up, "ssssi", $page, $path, $fa_icon, $active, $id);
     
     if(mysqli_stmt_execute($stmt_up)) {
+        // --- CORRECTION CACHE ---
+        if(function_exists('clear_site_cache')) {
+            clear_site_cache();
+        }
+        // ------------------------        
         echo '<div class="alert alert-success m-3">Menu item updated! Redirecting...</div>';
         echo '<meta http-equiv="refresh" content="1; url=menu_editor.php">';
         exit;

@@ -166,6 +166,10 @@ if ($user['role'] == "Admin") {
     // Listes pour l'affichage (Boucles HTML)
     $query_latest_users = mysqli_query($connect, "SELECT id, username, avatar, bio, email, role, location FROM users ORDER BY id DESC LIMIT 5");
     
+    // --- CORRECTION : AJOUT DE LA VARIABLE MANQUANTE ---
+    $q_latest_proj = mysqli_query($connect, "SELECT * FROM projects ORDER BY id DESC LIMIT 5");
+    // --------------------------------------------------
+    
     $query_pending_posts = mysqli_query($connect, "SELECT p.*, u.username AS author_name, u.avatar AS author_avatar FROM `posts` p LEFT JOIN `users` u ON p.author_id = u.id WHERE p.active = 'Pending' ORDER BY p.created_at DESC LIMIT 5");
     $posts_pending_count = mysqli_num_rows($query_pending_posts);
 
@@ -335,5 +339,73 @@ if ($user['role'] == "Editor") {
     mysqli_stmt_execute($stmt_my_comms);
     $my_comments = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_my_comms))['count'];
     mysqli_stmt_close($stmt_my_comms);
+}
+
+// =========================================================================
+// 4. ANALYTICS (V3.4.5 - TRAFIC RÉEL)
+// =========================================================================
+
+if ($user['role'] == "Admin") {
+    
+    // A. Visites des 7 derniers jours (Graphique Ligne)
+    $analytics_visits_labels = [];
+    $analytics_visits_data = [];
+    
+    // On génère les 7 derniers jours (y compris aujourd'hui)
+    for ($i = 6; $i >= 0; $i--) {
+        $date = date('Y-m-d', strtotime("-$i days"));
+        $analytics_visits_labels[] = date('d M', strtotime($date));
+        
+        // Requête comptage par jour
+        $stmt_vis = mysqli_prepare($connect, "SELECT COUNT(id) as count FROM visitor_analytics WHERE DATE(visit_date) = ?");
+        mysqli_stmt_bind_param($stmt_vis, "s", $date);
+        mysqli_stmt_execute($stmt_vis);
+        $res_vis = mysqli_stmt_get_result($stmt_vis);
+        $analytics_visits_data[] = mysqli_fetch_assoc($res_vis)['count'];
+        mysqli_stmt_close($stmt_vis);
+    }
+
+    // B. Top Pages Vues (Graphique Barre Horizontale)
+    $analytics_pages_labels = [];
+    $analytics_pages_data = [];
+    
+    $q_top_pages = mysqli_query($connect, "SELECT page_url, COUNT(id) as count FROM visitor_analytics GROUP BY page_url ORDER BY count DESC LIMIT 5");
+    while ($row = mysqli_fetch_assoc($q_top_pages)) {
+        // Nettoyage URL pour affichage (ex: /post?name=abc -> abc)
+        $clean_url = str_replace(['/post?name=', '/project?name=', '/'], ['', '', ''], $row['page_url']);
+        if(empty($clean_url)) $clean_url = 'Home';
+        
+        $analytics_pages_labels[] = short_text($clean_url, 20);
+        $analytics_pages_data[] = $row['count'];
+    }
+
+    // C. Top Référents (Graphique Pie)
+    $analytics_ref_labels = [];
+    $analytics_ref_data = [];
+    
+    $q_ref = mysqli_query($connect, "SELECT referrer, COUNT(id) as count FROM visitor_analytics GROUP BY referrer ORDER BY count DESC LIMIT 5");
+    while ($row = mysqli_fetch_assoc($q_ref)) {
+        $ref = $row['referrer'];
+        if ($ref == 'Direct' || empty($ref)) $ref = 'Direct / Bookmark';
+        elseif (strpos($ref, 'google') !== false) $ref = 'Google';
+        elseif (strpos($ref, 'facebook') !== false) $ref = 'Facebook';
+        elseif (strpos($ref, 'twitter') !== false || strpos($ref, 't.co') !== false) $ref = 'Twitter';
+        else {
+            // Extraire juste le domaine
+            $parsed = parse_url($ref);
+            $ref = isset($parsed['host']) ? $parsed['host'] : 'Other';
+        }
+        
+        $analytics_ref_labels[] = $ref;
+        $analytics_ref_data[] = $row['count'];
+    }
+
+    // Encodage JSON pour JS
+    $json_visits_labels = json_encode($analytics_visits_labels);
+    $json_visits_data = json_encode($analytics_visits_data);
+    $json_pages_labels = json_encode($analytics_pages_labels);
+    $json_pages_data = json_encode($analytics_pages_data);
+    $json_ref_labels = json_encode($analytics_ref_labels);
+    $json_ref_data = json_encode($analytics_ref_data);
 }
 ?>

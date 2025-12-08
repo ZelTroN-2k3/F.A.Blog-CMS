@@ -421,6 +421,46 @@ if($settings['background_image'] != "") {
         .snowflake:nth-of-type(9) { left: 90%; animation-delay: 3s,1.5s }
     </style>
     <?php endif; ?>
+
+<?php
+    // 1. Chargement de la Police Google
+    if (!empty($settings['design_font'])) {
+        echo '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=' . urlencode($settings['design_font']) . ':wght@300;400;600;700&display=swap">';
+    }
+    
+    // 2. Application des Variables CSS
+    $font_family = !empty($settings['design_font']) ? "'" . $settings['design_font'] . "', sans-serif" : "sans-serif";
+    $col_primary = !empty($settings['design_color_primary']) ? $settings['design_color_primary'] : '#0d6efd';
+    $col_secondary = !empty($settings['design_color_secondary']) ? $settings['design_color_secondary'] : '#6c757d';
+    ?>
+    
+    <style>
+        :root {
+            /* Surcharge des variables Bootstrap 5 */
+            --bs-primary: <?php echo $col_primary; ?>;
+            --bs-secondary: <?php echo $col_secondary; ?>;
+            
+            /* Pour les liens et boutons outline */
+            --bs-link-color: <?php echo $col_primary; ?>;
+            --bs-btn-primary-bg: <?php echo $col_primary; ?>;
+            --bs-btn-primary-border-color: <?php echo $col_primary; ?>;
+        }
+        
+        body {
+            font-family: <?php echo $font_family; ?>;
+        }
+        
+        /* Forçage spécifique pour certains éléments récalcitrants */
+        .text-primary { color: <?php echo $col_primary; ?> !important; }
+        .bg-primary { background-color: <?php echo $col_primary; ?> !important; }
+        .btn-primary { background-color: <?php echo $col_primary; ?> !important; border-color: <?php echo $col_primary; ?> !important; }
+        .btn-outline-primary { color: <?php echo $col_primary; ?> !important; border-color: <?php echo $col_primary; ?> !important; }
+        .btn-outline-primary:hover { background-color: <?php echo $col_primary; ?> !important; color: #fff !important; }
+        
+        /* Custom CSS Admin */
+        <?php echo $settings['design_custom_css']; ?>
+    </style>
+    
 </head>
 
 <body <?php 

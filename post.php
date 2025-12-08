@@ -175,7 +175,7 @@ echo '
 				    <img src="' . htmlspecialchars($avatar_src) . '" class="rounded-circle me-2" width="40" height="40" style="object-fit:cover;">
 				    
 					<small>
-						Posted by <b><a href="author.php?username=' . urlencode($author_name) . '" class="text-decoration-none text-dark">' . $author_name . '</a></b> ' . $role_badge . '
+						Posted by <b><a href="user.php?name=' . urlencode($author_name) . '" class="text-decoration-none text-dark">' . $author_name . '</a></b> ' . $role_badge . '
 						<span class="mx-2 text-muted">|</span>
 						<i class="far fa-calendar-alt"></i> ' . date($settings['date_format'], strtotime($row['created_at'])) . '
                         

@@ -166,6 +166,89 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 plugins: { legend: { position: 'bottom' } }
             }
         });
+    } 
+
+    // --- 0. TRAFFIC CHART (V3.4.5 - NOUVEAU) ---
+    const ctxTraffic = document.getElementById('trafficChart');
+    if (ctxTraffic) {
+        new Chart(ctxTraffic.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: <?php echo $json_visits_labels; ?>,
+                datasets: [{
+                    label: 'Unique Visits',
+                    data: <?php echo $json_visits_data; ?>,
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Blanc transparent (sur fond sombre)
+                    borderColor: 'rgba(255, 255, 255, 1)',       // Blanc pur
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: { 
+                        ticks: { color: '#efefef', precision:0 }, 
+                        grid: { color: 'rgba(255,255,255,0.1)' } 
+                    },
+                    x: { 
+                        ticks: { color: '#efefef' }, 
+                        grid: { display: false } 
+                    }
+                }
+            }
+        });
+    }
+
+    // --- 0. REFERRER CHART (V3.4.5 - NOUVEAU) ---
+    const ctxRef = document.getElementById('referrerChart');
+    if (ctxRef) {
+        new Chart(ctxRef.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: <?php echo $json_ref_labels; ?>,
+                datasets: [{
+                    data: <?php echo $json_ref_data; ?>,
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'right' } }
+            }
+        });
+    }
+
+    // --- 0. TOP PAGES CHART (V3.4.5 - NOUVEAU) ---
+    const ctxPages = document.getElementById('topPagesChart');
+    if (ctxPages) {
+        new Chart(ctxPages.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: <?php echo $json_pages_labels; ?>,
+                datasets: [{
+                    label: 'Total Views',
+                    data: <?php echo $json_pages_data; ?>,
+                    backgroundColor: '#ffc107',
+                    borderColor: '#edb100',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Barres horizontales pour lire les URLs
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, ticks: { precision:0 } } }
+            }
+        });
     }    
 });
 </script>

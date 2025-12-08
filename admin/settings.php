@@ -60,6 +60,9 @@ include "settings/save_logic.php";
                                 <li class="nav-item">
                                     <a class="nav-link" id="tab-events-link" data-toggle="pill" href="#tab-events" role="tab"><i class="fas fa-gift"></i> Events</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-theme-link" data-toggle="pill" href="#tab-theme" role="tab"><i class="fas fa-paint-brush"></i> Theme</a>
+                                </li>
                             </ul>
                         </div>
                         
@@ -94,6 +97,10 @@ include "settings/save_logic.php";
                             <div class="tab-pane fade" id="tab-events" role="tabpanel">
                                 <?php include "settings/tab_events.php"; ?>
                             </div>
+                            
+                            <div class="tab-pane fade" id="tab-theme" role="tabpanel">
+                                <?php include "settings/tab_theme.php"; ?>
+                            </div>                            
                         </div>
 
                         <input type="hidden" name="active_tab" id="input_active_tab" value="<?php echo isset($_POST['active_tab']) ? htmlspecialchars($_POST['active_tab']) : '#tab-general'; ?>">

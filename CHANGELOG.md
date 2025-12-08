@@ -1,3 +1,56 @@
+## [v3.4.5.c] - 2025-12-08
+### 👥 Nouveautés Majeures : Community Hub
+Cette version transforme le site en un véritable réseau social où chaque membre possède une identité publique et des accomplissements.
+
+#### 👤 Profil Utilisateur Public
+* **Nouvelle Page :** `user.php?name=Pseudo` génère dynamiquement le profil de n'importe quel membre.
+* **Carte d'Identité :** Affichage de l'avatar, du rôle (Admin/Editor/User), de la bio, de la date d'inscription et du statut "En ligne".
+* **Design Immersif :** En-tête "Hero" avec dégradé et avatar centré (Layout responsive respectant la grille du site).
+
+#### 🏆 Intégration Gamification
+* **Mur des Trophées :** Les badges gagnés dans l'Arcade (v3.6) sont fièrement affichés sur le profil.
+* **Arcade Stats :** Tableau des meilleurs scores personnels pour Snake, Tetris et Space Invaders.
+
+#### 🔗 Maillage Social
+* **Flux d'Activité :** Affichage des derniers articles publiés, projets créés et commentaires postés par l'utilisateur.
+* **Liens Intelligents :** Les noms d'auteurs dans les articles (`post.php`), projets (`project.php`) et commentaires sont désormais cliquables vers le profil.
+
+#### 🛠️ Correctifs & Performance
+* **Cache Management :** Ajout du nettoyage automatique du cache (`clear_site_cache`) lors de l'ajout/modification/suppression de Menus et Widgets pour une mise à jour instantanée.
+* **Layout Fix :** Correction des problèmes de chevauchement CSS sur les conteneurs Bootstrap imbriqués.
+
+---
+
+## [v3.4.5.b] - 2025-12-08
+### 📊 Nouveautés Majeures : Data Intelligence
+Refonte complète du tableau de bord d'administration pour offrir une vision analytique.
+
+#### 🧠 Dashboard Admin
+* **Architecture Modulaire :** Découpage du dashboard en sous-modules (`dash_kpi`, `dash_analytics`, `dash_tasks`) pour une meilleure maintenabilité.
+* **Graphiques Interactifs (Chart.js) :** * Courbe de trafic réel (7 derniers jours) basée sur `visitor_analytics`.
+    * Camembert des sources de trafic (Référents).
+    * Histogramme des pages les plus vues.
+* **KPI Modernes :** Affichage des indicateurs clés (Visites, Santé Contenu, Engagement) sous forme de grandes cartes.
+* **Centre de Tâches :** Système d'onglets pour la modération rapide (Commentaires, Articles, Témoignages).
+
+---
+
+## [v3.4.5.a] - 2025-12-08
+### 🎨 Nouveautés Majeures : Design System
+Cette version introduit un moteur de personnalisation visuelle complet ("Theme Customizer").
+
+#### 🖌️ Personnalisation (No-Code)
+* **Onglet Thème :** Nouvelle section dans les réglages globaux pour gérer l'apparence.
+* **Sélecteur de Couleurs :** Modification en temps réel des couleurs Primaire (Boutons, Liens) et Secondaire (Bordures, Badges) via des inputs natifs.
+* **Typographie :** Choix de la police d'écriture parmi une sélection Google Fonts (Nunito, Roboto, Poppins, etc.).
+* **CSS Custom :** Champ dédié pour injecter du CSS personnalisé qui surcharge le thème par défaut.
+
+#### 🔧 Technique
+* **Variables CSS :** Refonte du `header.php` pour utiliser les variables `:root` (--bs-primary, --bs-link-color) de Bootstrap 5 dynamiquement.
+* **Base de données :** Extension de la table `settings` pour stocker les préférences de design.
+
+---
+
 ## [v3.4.4] - 2025-12-08
 ### 🔒 Nouveautés Majeures : Security & Performance
 Cette version renforce drastiquement la sécurité et la vitesse de chargement du site.

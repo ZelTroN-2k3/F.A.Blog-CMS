@@ -141,7 +141,12 @@ if (isset($_GET['delete-id'])) {
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
-    
+
+    // --- AJOUT : VIDER LE CACHE ---
+    if(function_exists('clear_site_cache')) {
+        clear_site_cache();
+    }
+    // ------------------------------
     echo '<meta http-equiv="refresh" content="0; url=widgets.php' . $status_url_query . '">';
     exit;
 }
