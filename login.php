@@ -1,9 +1,10 @@
 <?php
 include "core.php";
+require_once "core/GoogleAuth.php"; // Inclusion de la librairie 2FA
+
 head();
 
 // --- FONCTION LOG ACTIVITY (Version Locale pour login.php) ---
-// Nécessaire car login.php n'inclut pas admin/header.php
 if (!function_exists('log_activity')) {
     function log_activity($user_id, $action, $details) {
         global $connect;
@@ -37,6 +38,7 @@ if (!isset($_SESSION['login_lockout_time'])) { $_SESSION['login_lockout_time'] =
 $error_login = '';
 $error_register = '';
 $success_register = '';
+$step_2fa = false; // Variable pour afficher le formulaire 2FA
 
 // ============================================================
 // LOGIQUE DE CONNEXION (SIGN IN)
@@ -48,14 +50,15 @@ if ($_SESSION['login_lockout_time'] > time()) {
     $error_login = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Too many failed attempts. Please try again in ' . $time_remaining . ' minute(s).</div>';
 }
 
+// 1. TRAITEMENT DU FORMULAIRE DE CONNEXION (Username/Pass)
 if (isset($_POST['signin']) && !$is_locked_out) {
     validate_csrf_token();
     
     $username = $_POST['username'];
     $password_plain = $_POST['password'];
     
-    // 1. Récupérer le hash
-    $stmt = mysqli_prepare($connect, "SELECT id, username, password FROM `users` WHERE `username`=?");
+    // Récupérer le hash ET les infos 2FA
+    $stmt = mysqli_prepare($connect, "SELECT id, username, password, two_factor_enabled, two_factor_secret FROM `users` WHERE `username`=?");
     mysqli_stmt_bind_param($stmt, "s", $username);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -65,20 +68,71 @@ if (isset($_POST['signin']) && !$is_locked_out) {
         $user_row = mysqli_fetch_assoc($result);
         
         if (password_verify($password_plain, $user_row['password'])) {
-            // Succès : Reset des tentatives
-            $_SESSION['login_attempts'] = 0;
-            $_SESSION['login_lockout_time'] = 0;
-            $_SESSION['sec-username'] = $username;
             
-            // --- AJOUT LOG ---
-            log_activity($user_row['id'], "Login", "User logged in successfully");
-            // -----------------
-
-            echo '<meta http-equiv="refresh" content="0; url=profile">';
-            exit;
+            // --- VÉRIFICATION 2FA ---
+            if ($user_row['two_factor_enabled'] == 'Yes') {
+                // On ne connecte PAS tout de suite. On stocke l'ID en session temporaire.
+                $_SESSION['temp_2fa_user_id'] = $user_row['id'];
+                $_SESSION['temp_2fa_username'] = $user_row['username'];
+                $_SESSION['temp_2fa_secret'] = $user_row['two_factor_secret'];
+                $step_2fa = true; // On active l'affichage du formulaire 2FA
+            } else {
+                // Pas de 2FA : Connexion Directe
+                doLogin($user_row['id'], $user_row['username']);
+            }
+            
+        } else {
+            handleLoginFail();
         }
+    } else {
+        handleLoginFail();
     }
+}
+
+// 2. TRAITEMENT DU CODE 2FA
+if (isset($_POST['verify_2fa'])) {
+    validate_csrf_token();
     
+    if (isset($_SESSION['temp_2fa_user_id'])) {
+        $code = $_POST['code'];
+        $secret = $_SESSION['temp_2fa_secret'];
+        
+        $ga = new GoogleAuth();
+        if ($ga->verifyCode($secret, $code)) {
+            // Code OK : Connexion finale
+            doLogin($_SESSION['temp_2fa_user_id'], $_SESSION['temp_2fa_username']);
+            
+            // Nettoyage session temporaire
+            unset($_SESSION['temp_2fa_user_id']);
+            unset($_SESSION['temp_2fa_username']);
+            unset($_SESSION['temp_2fa_secret']);
+        } else {
+            $error_login = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Invalid Code.</div>';
+            $step_2fa = true; // On reste sur le formulaire de code
+        }
+    } else {
+        $error_login = '<div class="alert alert-danger">Session expired. Please sign in again.</div>';
+    }
+}
+
+// --- FONCTIONS HELPER ---
+
+function doLogin($uid, $uname) {
+    global $connect;
+    // Succès : Reset des tentatives
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['login_lockout_time'] = 0;
+    $_SESSION['sec-username'] = $uname;
+    
+    // Log
+    log_activity($uid, "Login", "User logged in successfully");
+
+    echo '<meta http-equiv="refresh" content="0; url=profile">';
+    exit;
+}
+
+function handleLoginFail() {
+    global $is_locked_out, $error_login;
     // Échec : Incrémenter tentatives
     $_SESSION['login_attempts']++;
     $attempts_left = 5 - $_SESSION['login_attempts'];
@@ -188,44 +242,77 @@ if (isset($_POST['register'])) {
                 <div class="col-md-6 mb-4 border-end-md">
                     <h4 class="mb-4 text-primary"><i class="fas fa-sign-in-alt"></i> Sign In</h4>
                     
-                    <div class="d-grid gap-2 mb-4">
-                        <a href="social_callback.php?provider=Google" class="btn btn-outline-danger shadow-sm">
-                            <i class="fab fa-google me-2"></i> Sign in with Google
-                        </a>
-                    </div>
-
-                    <div class="position-relative mb-4">
-                        <hr>
-                        <span class="position-absolute top-50 start-50 translate-middle px-2 bg-white text-muted small">OR</span>
-                    </div>
-
-                    <?php echo $error_login; ?>
-
-                    <form action="" method="post">
-                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <?php if (!$step_2fa): // --- MODE NORMAL (LOGIN) --- ?>
                         
-                        <div class="form-group mb-3">
-                            <label class="form-label">Username</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" name="username" class="form-control" required <?php if ($is_locked_out) echo 'disabled'; ?>>
-                            </div>
+                        <div class="d-grid gap-2 mb-4">
+                            <a href="social_callback.php?provider=Google" class="btn btn-outline-danger shadow-sm">
+                                <i class="fab fa-google me-2"></i> Sign in with Google
+                            </a>
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label class="form-label">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                <input type="password" name="password" class="form-control" required <?php if ($is_locked_out) echo 'disabled'; ?>>
-                            </div>
+                        <div class="position-relative mb-4">
+                            <hr>
+                            <span class="position-absolute top-50 start-50 translate-middle px-2 bg-white text-muted small">OR</span>
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" name="signin" class="btn btn-primary" <?php if ($is_locked_out) echo 'disabled'; ?>>
-                                Login
-                            </button>
+                        <?php echo $error_login; ?>
+
+                        <form action="" method="post">
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                            
+                            <div class="form-group mb-3">
+                                <label class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" name="username" class="form-control" required <?php if ($is_locked_out) echo 'disabled'; ?>>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    <input type="password" name="password" class="form-control" required <?php if ($is_locked_out) echo 'disabled'; ?>>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" name="signin" class="btn btn-primary" <?php if ($is_locked_out) echo 'disabled'; ?>>
+                                    Login
+                                </button>
+                            </div>
+                        </form>
+
+                    <?php else: // --- MODE 2FA (CODE) --- ?>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-shield-alt fa-2x float-start me-3"></i>
+                            <strong>Security Verification</strong><br>
+                            Please enter the 6-digit code from your Authenticator app to continue.
                         </div>
-                    </form>
+                        
+                        <?php echo $error_login; ?>
+
+                        <form action="" method="post">
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label fw-bold">Verification Code</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="text" name="code" class="form-control text-center letter-spacing-2" placeholder="000 000" required autocomplete="off" autofocus maxlength="6" style="letter-spacing: 5px; font-weight: bold;">
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" name="verify_2fa" class="btn btn-primary btn-lg shadow-sm">
+                                    Verify & Login
+                                </button>
+                            </div>
+                        </form>
+
+                    <?php endif; ?>
+
                 </div>
 
                 <div class="col-md-6">

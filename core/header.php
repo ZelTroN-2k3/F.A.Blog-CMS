@@ -645,79 +645,89 @@ if ($settings['layout'] == 'Wide') {
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto">
 <?php
-    // Requête simple sans variable externe
-	$runq = mysqli_query($connect, "SELECT * FROM `menu` WHERE active = 'Yes' ORDER BY id ASC"); 
-    
-    // On prépare l'URL de base pour simplifier le code
-    $base_url = htmlspecialchars($settings['site_url']); 
+// --- DÉBUT CACHE MENU ---
+// On essaie de lire le cache 'main_menu' (valable 1 heure = 3600s)
+// Assurez-vous que la fonction get_cache() existe dans core/functions.php
+$menu_cache = false;
+if(function_exists('get_cache')) {
+    $menu_cache = get_cache('main_menu', 3600);
+}
 
-    while ($row = mysqli_fetch_assoc($runq)) {
+if ($menu_cache) {
+    // HIT : On affiche le HTML stocké
+    echo $menu_cache;
+} else {
+    // MISS : On génère le menu et on le stocke
+    ob_start(); // Démarre la mémoire tampon
 
+        // Requête simple sans variable externe
+        $runq = mysqli_query($connect, "SELECT * FROM `menu` WHERE active = 'Yes' ORDER BY id ASC"); 
+        
+        // On prépare l'URL de base pour simplifier le code
+        $base_url = htmlspecialchars($settings['site_url']); 
+
+while ($row = mysqli_fetch_assoc($runq)) {
+
+        // --- 1. MENU BLOG ---
         if ($row['path'] == 'blog') {
-			
-            echo '	<li class="nav-item link-body-emphasis dropdown">
-						<a href="' . $base_url . '/blog" class="nav-link link-dark dropdown-toggle px-2';
-            if ($current_page == 'blog.php' || $current_page == 'category.php' || $current_page == 'tag.php') {
-                echo ' active';
-            }
+            echo '<li class="nav-item link-body-emphasis dropdown">
+                    <a href="' . $base_url . '/blog" class="nav-link link-dark dropdown-toggle px-2';
+            if ($current_page == 'blog.php' || $current_page == 'category.php' || $current_page == 'tag.php') { echo ' active'; }
             echo '" data-bs-toggle="dropdown">
-							<i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . ' 
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="' . $base_url . '/blog">View all posts</a></li>
-                            <li><a class="dropdown-item" href="' . $base_url . '/categories">View all Categories</a></li>';
+                        <i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . ' 
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="' . $base_url . '/blog">View all posts</a></li>
+                        <li><a class="dropdown-item" href="' . $base_url . '/categories">View all Categories</a></li>';
             
             $run2 = mysqli_query($connect, "SELECT * FROM `categories` ORDER BY category ASC");
             while ($row2 = mysqli_fetch_array($run2)) {
-                echo '		<li><a class="dropdown-item" href="' . $base_url . '/category?name=' . htmlspecialchars($row2['slug']) . '"><i class="fas fa-chevron-right"></i> ' . htmlspecialchars($row2['category']) . '</a></li>';
+                echo '<li><a class="dropdown-item" href="' . $base_url . '/category?name=' . htmlspecialchars($row2['slug']) . '"><i class="fas fa-chevron-right"></i> ' . htmlspecialchars($row2['category']) . '</a></li>';
             }
-            echo '		</ul>
-					</li>';
+            echo '</ul></li>';
 
+        // --- 2. MENU PROJETS ---
         } else if ($row['path'] == 'projects') {
-            
-            // --- MENU PROJETS (Avec liens absolus) ---
-            echo '	<li class="nav-item link-body-emphasis dropdown">
-						<a href="' . $base_url . '/projects" class="nav-link link-dark dropdown-toggle px-2';
+            echo '<li class="nav-item link-body-emphasis dropdown">
+                    <a href="' . $base_url . '/projects" class="nav-link link-dark dropdown-toggle px-2';
             
             if ($current_page == 'projects.php' || $current_page == 'project.php') { echo ' active'; }
             
             echo '" data-bs-toggle="dropdown">
-							<i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . ' 
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="' . $base_url . '/projects"><i class="fas fa-th-large me-2"></i> View all projects</a></li>
-                            
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">By Category</h6></li>';
-                            
-                            $q_p_cats = mysqli_query($connect, "SELECT category, slug FROM project_categories ORDER BY category ASC");
-                            if(mysqli_num_rows($q_p_cats) > 0) {
-                                while($pc = mysqli_fetch_assoc($q_p_cats)) {
-                                    echo '<li><a class="dropdown-item" href="' . $base_url . '/projects?category='.htmlspecialchars($pc['slug']).'"><i class="fas fa-angle-right me-2 text-muted"></i> '.htmlspecialchars($pc['category']).'</a></li>';
-                                }
-                            } else {
-                                echo '<li><span class="dropdown-item text-muted small">No categories yet</span></li>';
+                        <i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . ' 
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="' . $base_url . '/projects"><i class="fas fa-th-large me-2"></i> View all projects</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">By Category</h6></li>';
+                        
+                        $q_p_cats = mysqli_query($connect, "SELECT category, slug FROM project_categories ORDER BY category ASC");
+                        if(mysqli_num_rows($q_p_cats) > 0) {
+                            while($pc = mysqli_fetch_assoc($q_p_cats)) {
+                                echo '<li><a class="dropdown-item" href="' . $base_url . '/projects?category='.htmlspecialchars($pc['slug']).'"><i class="fas fa-angle-right me-2 text-muted"></i> '.htmlspecialchars($pc['category']).'</a></li>';
                             }
+                        } else {
+                            echo '<li><span class="dropdown-item text-muted small">No categories yet</span></li>';
+                        }
 
-            echo '          <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">By Difficulty</h6></li>
-                            
-                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Easy"><span class="badge bg-success me-2">Easy</span> Beginner</a></li>
-                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Intermediate"><span class="badge bg-primary me-2">Medium</span> Intermediate</a></li>
-                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Advanced"><span class="badge bg-warning me-2">Hard</span> Advanced</a></li>
-                            <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Expert"><span class="badge bg-danger me-2">Expert</span> Master</a></li>
-						</ul>
-					</li>';
+            echo '      <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">By Difficulty</h6></li>
+                        <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Easy"><span class="badge bg-success me-2">Easy</span> Beginner</a></li>
+                        <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Intermediate"><span class="badge bg-primary me-2">Medium</span> Intermediate</a></li>
+                        <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Advanced"><span class="badge bg-warning me-2">Hard</span> Advanced</a></li>
+                        <li><a class="dropdown-item" href="' . $base_url . '/projects?difficulty=Expert"><span class="badge bg-danger me-2">Expert</span> Master</a></li>
+                    </ul>
+                </li>';
+        
+        // --- 3. MENU STANDARD ---
         } else {
-            // --- MENU STANDARD (Avec liens absolus) ---
             // On gère le cas où le chemin contient déjà http (lien externe)
             $href = (strpos($row['path'], 'http') === 0) ? $row['path'] : $base_url . '/' . $row['path'];
 
-			echo '	<li class="nav-item link-body-emphasis">
-						<a href="' . htmlspecialchars($href) . '" class="nav-link link-dark px-2';
+            echo '<li class="nav-item link-body-emphasis">
+                    <a href="' . htmlspecialchars($href) . '" class="nav-link link-dark px-2';
             
             $current_slug = $_GET['name'] ?? '';
             if ($current_page == 'page.php' && ($current_slug == ltrim(strstr($row['path'], '='), '='))) {
@@ -726,32 +736,26 @@ if ($settings['layout'] == 'Wide') {
                 echo ' active';
             }
             echo '">
-							<i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . '
-						</a>
-					</li>';
+                        <i class="' . htmlspecialchars($row['fa_icon']) . '"></i> ' . htmlspecialchars($row['page']) . '
+                    </a>
+                </li>';
         }
     }
-?>
-<?php
-    // --- AFFICHAGE DES MEGA MENUS DYNAMIQUES (Table 'mega_menus') ---
+
+    // --- 4. MEGA MENUS DYNAMIQUES ---
     $purifier = get_purifier();
     $mm_query = mysqli_query($connect, "SELECT * FROM mega_menus WHERE active='Yes' ORDER BY position_order ASC");
     
-    // Boucle à travers chaque méga menu
     while ($mm = mysqli_fetch_assoc($mm_query)) {
         
-        // 1. Vérifier la visibilité des colonnes
+        // Vérifier la visibilité des colonnes
         $show_col_2 = ($mm['col_2_type'] != 'none');
         $show_col_3 = ($mm['col_3_type'] != 'none');
 
-        // 2. Calculer la largeur idéale du menu (PC uniquement)
-        // Par défaut 900px. On réduit si on cache des colonnes.
+        // Calculer la largeur idéale du menu (PC uniquement)
         $custom_width = '900px'; 
-        if (!$show_col_2 && !$show_col_3) {
-            $custom_width = '250px'; // Une seule colonne (Explore)
-        } elseif (!$show_col_2 || !$show_col_3) {
-            $custom_width = '600px'; // Deux colonnes
-        }
+        if (!$show_col_2 && !$show_col_3) { $custom_width = '250px'; } 
+        elseif (!$show_col_2 || !$show_col_3) { $custom_width = '600px'; }
 
         echo '<li class="nav-item dropdown">
                 <a href="' . htmlspecialchars($mm['trigger_link']) . '" class="nav-link dropdown-toggle px-2" data-bs-toggle="dropdown">
@@ -771,51 +775,40 @@ if ($settings['layout'] == 'Wide') {
                                 </div>
                             </div>';
 
-                            // --- COLONNE 2 (Conditionnelle) ---
+                            // Colonne 2
                             if ($show_col_2) {
                                 echo '<div class="col-12 col-lg-4 border-end-lg">
                                         <h6 class="text-uppercase fw-bold text-secondary mb-3 pt-2" style="font-size: 0.85rem;">
                                             ' . htmlspecialchars($mm['col_2_title']) . '
                                         </h6>
                                         <div class="row">';
-                                
                                 if ($mm['col_2_type'] == 'categories') {
                                     $run_cats = mysqli_query($connect, "SELECT * FROM `categories` ORDER BY category ASC");
                                     while ($rc = mysqli_fetch_assoc($run_cats)) {
-                                        echo '<div class="col-6 mb-1">
-                                                <a class="dropdown-item rounded px-2 py-1 small text-truncate" href="category?name=' . htmlspecialchars($rc['slug']) . '">
-                                                    <i class="fas fa-angle-right text-muted me-1"></i> ' . htmlspecialchars($rc['category']) . '
-                                                </a>
-                                              </div>';
+                                        echo '<div class="col-6 mb-1"><a class="dropdown-item rounded px-2 py-1 small text-truncate" href="category?name=' . htmlspecialchars($rc['slug']) . '"><i class="fas fa-angle-right text-muted me-1"></i> ' . htmlspecialchars($rc['category']) . '</a></div>';
                                     }
                                 } elseif ($mm['col_2_type'] == 'custom') {
                                     echo '<div class="col-12">' . $purifier->purify($mm['col_2_content']) . '</div>';
                                 }
-                                
-                                echo '  </div>
-                                    </div>';
+                                echo '</div></div>';
                             }
 
-                            // --- COLONNE 3 (Conditionnelle) ---
+                            // Colonne 3
                             if ($show_col_3) {
                                 echo '<div class="col-12 col-lg-6">
                                         <h6 class="text-uppercase fw-bold text-success mb-3 pt-2" style="font-size: 0.85rem;">
                                             ' . htmlspecialchars($mm['col_3_title']) . '
                                         </h6>
                                         <div class="row g-3">';
-                                
                                 if ($mm['col_3_type'] == 'latest_posts') {
                                     $recent_q = mysqli_query($connect, "SELECT title, slug, image, created_at FROM posts WHERE active='Yes' AND publish_at <= NOW() ORDER BY id DESC LIMIT 4");
                                     if(mysqli_num_rows($recent_q) > 0){
                                         while($post = mysqli_fetch_assoc($recent_q)){
                                             $img_src = $post['image'] != '' ? htmlspecialchars($post['image']) : 'assets/img/no-image.png';
-                                            if($post['image'] == '') {
-                                                 $img_display = '<div class="bg-light d-flex align-items-center justify-content-center text-muted small" style="height: 60px; width: 80px; border-radius: 4px;"><i class="fas fa-image"></i></div>';
-                                            } else {
-                                                 $img_display = '<img src="' . $img_src . '" class="img-fluid rounded" style="height: 60px; width: 80px; object-fit: cover;" alt="Post">';
-                                            }
-                                            echo '
-                                            <div class="col-12 col-md-6">
+                                            if($post['image'] == '') { $img_display = '<div class="bg-light d-flex align-items-center justify-content-center text-muted small" style="height: 60px; width: 80px; border-radius: 4px;"><i class="fas fa-image"></i></div>'; } 
+                                            else { $img_display = '<img src="' . $img_src . '" class="img-fluid rounded" style="height: 60px; width: 80px; object-fit: cover;" alt="Post">'; }
+                                            
+                                            echo '<div class="col-12 col-md-6">
                                                 <a href="post?name=' . htmlspecialchars($post['slug']) . '" class="text-decoration-none link-dark d-flex align-items-center p-1 rounded hover-bg-light">
                                                     <div class="flex-shrink-0 me-2">' . $img_display . '</div>
                                                     <div class="flex-grow-1" style="min-width: 0;">
@@ -829,17 +822,25 @@ if ($settings['layout'] == 'Wide') {
                                 } elseif ($mm['col_3_type'] == 'custom') {
                                     echo '<div class="col-12">' . $purifier->purify($mm['col_3_content']) . '</div>';
                                 }
-
-                                echo '  </div>
-                                    </div>';
+                                echo '</div></div>';
                             }
 
-        echo '          </div> </div>
+        echo '          </div> 
+                    </div>
                 </div>
               </li>';
-    } // Fin de la boucle des mega menus
-?>  
-				</ul>
+    } 
+
+    // --- FIN DU CACHE ---
+    // Sauvegarde du HTML généré dans le fichier cache
+    $generated_html = ob_get_clean();
+    if(function_exists('save_cache')) {
+        save_cache('main_menu', $generated_html);
+    }
+    echo $generated_html;
+}
+?>
+</ul>
 
                 <!-- Right side of navbar -->
                 <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">

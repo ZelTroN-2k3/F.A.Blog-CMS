@@ -601,7 +601,8 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `site_url`, `sitename`, `description`, `email`, `gcaptcha_sitekey`, `gcaptcha_secretkey`, `head_customcode`, `head_customcode_enabled`, `facebook`, `instagram`, `twitter`, `youtube`, `linkedin`, `discord`, `comments`, `rtl`, `date_format`, `layout`, `latestposts_bar`, `sidebar_position`, `posts_per_row`, `theme`, `background_image`, `posts_per_page`, `projects_per_page`, `meta_title`, `favicon_url`, `apple_touch_icon_url`, `meta_author`, `meta_generator`, `meta_robots`, `sticky_header`, `maintenance_mode`, `maintenance_title`, `maintenance_message`, `homepage_slider`, `google_maps_code`, `site_logo`, `maintenance_image`, `ban_bg_image`, `mail_protocol`, `mail_from_name`, `mail_from_email`, `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_enc`, `comments_approval`, `comments_blacklist`, `cookie_consent_enabled`, `cookie_message`, `event_mode`, `event_effect`, `event_banner_active`, `event_banner_content`, `event_banner_color`) VALUES
-(1, 'http://localhost/F.A.Blog-', 'F.A-Blog', 'Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.', 'admin@exemple.com', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==', 'Off', 'https://www.facebook.com/', 'https://www.instagram.com/', '', 'https://www.youtube.com/', '', 'https://discord.com/', 'guests', 'No', 'd.m.Y', 'Fixed', 'Enabled', 'Right', '2', 'Bootstrap 5', '', '4', '3', 'F.A Blog - Titre SEO', 'assets/img/favicon.png', 'assets/img/favicon.png', 'ZelTroN2K3_WEB', 'faBlog', 'index, follow', 'Off', 'Off', 'Site Under Maintenance', '<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>', 'Featured', 'PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==', 'uploads/other/logo_693034e757e31.png', 'assets/img/maintenance.jpg', 'default.jpg', 'smtp', '', '', '', 0, '', '', 'tls', 0, '0', 1, 'This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.', 'None', 'None', 'No', '0', '#dc3545');
+(1, 'http://localhost/F.A.Blog-', 'F.A-Blog', 'Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.', 'admin@exemple.com', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==', 'Off', 'https://www.facebook.com/', 'https://www.instagram.com/', '', 'https://www.youtube.com/', '', 'https://discord.com/', 'guests', 'No', 'd.m.Y', 'Fixed', 'Enabled', 'Right', '2', 'Bootstrap 5', '', '4', '3', 'F.A Blog - Titre SEO', 'assets/img/favicon.png', 'assets/img/favicon.png', 'ZelTroN2K3_WEB', 'faBlog', 'index, follow', 'Off', 'Off', 'Site Under Maintenance', '<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>', 'Featured', 
+'PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==', 'uploads/other/logo_693034e757e31.png', 'assets/img/maintenance.jpg', 'default.jpg', 'smtp', '', '', '', 0, '', '', 'tls', 0, 'viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,whatsapp,telegram,dm me,cash app,paypal,marketing,seo,ranking,traffic,website,domain,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,viagra,pÃƒÂ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,marketing,seo,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,pÃƒÂ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,suicide,kill yourself,die,http,https,www,.com,.net,.org,.biz,.info', 1, 'This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.', 'None', 'None', 'No', '0', '#dc3545');
 
 -- --------------------------------------------------------
 
@@ -686,7 +687,9 @@ CREATE TABLE `users` (
   `website` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `last_activity` datetime DEFAULT NULL,
-  `typing_in_chat_with` int(11) DEFAULT '0'
+  `typing_in_chat_with` int(11) DEFAULT '0',
+  `two_factor_secret` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `two_factor_enabled` enum('Yes','No') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -796,7 +799,7 @@ CREATE TABLE `chat_status` (
 CREATE TABLE `activity_logs` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `action_type` varchar(50) NOT NULL,
+  `action_type` varchar(50) NOT NULL, -- Ex: 'Login', 'Delete Post', 'Update Settings'
   `details` text NOT NULL,
   `ip_address` varchar(45) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -938,7 +941,7 @@ CREATE TABLE `badges` (
   `icon` varchar(50) NOT NULL, -- FontAwesome ex: 'fas fa-trophy'
   `color` varchar(20) NOT NULL DEFAULT 'primary', -- bootstrap class: primary, warning, danger
   `trigger_type` varchar(50) NOT NULL, -- 'score_snake', 'score_tetris', 'manual'
-  `trigger_value` int(11) NOT NULL DEFAULT 0 -- Score nécessaire pour obtenir le badge
+  `trigger_value` int(11) NOT NULL DEFAULT '0' -- Score nécessaire pour obtenir le badge
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -954,12 +957,12 @@ CREATE TABLE `user_badges` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 4. Insérer des badges par défaut
-INSERT INTO `badges` (`name`, `description`, `icon`, `color`, `trigger_type`, `trigger_value`) VALUES
-('Snake Novice', 'Score > 50 at Snake', 'fas fa-worm', 'success', 'score_snake', 50),
-('Snake Master', 'Score > 200 at Snake', 'fas fa-crown', 'warning', 'score_snake', 200),
-('Tetris Builder', 'Score > 1000 at Tetris', 'fas fa-cubes', 'info', 'score_tetris', 1000),
-('Space Defender', 'Score > 500 at Space Invaders', 'fas fa-rocket', 'danger', 'score_space', 500),
-('VIP Member', 'Premium Community Member', 'fas fa-gem', 'primary', 'manual', 0);
+INSERT INTO `badges` (`id`, `name`, `description`, `icon`, `color`, `trigger_type`, `trigger_value`) VALUES
+(1, 'Snake Novice', 'Score > 50 at Snake', 'fas fa-worm', 'success', 'score_snake', 50),
+(2, 'Snake Master', 'Score > 200 at Snake', 'fas fa-crown', 'warning', 'score_snake', 200),
+(3, 'Tetris Builder', 'Score > 1000 at Tetris', 'fas fa-cubes', 'info', 'score_tetris', 1000),
+(4, 'Space Defender', 'Score > 500 at Space Invaders', 'fas fa-rocket', 'danger', 'score_space', 500),
+(5, 'VIP Member', 'Premium Community Member', 'fas fa-gem', 'primary', 'manual', 0);
 
 -- --------------------------------------------------------
 
@@ -1547,7 +1550,7 @@ ALTER TABLE `game_scores`
 -- AUTO_INCREMENT pour la table `badges`
 --
 ALTER TABLE `badges`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `user_badges`

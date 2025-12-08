@@ -150,6 +150,14 @@ if (isset($_POST['save'])) {
             );
 
             mysqli_stmt_execute($stmt);
+            // --- AJOUT LOG & CACHE FLUSH ---
+            if(function_exists('log_activity')) {
+                log_activity("Update Settings", "Updated global site settings.");
+            }
+            if(function_exists('clear_site_cache')) {
+                clear_site_cache(); // Vide le dossier cache/
+            }
+            // -------------------------------          
             mysqli_stmt_close($stmt);
 
             echo '

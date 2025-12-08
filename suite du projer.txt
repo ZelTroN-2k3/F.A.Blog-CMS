@@ -3,21 +3,41 @@ Maintenant que vous avez la **Boutique (v3.4.1)**, quelle direction voulez-vous 
 
 Voici 3 propositions intÃ©ressantes :
 
-1.  **ğŸ† Gamification & CommunautÃ© (v3.4.2) :**
+1.  ** Gamification & CommunautÃ© (v3.4.2) :**
 
       * Relier les jeux Arcade aux comptes utilisateurs (Enregistrer les Highscores en BDD).
-      * CrÃ©er un classement gÃ©nÃ©ral (Leaderboard) sur le site.
+      * CrÃ©er un classement général (Leaderboard) sur le site.
       * Donner des "Badges" aux utilisateurs (ex: "Top Gamer", "Acheteur VIP").
 
-2.  **ğŸ”’ SÃ©curitÃ© & Performance (v3.4.3) :**
+2.  ** Sécurité & Performance (v3.4.3) :**
 
-      * Ajouter l'authentification Ã  deux facteurs (2FA) pour l'admin.
-      * SystÃ¨me de cache pour accÃ©lÃ©rer le chargement des pages.
-      * Logs d'activitÃ© dÃ©taillÃ©s (Qui a modifiÃ© quoi ?).
+      * Ajouter l'authentification à deux facteurs (2FA) pour l'admin.
+      * Systéme de cache pour acélérer le chargement des pages.
+      * Logs d'activité détaillés (Qui a modifié quoi ?).
 
-3.  **ğŸ“± API & Mobile (v3.4.4) :**
+3.  ** API & Mobile (v3.4.4) :**
 
-      * CrÃ©er une API REST (`api/posts.php`, `api/shop.php`) qui renvoie du JSON.
-      * Cela permettrait de crÃ©er une application mobile ou d'afficher vos produits sur un autre site plus tard.
+      * Créer une API REST (`api/posts.php`, `api/shop.php`) qui renvoie du JSON.
+      * Cela permettrait de créer une application mobile ou d'afficher vos produits sur un autre site plus tard.
 
-Quelle option vous tente le plus ? (Ou avez-vous une autre idÃ©e ?) ğŸ™‚
+------------------------------------------------------------------
+
+
+### ?? Et maintenant ? (Roadmap v3.8.0)
+
+Vous avez un CMS très complet. Pour la prochaine étape (v3.8.0), voici 3 directions possibles :
+
+1.  **?? Éditeur de Thème (Theme Customizer) :**
+
+      * Pouvoir changer les couleurs (Primaire, Secondaire), la police et le CSS directement depuis l'admin (avec un sélecteur de couleur) sans toucher au code.
+
+2.  **?? Tableau de Bord SEO & Analytics :**
+
+      * Afficher un graphique des visites (basé sur votre table `visitor_analytics`) directement sur le Dashboard Admin.
+      * Voir les pages les plus vues et les référents (Google, Facebook...).
+
+3.  **?? API REST (Pour App Mobile) :**
+
+      * Créer des endpoints JSON (ex: `/api/get_posts.php`) pour permettre à une future application mobile ou un site tiers d'afficher votre contenu.
+
+Quelle direction vous inspire pour la suite ? ??

@@ -2,6 +2,32 @@
  * Script pour les interactions de la page post.php
  * (Partage, Commentaires, Likes, Favoris)
  */
+// Fonction globale pour le compteur de caractères (Version Sécurisée)
+function countText(val) {
+    // 1. SÉCURITÉ : Si 'val' est vide (appel automatique), on cherche le textarea
+    if (!val) {
+        val = document.getElementById('comment') || document.querySelector('textarea');
+    }
+
+    // 2. Si l'élément n'existe toujours pas ou n'a pas de valeur, on arrête tout (anti-crash)
+    if (!val || typeof val.value === 'undefined') {
+        return;
+    }
+
+    var maxLength = 1000; 
+    var len = val.value.length;
+    var counter = document.getElementById('charNum');
+    
+    if (counter) {
+        if (len >= maxLength) {
+            val.value = val.value.substring(0, maxLength);
+            counter.innerHTML = 0;
+        } else {
+            counter.innerHTML = maxLength - len;
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   // --- Données dynamiques ---
   const commentFormContainer = document.getElementById(

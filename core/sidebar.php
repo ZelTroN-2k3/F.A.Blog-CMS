@@ -358,13 +358,42 @@ function sidebar() {
 <!-- --- CODE --- -->
 
 <?php
-// Requête pour les widgets de type "sidebar"
-// C'est cette boucle qui affichera désormais la newsletter si elle est ajoutée dans l'admin
-$run = mysqli_query($connect, "SELECT * FROM widgets WHERE position = 'sidebar' AND active = 'Yes' ORDER BY id ASC");
-while ($row = mysqli_fetch_assoc($run)) {
-    // Appelle la nouvelle fonction d'affichage
-    render_widget($row);
+// --- CACHE SIDEBAR WIDGETS ---
+// On met en cache uniquement la zone des widgets dynamiques
+// Clé 'sidebar_widgets', durée 10 minutes (600s) pour garder un peu de fraîcheur (ex: Shop aléatoire)
+$sidebar_cache = get_cache('sidebar_widgets', 600);
+
+if ($sidebar_cache) {
+    echo $sidebar_cache;
+} else {
+    ob_start();
+    
+    // Requête Widgets
+    $run = mysqli_query($connect, "SELECT * FROM widgets WHERE position = 'sidebar' AND active = 'Yes' ORDER BY id ASC");
+    while ($row = mysqli_fetch_assoc($run)) {
+        // EXCEPTION : On ne cache PAS le widget "Utilisateurs en ligne" car il doit être temps réel
+        if ($row['widget_type'] == 'online_users') {
+            // On ferme le buffer temporairement pour afficher ce widget en direct
+            $cached_part = ob_get_contents();
+            ob_clean(); // On vide le buffer actuel
+            echo $cached_part; // On affiche ce qu'on avait
+            
+            // On affiche le widget live
+            render_widget($row);
+            
+            // On redémarre le buffer pour la suite
+            ob_start();
+        } else {
+            // Les autres widgets (Shop, Posts, HTML) vont dans le cache
+            render_widget($row);
+        }
+    }
+    
+    $content = ob_get_clean();
+    save_cache('sidebar_widgets', $content);
+    echo $content;
 }
+// -----------------------------
 ?>
 </div>
 		

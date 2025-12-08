@@ -1,3 +1,39 @@
+## [v3.4.4] - 2025-12-08
+### 🔒 Nouveautés Majeures : Security & Performance
+Cette version renforce drastiquement la sécurité et la vitesse de chargement du site.
+
+#### 🛡️ Authentification & Accès
+* **Double Facteur (2FA) :** Intégration complète de l'algorithme TOTP (Google Authenticator).
+* **Protection Admin :** Sécurisation de `admin.php` et `login.php` avec vérification 2FA.
+* **Anti-Bruteforce :** Verrouillage temporaire (5 minutes) après 5 tentatives échouées.
+
+#### 👁️ Surveillance
+* **Activity Logger :** Nouveau système de logs enregistrant les actions critiques.
+* **Viewer Admin :** Page dédiée `/admin/logs.php` pour consulter l'historique.
+
+#### ⚡ Performance (Cache)
+* **Fragment Caching :** Système de cache fichier pour le Menu principal et la Sidebar.
+* **Optimisation SQL :** Réduction drastique des requêtes en base de données au chargement des pages.
+* **Auto-Flush :** Nettoyage intelligent du cache lors de la modification des paramètres.
+
+---
+
+## [v3.4.3] - 2025-12-08
+### 🔒 Nouveautés Majeures : Security Fortress
+Cette version renforce drastiquement la sécurité de l'administration et du compte utilisateur.
+
+#### 🛡️ Authentification & Accès
+* **Double Facteur (2FA) :** Intégration complète de l'algorithme TOTP (Google Authenticator).
+* **Protection Admin :** Sécurisation de `admin.php` et `login.php` avec vérification 2FA conditionnelle.
+* **Anti-Bruteforce :** Verrouillage temporaire (5 minutes) après 5 tentatives de connexion échouées.
+
+#### 👁️ Surveillance
+* **Activity Logger :** Nouveau système de logs enregistrant les actions critiques (Connexion, Modification Réglages, Suppression).
+* **Viewer Admin :** Page dédiée `/admin/logs.php` pour consulter l'historique des activités.
+* **Mouchards :** Intégration de traceurs dans les fonctions clés du coeur.
+
+---
+
 ## [v3.4.2] - 2025-12-07
 ### 🏆 Nouveautés Majeures : Gamification
 Cette version transforme le site en une plateforme communautaire interactive avec système de progression.

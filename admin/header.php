@@ -52,7 +52,12 @@ include "includes/header_logic.php";
                     <a href="sync_files.php" class="nav-link <?php echo ($current_page == 'sync_files.php') ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-sync"></i> Sync-Files
                     </a>
-                </li>                 
+                </li> 
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="security_2fa.php" class="nav-link <?php echo ($current_page == 'security_2fa.php') ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-user-shield"></i> Two-Factor Auth
+                    </a>
+                </li>
             <?php } ?>
         </ul>
         <ul class="navbar-nav ml-auto">

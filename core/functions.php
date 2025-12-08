@@ -948,4 +948,50 @@ function track_visitor() {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
+
+// --- SYSTÈME DE LOGS (MOUCHARD) ---
+function log_activity($action_type, $details) {
+    global $connect, $rowu; // On utilise $rowu pour savoir qui est connecté
+    
+    // Si personne n'est connecté (ex: tentative de login échouée), on met 0 ou l'ID si dispo
+    $user_id = isset($rowu['id']) ? $rowu['id'] : 0;
+    $ip = $_SERVER['REMOTE_ADDR'];
+    
+    $stmt = mysqli_prepare($connect, "INSERT INTO activity_logs (user_id, action_type, details, ip_address, created_at) VALUES (?, ?, ?, ?, NOW())");
+    mysqli_stmt_bind_param($stmt, "isss", $user_id, $action_type, $details, $ip);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+// --- SYSTÈME DE CACHE FICHIER ---
+
+// 1. Lire le cache
+function get_cache($key, $duration = 3600) {
+    // Clé hashée pour le nom de fichier
+    $file = __DIR__ . '/../cache/' . md5($key) . '.html';
+    
+    // Si le fichier existe ET qu'il est récent (moins de $duration secondes)
+    if (file_exists($file) && (time() - filemtime($file) < $duration)) {
+        return file_get_contents($file);
+    }
+    return false;
+}
+
+// 2. Écrire le cache
+function save_cache($key, $content) {
+    $file = __DIR__ . '/../cache/' . md5($key) . '.html';
+    file_put_contents($file, $content);
+}
+
+// 3. Vider le cache (Global ou Spécifique)
+function clear_site_cache() {
+    $files = glob(__DIR__ . '/../cache/*.html');
+    foreach ($files as $file) {
+        if (is_file($file)) {
+            @unlink($file); // Supprime le fichier
+        }
+    }
+    // Log l'action pour la sécurité
+    if(function_exists('log_activity')) { log_activity("System", "Cache cleared automatically."); }
+}
 ?>
