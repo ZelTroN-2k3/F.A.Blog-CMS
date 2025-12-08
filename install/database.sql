@@ -275,7 +275,8 @@ INSERT INTO `menu` (`id`, `page`, `path`, `fa_icon`, `active`) VALUES
 (11, 'Privacy Policy', 'privacy-policy', 'fas fa-user-shield me-2 text-info', 'No'),
 (12, 'Newsletter', 'newsletter', 'fas fa-envelope text-danger', 'No'),
 (13, 'Chats', 'chat', 'fab fa-whatsapp fa-lg text-success', 'Yes'),
-(14, 'Games', 'games/index', 'fas fa-gamepad', 'No');
+(14, 'Games', 'games/index', 'fas fa-gamepad', 'No'),
+(15, 'Shop', 'shop', 'fas fa-shopping-cart', 'Yes');
 
 -- --------------------------------------------------------
 
@@ -708,11 +709,12 @@ CREATE TABLE `widgets` (
 INSERT INTO `widgets` (`id`, `title`, `widget_type`, `content`, `config_data`, `position`, `active`) VALUES
 (1, 'Chats On Line', 'online_users', NULL, NULL, 'Sidebar', 'Yes'),
 (2, 'Latest Projects', 'latest_projects', NULL, '{\"count\":5}', 'Sidebar', 'Yes'),
-(3, 'The F.A Blog Spirit', 'html', '<p data-path-to-node=\"2\">Welcome to the world of <b>F.A Blog</b>.</p><p data-path-to-node=\"3\">Here, we take the time to decipher, analyze, and share insights on [Your Topic]. Far from the online noise, this space is dedicated to quality and authenticity.</p><p data-path-to-node=\"4\">My goal? To provide you with content that inspires and sparks reflection. Whether you are here out of curiosity or passion, you are now part of the journey.</p><p data-path-to-node=\"5\"><b>Don t miss a thing:</b>\r\nSubscribe to our newsletter to get our best insights delivered straight to your inbox.</p><blockquote data-path-to-node=\"6\"><p data-path-to-node=\"6,0\"><i>\"Understanding today to better build tomorrow.\"</i></p></blockquote>\r\n', NULL, 'Sidebar', 'Yes'),
-(4, 'Quiz Leaderboard (Top 10)', 'quiz_leaderboard', NULL, NULL, 'Sidebar', 'No'),
-(5, 'FAQ Leaderboard', 'faq_leaderboard', NULL, NULL, 'Sidebar', 'No'),
-(6, 'Slider Testimonials', 'testimonials', NULL, NULL, 'Sidebar', 'No'),
-(7, 'Newsletter', 'newsletter', NULL, NULL, 'Sidebar', 'No');
+(3, 'Shop Projects', 'shop', NULL, '{\"count\":2}', 'Sidebar', 'No'),
+(4, 'The F.A Blog Spirit', 'html', '<p data-path-to-node=\"2\">Welcome to the world of <b>F.A Blog</b>.</p><p data-path-to-node=\"3\">Here, we take the time to decipher, analyze, and share insights on [Your Topic]. Far from the online noise, this space is dedicated to quality and authenticity.</p><p data-path-to-node=\"4\">My goal? To provide you with content that inspires and sparks reflection. Whether you are here out of curiosity or passion, you are now part of the journey.</p><p data-path-to-node=\"5\"><b>Don t miss a thing:</b>\r\nSubscribe to our newsletter to get our best insights delivered straight to your inbox.</p><blockquote data-path-to-node=\"6\"><p data-path-to-node=\"6,0\"><i>\"Understanding today to better build tomorrow.\"</i></p></blockquote>\r\n', NULL, 'Sidebar', 'Yes'),
+(5, 'Quiz Leaderboard (Top 10)', 'quiz_leaderboard', NULL, NULL, 'Sidebar', 'No'),
+(6, 'FAQ Leaderboard', 'faq_leaderboard', NULL, NULL, 'Sidebar', 'No'),
+(7, 'Slider Testimonials', 'testimonials', NULL, NULL, 'Sidebar', 'No'),
+(8, 'Newsletter', 'newsletter', NULL, NULL, 'Sidebar', 'No');
 
 -- --------------------------------------------------------
 
@@ -838,18 +840,23 @@ CREATE TABLE `projects` (
   `files_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active` enum('Yes','No','Draft') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Draft',
   `featured` enum('Yes','No') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
+  `is_product` enum('Yes','No') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
   `views` int(11) NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `price` decimal(10,2) DEFAULT '0.00',
+  `stock_status` enum('In Stock','Low Stock','Out of Stock','Pre-order') COLLATE utf8mb4_unicode_ci DEFAULT 'In Stock',
+  `buy_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Link to PayPal, Stripe or External Shop'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `projects`
 --
 
-INSERT INTO `projects` (`id`, `author_id`, `project_category_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `hand_tools`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `featured`, `views`, `created_at`) VALUES
-(1, 1, 1, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '[{\"name\":\"Arduino Uno\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.amazon.fr\\/Arduino-A000066-M%C3%A9moire-flash-32\\/dp\\/B008GRTSV6\\/\",\"img\":\"\"}]', '[{\"name\":\"Arduino IDE\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.arduino.cc\\/en\\/software\\/\",\"img\":\"\"}]', '[{\"name\":\"Fer \\u00e0 Souder\",\"qty\":\"1\",\"link\":\"\",\"img\":\"\"},{\"name\":\"Eteins\",\"qty\":\"1\",\"link\":\"\",\"img\":\"\"}]', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', '', 'Yes', 'Yes', 0, '2025-01-01 12:00:00'),
-(2, 1, 1, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', NULL, '<p>In this project, we will build a connected weather station...</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-02 14:30:00'),
-(3, 1, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ol><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ol>', '<ol><li>Arduino IDE</li></ol>', NULL, '<p>The classic blinking LED project to get started with electronics.</p>', 'http://freelance_addons.net', 'https://github.com/', NULL, 'Draft', 'No', 0, '2025-01-03 09:15:00');
+INSERT INTO `projects` (`id`, `author_id`, `project_category_id`, `title`, `slug`, `pitch`, `image`, `difficulty`, `duration`, `team_credits`, `hardware_parts`, `software_apps`, `hand_tools`, `story`, `schematics_link`, `code_link`, `files_link`, `active`, `featured`, `is_product`, `views`, `created_at`, `price`, `stock_status`, `buy_link`) VALUES
+(1, 1, 1, 'Demo Projects', 'demo-projects', 'A brief explanation for testing the module.', '', 'Intermediate', '2 hours', '<p>Admin, User</p>', '[{\"name\":\"Arduino Uno\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.amazon.fr\\/Arduino-A000066-M%C3%A9moire-flash-32\\/dp\\/B008GRTSV6\\/\",\"img\":\"\"}]', '[{\"name\":\"Arduino IDE\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.arduino.cc\\/en\\/software\\/\",\"img\":\"\"}]', '[{\"name\":\"Fer \\u00e0 Souder\",\"qty\":\"1\",\"link\":\"\",\"img\":\"\"},{\"name\":\"Eteins\",\"qty\":\"1\",\"link\":\"\",\"img\":\"\"}]', '<p>Ceci est une histoire de test pour valider l affichage du projet.</p>', 'http://freelance-addons.net', 'https://github.com/', '', 'Yes', 'Yes', 'No', 1, '2025-01-01 12:00:00', 0.00, 'In Stock', NULL),
+(2, 1, 1, 'Smart Weather Station', 'smart-weather-station', 'Create your own local weather station using ESP32.', '', 'Advanced', '5 hours', '<p>ZelTroN-2K3</p>', '<ul><li>ESP32 Board</li><li>DHT22 Sensor</li><li>OLED Display</li></ul>', '<ul><li>Visual Studio Code</li><li>PlatformIO</li></ul>', NULL, '<p>In this project, we will build a connected weather station...</p>', 'http://freelance-addons.net', 'https://github.com/', NULL, 'Draft', 'No', 'No', 0, '2025-01-02 14:30:00', 0.00, 'In Stock', NULL),
+(3, 1, 1, 'Blinking LED for Beginners', 'blinking-led', 'The Hello World of hardware.', '', 'Easy', '30 mins', '<p>Open Source Community</p>', '<ol><li>Arduino Uno</li><li>LED Blue</li><li>Resistor 220ohm</li></ol>', '<ol><li>Arduino IDE</li></ol>', NULL, '<p>The classic blinking LED project to get started with electronics.</p>', 'http://freelance_addons.net', 'https://github.com/', NULL, 'Draft', 'No', 'No', 0, '2025-01-03 09:15:00', 0.00, 'In Stock', NULL),
+(4, 1, 1, 'Test Projet Schop', 'test-projet-schop', 'Test Projet Schop', '', 'Expert', '4 hours', '<p>Test Projet Schop</p>', '[{\"name\":\"Arduino Uno\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.amazon.fr\\/Arduino-A000066-M%C3%A9moire-flash-32\\/dp\\/B008GRTSV6\\/\",\"img\":\"\"}]', '[{\"name\":\"Arduino IDE\",\"qty\":\"1\",\"link\":\"https:\\/\\/www.arduino.cc\\/en\\/software\\/\",\"img\":\"\"}]', '[{\"name\":\"Fer \\u00e0 Souder\",\"qty\":\"1\",\"link\":\"\",\"img\":\"\"}]', '<p>Test Projet Schop</p>', 'http://freelance-addons.net', 'https://github.com/', '', 'Draft', 'Yes', 'Yes', 7, '2025-12-07 21:51:04', 10.00, 'In Stock', 'https://paypal.me/');
 
 -- --------------------------------------------------------
 
@@ -1268,7 +1275,7 @@ ALTER TABLE `mega_menus`
 -- AUTO_INCREMENT pour la table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT pour la table `messages`
@@ -1394,7 +1401,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `widgets`
 --
 ALTER TABLE `widgets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `bans`
@@ -1442,7 +1449,7 @@ ALTER TABLE `visitor_analytics`
 -- AUTO_INCREMENT pour la table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `project_categories`

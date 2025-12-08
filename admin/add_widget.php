@@ -26,6 +26,7 @@ if (isset($_POST['add'])) {
             break;
         case 'latest_posts':
         case 'latest_projects':
+        case 'shop':
             $limit = (int)$_POST['limit'];
             $config_data = json_encode(['count' => $limit]);
             break;
@@ -92,6 +93,7 @@ $type_labels = [
                         ['type' => 'newsletter', 'icon' => 'fa-envelope', 'name' => 'Newsletter Form', 'desc' => 'Email subscription form.'],
                         ['type' => 'online_users', 'icon' => 'fa-users', 'name' => 'Online Users', 'desc' => 'List of currently connected users.'],
                         ['type' => 'latest_projects', 'icon' => 'fa-microchip', 'name' => 'Latest Projects', 'desc' => 'List of most recent projects.'],
+                        ['type' => 'shop', 'icon' => 'fa-shopping-cart', 'name' => 'Shop Products', 'desc' => 'Display random products from shop.'],
                     ];
                     
                     foreach($widgets_list as $w) {
@@ -133,10 +135,10 @@ $type_labels = [
                                     <label>Content</label>
                                     <textarea name="content" id="summernote" class="form-control"></textarea>
                                 </div>
-                            <?php elseif ($type == 'latest_posts' || $type == 'latest_projects'): ?>
+                            <?php elseif ($type == 'latest_posts' || $type == 'latest_projects' || $type == 'shop'): ?>
                                 <div class="form-group">
                                     <label>Number of items to show</label>
-                                    <input type="number" name="limit" class="form-control" value="5" min="1" max="20">
+                                    <input type="number" name="limit" class="form-control" value="2" min="1" max="10">
                                 </div>
                             <?php else: ?>
                                 <div class="alert alert-info">

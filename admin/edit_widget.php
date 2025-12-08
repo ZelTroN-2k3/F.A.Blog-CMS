@@ -43,6 +43,7 @@ if (isset($_POST['edit'])) {
             break;
         case 'latest_posts':
         case 'latest_projects':
+        case 'shop':
             $limit = (int)$_POST['limit'];
             $config_data = json_encode(['count' => $limit]);
             break;
@@ -100,9 +101,9 @@ if (isset($_POST['edit'])) {
                                     <label>Content</label>
                                     <textarea name="content" id="summernote" class="form-control"><?php echo html_entity_decode($widget['content']); ?></textarea>
                                 </div>
-                            <?php elseif ($widget['widget_type'] == 'latest_posts' || $widget['widget_type'] == 'latest_projects'): 
+                            <?php elseif ($widget['widget_type'] == 'latest_posts' || $widget['widget_type'] == 'latest_projects' || $widget['widget_type'] == 'shop'): 
                                 $conf = json_decode($widget['config_data'], true);
-                                $count = $conf['count'] ?? 5;
+                                $count = $conf['count'] ?? 2; // Par défaut 2 pour le shop
                             ?>
                                 <div class="form-group">
                                     <label>Number of items to show</label>

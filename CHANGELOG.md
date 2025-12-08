@@ -1,3 +1,24 @@
+## [v3.4.1] - 2025-12-07
+### 🛒 Nouveautés Majeures : E-commerce Lite
+Cette version introduit la monétisation du contenu via un module de boutique simplifié (Drop-shipping / Liens directs).
+
+#### 🛍️ Module Boutique
+* **Architecture Produit :** Conversion possible de tout "Projet" en "Produit" via l'admin.
+* **Champs E-commerce :** Ajout de Prix, État du stock (En stock, Précommande, Rupture) et Lien d'achat externe (PayPal, Stripe).
+* **Page Shop :** Nouvelle page `/shop.php` dédiée exclusivement aux produits avec une grille visuelle distincte.
+* **Intégration Accueil :** Les produits apparaissent sur la page d'accueil avec une étiquette de prix verte et un bouton "Acheter".
+
+#### 🧩 Widgets & Admin
+* **Nouveau Widget :** "Shop / Featured Products" ajouté au gestionnaire de widgets.
+* **Configuration Widget :** Possibilité de choisir le nombre de produits à afficher aléatoirement dans la sidebar.
+* **Interface Admin :** Nouvel onglet "Shop" dans l'éditeur de projets (Add/Edit Project).
+
+#### 🛠️ Améliorations
+* **Core :** Optimisation de la fonction `render_widget()` pour supporter des types personnalisés complexes.
+* **Navigation :** Séparation logique stricte : les Produits ne polluent plus la liste des Tutoriels/Projets.
+
+---
+
 ## [v3.4.0] - 2025-12-07
 ### 🎮 Nouveautés Majeures : Arcade & Engagement
 Cette version transforme le site en un véritable hub de divertissement et maximise le SEO.

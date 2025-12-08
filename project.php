@@ -147,7 +147,45 @@ $purifier = get_purifier();
         </div>
 
         <div class="col-lg-4">
-            
+
+        <?php 
+            // --- BLOC BOUTIQUE (E-COMMERCE) ---
+            if (isset($project['is_product']) && $project['is_product'] == 'Yes'): 
+                
+                // Couleurs du stock
+                $stock_color = 'success';
+                $stock_icon = 'check-circle';
+                $btn_state = '';
+                
+                if ($project['stock_status'] == 'Low Stock') { $stock_color = 'warning'; $stock_icon = 'exclamation-triangle'; }
+                if ($project['stock_status'] == 'Out of Stock') { $stock_color = 'secondary'; $stock_icon = 'times-circle'; $btn_state = 'disabled'; }
+                if ($project['stock_status'] == 'Pre-order') { $stock_color = 'info'; $stock_icon = 'clock'; }
+            ?>
+            <div class="card shadow-sm border-0 mb-4 bg-white">
+                <div class="card-body p-4 text-center">
+                    <h5 class="text-uppercase text-muted small fw-bold mb-3">Available for purchase</h5>
+                    
+                    <h2 class="display-4 fw-bold text-primary mb-3">
+                        $<?php echo number_format($project['price'], 2); ?>
+                    </h2>
+                    
+                    <div class="mb-4">
+                        <span class="badge bg-<?php echo $stock_color; ?> px-3 py-2 rounded-pill">
+                            <i class="fas fa-<?php echo $stock_icon; ?> me-1"></i> <?php echo $project['stock_status']; ?>
+                        </span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="<?php echo htmlspecialchars($project['buy_link']); ?>" target="_blank" class="btn btn-success btn-lg fw-bold <?php echo $btn_state; ?> shadow-sm">
+                            <i class="fas fa-shopping-cart me-2"></i> BUY NOW
+                        </a>
+                        <small class="text-muted mt-2">Secure payment via external platform</small>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            <!-- --- FIN BLOC BOUTIQUE (E-COMMERCE) --- -->
+
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0 fw-bold"><i class="fas fa-boxes text-secondary me-2"></i> Things used in this project</h5>

@@ -314,6 +314,7 @@ function render_widget($widget_row) {
         case 'newsletter':       $w_icon = 'fa-envelope'; break;
         case 'online_users':     $w_icon = 'fa-users'; break;
         case 'latest_projects':  $w_icon = 'fa-microchip'; break;
+        case 'shop':             $w_icon = 'fa-shopping-cart'; break;
     }
     // -----------------------------------------------------
 
@@ -675,7 +676,53 @@ function render_widget($widget_row) {
                 mysqli_stmt_close($stmt_faq);
             }
             break;
+
+        // CAS : SHOP / PRODUITS
+        case 'shop':
+            $config = json_decode($widget_row['config_data'], true);
+            $limit = isset($config['count']) ? (int)$config['count'] : 2;
             
+            // On sélectionne des produits (is_product='Yes') aléatoirement
+            $q_shop = mysqli_query($connect, "SELECT id, title, slug, image, price FROM projects WHERE active='Yes' AND is_product='Yes' ORDER BY RAND() LIMIT $limit");
+
+            if (mysqli_num_rows($q_shop) == 0) {
+                echo '<p class="text-muted small p-3">No products available.</p>';
+            } else {
+                echo '<div class="list-group list-group-flush">';
+                while ($prod = mysqli_fetch_assoc($q_shop)) {
+                    
+                    // Gestion Image (Même logique robuste que le reste de votre site)
+                    $p_img = 'assets/img/project-no-image.png';
+                    if (!empty($prod['image'])) {
+                        $clean = str_replace('../', '', $prod['image']);
+                        if (file_exists($clean)) { $p_img = $clean; }
+                    }
+                    
+                    // Construction URL absolue
+                    $link = $settings['site_url'] . '/project?name=' . htmlspecialchars($prod['slug']);
+                    $img_url = $settings['site_url'] . '/' . $p_img;
+
+                    echo '
+                    <a href="' . $link . '" class="list-group-item list-group-item-action d-flex align-items-center p-3 border-0">
+                        <div class="flex-shrink-0 me-3">
+                            <img src="' . htmlspecialchars($img_url) . '" class="rounded" width="60" height="60" style="object-fit: cover;" onerror="this.src=\''.$settings['site_url'].'/assets/img/project-no-image.png\';">
+                        </div>
+                        <div class="flex-grow-1 min-width-0">
+                            <h6 class="mb-1 text-truncate small fw-bold text-dark" style="line-height: 1.2;">
+                                ' . htmlspecialchars($prod['title']) . '
+                            </h6>
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <span class="text-success fw-bold">$' . number_format($prod['price'], 2) . '</span>
+                                <span class="badge bg-light text-success border" style="font-size: 0.65rem;">View</span>
+                            </div>
+                        </div>
+                    </a>';
+                }
+                // Lien "Voir tout" en bas du widget
+                echo '<div class="p-2"><a href="' . $settings['site_url'] . '/shop" class="btn btn-success btn-sm w-100 text-white shadow-sm">Visit Full Shop <i class="fas fa-arrow-right ms-1"></i></a></div>';
+                echo '</div>';
+            }
+            break;
     } // Fin switch
 
     // --- 3. FERMETURE DU CONTENEUR (SÉCURISÉE) ---

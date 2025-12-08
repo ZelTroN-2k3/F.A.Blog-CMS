@@ -10,7 +10,8 @@ if ($settings['sidebar_position'] == 'Left') {
 $page_title_display = "Projects & Tutorials";
 $page_desc_display = "Explore our latest hardware and software projects.";
 
-$where_clause = "WHERE p.active='Yes'";
+// MODIFICATION : On exclut les produits (is_product='No') pour ne garder que les projets/tutos
+$where_clause = "WHERE p.active='Yes' AND p.is_product='No'";
 $params = [];
 $types = "";
 
@@ -142,12 +143,21 @@ if ($count <= 0) {
         if(!empty($row['cat_name'])) {
             $cat_badge = '<a href="projects?category='.htmlspecialchars($row['cat_slug']).'" class="badge bg-light text-secondary border text-decoration-none me-1">'.htmlspecialchars($row['cat_name']).'</a>';
         }
+
+        // --- ETIQUETTE PRIX (Préparation de la variable) ---
+        $price_tag = '';
+        if (isset($row['is_product']) && $row['is_product'] == 'Yes') {
+            $price_tag = '<span class="position-absolute top-0 end-0 bg-success text-white px-3 py-1 fw-bold shadow-sm" style="border-bottom-left-radius: 10px; font-size: 1.1rem; z-index: 5;">
+                            $' . number_format($row['price'], 2) . '
+                          </span>';
+        }
         
         echo '
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card h-100 shadow-sm hover-shadow transition-300 border">
-                <a href="project?name=' . htmlspecialchars($row['slug']) . '">
+                <a href="project?name=' . htmlspecialchars($row['slug']) . '" class="d-block position-relative">
                     <img src="' . htmlspecialchars($img_src) . '" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Project Cover" onerror="this.src=\'assets/img/project-no-image.png\';">
+                    ' . $price_tag . '
                 </a>
                 <div class="card-body d-flex flex-column">
                     <div class="mb-2">
@@ -175,7 +185,7 @@ if ($count <= 0) {
                             </small>
                         </div>
                         <small class="text-muted"><i class="fas fa-user-circle"></i> ' . htmlspecialchars($row['username']) . '</small>
-                        <a href="project?name=' . htmlspecialchars($row['slug']) . '" class="btn btn-sm btn-outline-success /*rounded-pill*/">View</a>
+                        <a href="project?name=' . htmlspecialchars($row['slug']) . '" class="btn btn-sm btn-outline-success">View</a>
                     </div>                    
                 </div>
             </div>

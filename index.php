@@ -79,6 +79,7 @@ if ($settings['homepage_slider'] == 'Custom') {
 if (!empty($slides_data)) {
     $mt3_i = "mt-4";
 ?>
+    <!-- Slider -->
     <div id="<?php echo $slider_id; ?>" class="carousel slide main-slider mb-4 shadow-sm overflow-hidden rounded" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <?php foreach ($slides_data as $index => $slide): ?>
@@ -111,6 +112,7 @@ if (!empty($slides_data)) {
         <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $slider_id; ?>" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
         <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $slider_id; ?>" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
     </div>
+    <!-- Fin Slider -->
 <?php
 }
 ?>  
@@ -123,16 +125,19 @@ if (!empty($slides_data)) {
             
             if (mysqli_num_rows($q_proj) > 0) {
             ?>
+            <!-- Projets Récents -->
             <div class="row <?php echo $mt3_i; ?> mb-4">
                 <h5 class="text-success"><i class="fas fa-microchip me-2"></i> Latest Projects</h5>
                 <?php
                 while ($proj = mysqli_fetch_assoc($q_proj)) {
+                    // Gestion de l'image
                     $p_img = 'assets/img/project-no-image.png';
                     if (!empty($proj['image'])) {
                         $clean = str_replace('../', '', $proj['image']);
                         if (file_exists($clean)) { $p_img = $clean; }
                     }
                     
+                    // Couleur difficulté
                     $diff_color = 'secondary';
                     if($proj['difficulty']=='Easy') $diff_color='success';
                     if($proj['difficulty']=='Intermediate') $diff_color='primary';
@@ -141,12 +146,33 @@ if (!empty($slides_data)) {
 
                     $col_class = ($settings['posts_per_row'] == 3) ? 'col-md-4' : 'col-md-6';
                     
+                    // --- LOGIQUE SHOP (Intégration Identité Visuelle) ---
+                    $price_tag = '';
+                    // Bouton par défaut (Bleu/Vert contour)
+                    $action_btn = '<a href="project?name=' . htmlspecialchars($proj['slug']) . '" class="btn btn-sm btn-outline-success mt-auto">View Project</a>';
+
+                    // Si c'est un produit à vendre (Prix > 0 ou is_product='Yes')
+                    if (isset($proj['is_product']) && $proj['is_product'] == 'Yes') {
+                        // 1. Étiquette de prix verte en haut à droite
+                        $price_tag = '<span class="position-absolute top-0 end-0 bg-success text-white px-3 py-1 fw-bold shadow-sm" style="border-bottom-left-radius: 10px; font-size: 0.9rem; z-index: 5;">
+                                        $' . number_format($proj['price'], 2) . '
+                                      </span>';
+                        
+                        // 2. Bouton "View Product" vert plein avec icône caddie
+                        $action_btn = '<a href="project?name=' . htmlspecialchars($proj['slug']) . '" class="btn btn-sm btn-success text-white mt-auto border-0 shadow-sm">
+                                        <i class="fas fa-shopping-cart me-1"></i> View Product
+                                       </a>';
+                    }
+                    // ----------------------------------------------------
+                    
                     echo '
                     <div class="' . $col_class . ' mb-3">
                         <div class="card h-100 shadow-sm hover-shadow border">
-                            <a href="project?name=' . htmlspecialchars($proj['slug']) . '">
+                            <a href="project?name=' . htmlspecialchars($proj['slug']) . '" class="d-block position-relative">
                                 <img src="' . htmlspecialchars($p_img) . '" class="card-img-top" style="height: 160px; object-fit: cover;" onerror="this.src=\'assets/img/project-no-image.png\';">
+                                ' . $price_tag . '
                             </a>
+                            
                             <div class="card-body d-flex flex-column p-3">
                                 <div class="mb-2">
                                     <span class="badge bg-' . $diff_color . '" style="font-size:0.7rem;">' . htmlspecialchars($proj['difficulty']) . '</span>
@@ -159,7 +185,8 @@ if (!empty($slides_data)) {
                                 <p class="card-text small text-muted mb-3 flex-grow-1" style="line-height:1.3;">
                                     ' . htmlspecialchars(short_text($proj['pitch'], 80)) . '
                                 </p>
-                                <a href="project?name=' . htmlspecialchars($proj['slug']) . '" class="btn btn-sm btn-outline-success mt-auto">View Project</a>
+                                
+                                ' . $action_btn . '
                             </div>
                         </div>
                     </div>';
@@ -170,10 +197,11 @@ if (!empty($slides_data)) {
                     <a href="projects" class="btn btn-outline-success col-12 mt-3 mb-5"><i class="fas fa-arrow-alt-circle-right"></i> View all projects</a>
                 </div>
             </div>
+            <!-- Fin Projets Récents -->
             <hr class="my-4 text-muted opacity-25">
             <?php } ?>
 
-
+            <!-- Articles Récents -->
             <div class="row">
                 <h5 class="text-primary"><i class="fa fa-list me-2"></i> Recent Posts</h5>
 <?php
@@ -237,6 +265,7 @@ if ($count <= 0) {
 }
 ?>
             </div>
+            <!-- Fin Articles Récents -->
             
             <a href="blog" class="btn btn-outline-primary col-12 mt-3 mb-5">
 				<i class="fas fa-arrow-alt-circle-right"></i> View all articles
@@ -246,6 +275,7 @@ if ($count <= 0) {
     $q_testi = mysqli_query($connect, "SELECT * FROM testimonials WHERE active='Yes' ORDER BY id DESC");
     if (mysqli_num_rows($q_testi) > 0) {
     ?>
+    <!-- Témoignages -->
     <div class="card mb-3 mt-4 shadow-sm border-0">
         <div class="card-body bg-light rounded text-center p-4">
             <h4 class="mb-4 text-primary"><i class="fas fa-quote-left"></i> Testimonials</h4>
@@ -274,6 +304,7 @@ if ($count <= 0) {
             </div>
         </div>
     </div>
+    <!-- Fin Témoignages -->
     <?php } ?>
 
     </div>

@@ -228,6 +228,7 @@ foreach ($widgets as $row) {
     if($row['widget_type'] == 'newsletter') { $type_icon = 'fa-envelope'; $type_label = 'Newsletter'; }
     if($row['widget_type'] == 'online_users') { $type_icon = 'fa-users'; $type_label = 'Online Users'; }
     if($row['widget_type'] == 'latest_projects') { $type_icon = 'fa-microchip'; $type_label = 'Projects'; }
+    if($row['widget_type'] == 'shop') { $type_icon = 'fa-shopping-cart'; $type_label = 'Shop'; }
 
     echo '
         <tr>
