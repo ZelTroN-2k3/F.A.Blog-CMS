@@ -1,3 +1,24 @@
+## [v3.4.2] - 2025-12-07
+### 🏆 Nouveautés Majeures : Gamification
+Cette version transforme le site en une plateforme communautaire interactive avec système de progression.
+
+#### 🎮 Moteur de Jeu & Scores
+* **API de Score :** Nouveau endpoint `ajax_submit_score.php` sécurisé pour recevoir les résultats des jeux.
+* **Intégration JS :** Les jeux (Snake, Tetris, Space Invaders) envoient désormais les scores à la base de données en fin de partie ("Game Over").
+* **Anti-triche basique :** Vérification de la session utilisateur avant l'enregistrement.
+
+#### 🏅 Badges & Récompenses
+* **Système de Badges :** Attribution automatique de badges (SQL) selon des déclencheurs (Score > X, Inscription, etc.).
+* **Table SQL :** Nouvelles tables `game_scores`, `badges`, et `user_badges`.
+* **Notifications :** Alerte visuelle immédiate en fin de partie lorsqu'un badge est débloqué.
+
+#### 📊 Leaderboard
+* **Page Hall of Fame :** Nouvelle page `/leaderboard.php` affichant le Top 10 pour chaque jeu.
+* **Profil Joueur :** Affichage de la collection de badges et du rang sur le leaderboard.
+* **Design :** Tableaux stylisés avec médailles (🥇, 🥈, 🥉) pour le podium.
+
+---
+
 ## [v3.4.1] - 2025-12-07
 ### 🛒 Nouveautés Majeures : E-commerce Lite
 Cette version introduit la monétisation du contenu via un module de boutique simplifié (Drop-shipping / Liens directs).

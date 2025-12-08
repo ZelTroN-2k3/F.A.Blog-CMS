@@ -66,7 +66,8 @@ head();
 <div class="container mb-5">
     
     <div class="mb-4">
-        <a href="../index.php" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Site</a>
+        <a href="../index.php" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Site <i class="fas fa-home"></i></a>
+        <a href="../leaderboard.php" class="btn btn-outline-warning btn-sm"><i class="fas fa-trophy"></i> Hall of Fame <i class="fas fa-arrow-right"></i></a>
     </div>
 
     <div class="row g-4">

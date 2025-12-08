@@ -270,7 +270,7 @@ function startGame() {
     gameInterval = setInterval(gameLoop, 1000 / speed);
 }
 
-function gameOver() {
+/*function gameOver() {
     clearInterval(gameInterval);
     isRunning = false;
     
@@ -283,6 +283,51 @@ function gameOver() {
     }
     
     alert("PERDU ! Score: " + score);
+    startBtn.classList.remove("disabled");
+    startBtn.innerHTML = '<i class="fas fa-redo me-2"></i> REJOUER';
+}*/
+
+function gameOver() {
+    clearInterval(gameInterval);
+    isRunning = false;
+    
+    if(assets.soundDie.readyState >= 2) assets.soundDie.play().catch(() => {});
+
+    // --- DEBUT MODIFICATION GAMIFICATION ---
+    // Envoi du score au serveur
+    const formData = new FormData();
+    formData.append('game', 'snake'); // Identifiant du jeu
+    formData.append('score', score);
+
+    fetch('../ajax_submit_score.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'success') {
+            let msg = "Score sauvegardé !";
+            // Si le joueur a gagné des badges
+            if(data.new_badges.length > 0) {
+                msg += "\n🏆 NOUVEAU BADGE DÉBLOQUÉ : " + data.new_badges.join(', ');
+            }
+            alert("PERDU ! Score: " + score + "\n" + msg);
+        } else if (data.message === 'Login required') {
+            alert("PERDU ! Score: " + score + "\n(Connectez-vous pour sauvegarder votre score)");
+        } else {
+            alert("PERDU ! Score: " + score);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+    // --- FIN MODIFICATION ---
+
+    // Gestion HighScore Local (votre ancien code)
+    if(score > highScore) {
+        highScore = score;
+        localStorage.setItem('snake_highscore', highScore);
+        highscoreEl.innerText = highScore;
+    }
+    
     startBtn.classList.remove("disabled");
     startBtn.innerHTML = '<i class="fas fa-redo me-2"></i> REJOUER';
 }

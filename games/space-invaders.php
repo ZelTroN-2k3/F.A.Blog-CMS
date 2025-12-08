@@ -273,13 +273,52 @@ function startGame() {
     loop();
 }
 
-function gameOver() {
+/*function gameOver() {
     gameActive = false;
     cancelAnimationFrame(animationId);
     sounds.music.pause();
     startBtn.innerText = "REJOUER";
     startBtn.style.display = 'block';
     msgEl.innerHTML = "GAME OVER<br>Score Final : " + score;
+}*/
+
+function gameOver() {
+    // 1. Arrêt Spécifique Space Invaders
+    gameActive = false;
+    cancelAnimationFrame(animationId); // On arrête l'animation ici, pas de clearInterval
+    
+    // 2. Son
+    if(sounds.music) sounds.music.pause();
+    
+    // 3. Envoi du Score (AJAX)
+    const formData = new FormData();
+    formData.append('game', 'space'); // ID du jeu
+    formData.append('score', score);
+
+    fetch('../ajax_submit_score.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        let msg = "";
+        if(data.status === 'success') {
+            msg = "Score sauvegardé !";
+            if(data.new_badges && data.new_badges.length > 0) {
+                msg += "<br>🏆 BADGE : " + data.new_badges.join(', ');
+            }
+        } else {
+            msg = "(Non sauvegardé: " + data.message + ")";
+        }
+        
+        // 4. Affichage du message sur l'écran de jeu
+        msgEl.innerHTML = "GAME OVER<br>Score Final : " + score + "<br><small>" + msg + "</small>";
+    })
+    .catch(error => console.error('Error:', error));
+
+    // 5. Réafficher le bouton
+    startBtn.innerText = "REJOUER";
+    startBtn.style.display = 'block';
 }
 
 // Dessin initial

@@ -268,53 +268,14 @@ function playerReset() {
     player.pos.y = 0;
     player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
     
-    // --- MODIFICATION ICI : GAME OVER AVEC SAUVEGARDE ---
+    // Game Over
     if (collide(arena, player)) {
-        
-        // 1. On capture le score final AVANT de le reset
-        const finalScore = player.score;
-
-        // 2. On reset le plateau
         arena.forEach(row => row.fill(0));
         player.score = 0;
         player.level = 1;
         updateScore();
-        
-        // 3. On appelle la fonction de fin de partie
-        handleGameOver(finalScore);
+        alert("GAME OVER!");
     }
-}
-
-// --- NOUVELLE FONCTION : GESTION FIN DE PARTIE & AJAX ---
-function handleGameOver(finalScore) {
-    const formData = new FormData();
-    formData.append('game', 'tetris');
-    formData.append('score', finalScore);
-
-    fetch('../ajax_submit_score.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        let msg = "GAME OVER!";
-        if(data.status === 'success') {
-            msg += "\nScore sauvegardé : " + finalScore;
-            if(data.new_badges && data.new_badges.length > 0) {
-                msg += "\n🏆 BADGE DÉBLOQUÉ : " + data.new_badges.join(', ');
-            }
-        } else if (data.message === 'Login required') {
-            msg += "\n(Connectez-vous pour sauvegarder votre score)";
-        } else {
-            msg += "\nScore : " + finalScore;
-        }
-        
-        alert(msg);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("GAME OVER!\nScore: " + finalScore);
-    });
 }
 
 function playerRotate(dir) {

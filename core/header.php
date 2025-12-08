@@ -288,7 +288,14 @@ function head()
         <meta property="og:url" content="<?php echo htmlspecialchars($current_page_url); ?>" />
         <link rel="canonical" href="<?php echo htmlspecialchars($current_page_url); ?>" />
 
-        <link rel="icon" type="image/png" href="<?php echo htmlspecialchars($settings['favicon_url']); ?>" />
+<?php 
+    $fav_url = $settings['favicon_url'];
+    if (strpos($fav_url, 'http') === false) {
+        // Si c'est un chemin relatif, on ajoute l'URL du site
+        $fav_url = $settings['site_url'] . '/' . $fav_url;
+    }
+?>
+        <link rel="icon" type="image/png" href="<?php echo htmlspecialchars($fav_url); ?>" />
         <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($settings['apple_touch_icon_url']); ?>" />
 
         <meta name="author" content="<?php echo htmlspecialchars($settings['meta_author']); ?>" />
@@ -305,8 +312,7 @@ function head()
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" type="text/css" rel="stylesheet"/>
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-		<link href="assets/css/phpblog.css" rel="stylesheet">
-		<script src="assets/js/phpblog.js"></script>
+		<script src="<?php echo htmlspecialchars($settings['site_url']); ?>/assets/js/phpblog.js"></script>
 <?php
 if ($current_page == 'post.php') {
 ?>

@@ -20,6 +20,7 @@ Disallow: /ajax_interactions.php
 Disallow: /ajax_like_post.php
 Disallow: /ajax_submit_comment.php
 Disallow: /ajax_vote_poll.php
+Disallow: /ajax_submit_score.php
 
 
 # Bloquer les redirections et callbacks techniques

@@ -47,6 +47,9 @@ DROP TABLE IF EXISTS `projects`;
 DROP TABLE IF EXISTS `project_categories`;
 DROP TABLE IF EXISTS `project_likes`;
 DROP TABLE IF EXISTS `user_project_favorites`;
+DROP TABLE IF EXISTS `game_scores`;
+DROP TABLE IF EXISTS `badges`;
+DROP TABLE IF EXISTS `user_badges`;
 
 -- --------------------------------------------------------
 -- Base de données : `localhost`
@@ -912,6 +915,54 @@ CREATE TABLE `user_project_favorites` (
 -- --------------------------------------------------------
 
 
+--
+-- Déchargement des données de la table `game_scores`
+--
+CREATE TABLE `game_scores` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `game_name` varchar(50) NOT NULL, -- 'snake', 'tetris', 'space-invaders'
+  `score` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Déchargement des données de la table `badges`
+--
+CREATE TABLE `badges` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `icon` varchar(50) NOT NULL, -- FontAwesome ex: 'fas fa-trophy'
+  `color` varchar(20) NOT NULL DEFAULT 'primary', -- bootstrap class: primary, warning, danger
+  `trigger_type` varchar(50) NOT NULL, -- 'score_snake', 'score_tetris', 'manual'
+  `trigger_value` int(11) NOT NULL DEFAULT 0 -- Score nécessaire pour obtenir le badge
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Déchargement des données de la table `user_badges`
+--
+CREATE TABLE `user_badges` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `badge_id` int(11) NOT NULL,
+  `awarded_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 4. Insérer des badges par défaut
+INSERT INTO `badges` (`name`, `description`, `icon`, `color`, `trigger_type`, `trigger_value`) VALUES
+('Snake Novice', 'Score > 50 at Snake', 'fas fa-worm', 'success', 'score_snake', 50),
+('Snake Master', 'Score > 200 at Snake', 'fas fa-crown', 'warning', 'score_snake', 200),
+('Tetris Builder', 'Score > 1000 at Tetris', 'fas fa-cubes', 'info', 'score_tetris', 1000),
+('Space Defender', 'Score > 500 at Space Invaders', 'fas fa-rocket', 'danger', 'score_space', 500),
+('VIP Member', 'Premium Community Member', 'fas fa-gem', 'primary', 'manual', 0);
+
+-- --------------------------------------------------------
+
 -- --------------------------------------------------------
 -- Index pour les tables déchargées
 -- --------------------------------------------------------
@@ -1206,6 +1257,23 @@ ALTER TABLE `project_likes`
 ALTER TABLE `user_project_favorites`
   ADD PRIMARY KEY (`id`);
 
+--
+-- Index pour la table `game_scores`
+--
+ALTER TABLE `game_scores`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `badges`
+--
+ALTER TABLE `badges`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `user_badges`
+--
+ALTER TABLE `user_badges`
+  ADD PRIMARY KEY (`id`);
 
 -- --------------------------------------------------------
 -- AUTO_INCREMENT pour les tables déchargées
@@ -1467,5 +1535,23 @@ ALTER TABLE `project_likes`
 -- AUTO_INCREMENT pour la table `user_project_favorites`
 --
 ALTER TABLE `user_project_favorites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `game_scores`
+--
+ALTER TABLE `game_scores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `badges`
+--
+ALTER TABLE `badges`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `user_badges`
+--
+ALTER TABLE `user_badges`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
