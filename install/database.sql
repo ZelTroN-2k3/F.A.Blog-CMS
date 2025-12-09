@@ -51,6 +51,7 @@ DROP TABLE IF EXISTS `game_scores`;
 DROP TABLE IF EXISTS `badges`;
 DROP TABLE IF EXISTS `user_badges`;
 DROP TABLE IF EXISTS `notifications`;
+DROP TABLE IF EXISTS `post_revisions`;
 
 -- --------------------------------------------------------
 -- Base de données : `localhost`
@@ -990,6 +991,21 @@ CREATE TABLE `notifications` (
 
 -- --------------------------------------------------------
 
+--
+-- Structure de la table `post_revisions`
+--
+
+CREATE TABLE `post_revisions` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `content` longtext,
+  `revision_type` enum('autosave','manual') NOT NULL DEFAULT 'manual',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- --------------------------------------------------------
+
 -- --------------------------------------------------------
 -- Index pour les tables déchargées
 -- --------------------------------------------------------
@@ -1309,6 +1325,13 @@ ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
+--
+-- Index pour la table `post_revisions`
+--
+ALTER TABLE `post_revisions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `post_id` (`post_id`);
+
 -- --------------------------------------------------------
 -- AUTO_INCREMENT pour les tables déchargées
 -- --------------------------------------------------------
@@ -1593,5 +1616,11 @@ ALTER TABLE `user_badges`
 -- AUTO_INCREMENT pour la table `notifications`
 --
 ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `post_revisions`
+--
+ALTER TABLE `post_revisions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;

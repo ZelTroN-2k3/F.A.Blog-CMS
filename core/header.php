@@ -274,20 +274,39 @@ function head()
 		<meta name="description" content="' . htmlspecialchars($description) . '" />';
     }
 ?>
-
+        <!-- Balises Méta Générales et SEO PC -->
         <title><?php echo htmlspecialchars($display_title); ?></title>
         <meta name="description" content="<?php echo htmlspecialchars($display_description); ?>" />
-        
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-        
         <meta property="og:title" content="<?php echo htmlspecialchars($display_title); ?>" />
         <meta property="og:description" content="<?php echo htmlspecialchars($display_description); ?>" />
         <meta property="og:site_name" content="<?php echo htmlspecialchars($settings['sitename']); ?>" />
         <meta property="og:type" content="website" />
-        
         <meta property="og:url" content="<?php echo htmlspecialchars($current_page_url); ?>" />
         <link rel="canonical" href="<?php echo htmlspecialchars($current_page_url); ?>" />
 
+        <!-- Balises PWA -->
+        <link rel="manifest" href="<?php echo htmlspecialchars($settings['site_url']); ?>/manifest.json">
+        <meta name="theme-color" content="<?php echo htmlspecialchars($settings['design_color_primary']); ?>">
+        <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($settings['site_url']); ?>/assets/img/icon-192.png">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <script>
+        // Enregistrement du Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('<?php echo htmlspecialchars($settings['site_url']); ?>/sw.js')
+                .then(registration => {
+                    console.log('PWA ServiceWorker registered');
+                })
+                .catch(err => {
+                    console.log('PWA ServiceWorker failed: ', err);
+                });
+            });
+        }
+        </script>
+        <!-- Fin Balises PWA -->
 <?php 
     $fav_url = $settings['favicon_url'];
     if (strpos($fav_url, 'http') === false) {

@@ -1,3 +1,19 @@
+## [v3.5.0] - 2025-12-08
+### 🛡️ Nouveautés Majeures : Content Safety Net
+Cette version introduit un système de sauvegarde robuste pour protéger le travail des rédacteurs contre les pertes accidentelles.
+
+#### 💾 Sauvegarde & Historique
+* **Autosave Silencieux :** Sauvegarde automatique du titre et du contenu toutes les 60 secondes en arrière-plan (AJAX) sans interrompre la rédaction.
+* **Gestion des Révisions :** Chaque sauvegarde manuelle ("Update") crée une archive complète de l'article dans la base de données.
+* **Time Machine :** Panneau latéral "Revisions" permettant de voir l'historique des modifications et de restaurer une version précédente en un clic.
+
+#### ⚡ Améliorations Éditeur
+* **Indicateurs Visuels :** Badge de statut en temps réel (Saving... / Saved / Error) pour rassurer l'utilisateur.
+* **Raccourcis Clavier :** Support du `Ctrl+S` (ou `Cmd+S`) pour forcer une sauvegarde rapide sans recharger la page.
+* **Correctif JS :** Réécriture du compteur de caractères (`countText`) en jQuery pour une compatibilité maximale et suppression des erreurs console.
+
+---
+
 ## [v3.4.9.b] - 2025-12-08
 ### 🎨 Nouveautés Majeures : Live Theme Customizer
 Cette version transforme l'administration en studio de design avec des outils de personnalisation en temps réel.

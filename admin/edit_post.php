@@ -5,6 +5,22 @@ include "header.php";
 if (!isset($_GET['id']) || empty($_GET['id'])) { echo '<meta http-equiv="refresh" content="0; url=posts.php">'; exit; }
 $id = (int)$_GET['id'];
 
+// --- LOGIQUE RESTAURATION ---
+if (isset($_GET['restore'])) {
+    $rev_id = (int)$_GET['restore'];
+    
+    // Récupérer la révision
+    $q_rev = mysqli_query($connect, "SELECT title, content FROM post_revisions WHERE id=$rev_id AND post_id=$id");
+    if ($rev = mysqli_fetch_assoc($q_rev)) {
+        // Restaurer dans la table posts
+        $r_title = mysqli_real_escape_string($connect, $rev['title']);
+        $r_content = mysqli_real_escape_string($connect, $rev['content']);
+        mysqli_query($connect, "UPDATE posts SET title='$r_title', content='$r_content' WHERE id=$id");
+        
+        $success_msg = '<div class="alert alert-success">Version restored successfully!</div>';
+    }
+}
+
 // 2. Récupération
 $stmt = mysqli_prepare($connect, "SELECT * FROM `posts` WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $id);
@@ -30,9 +46,16 @@ while ($row_tag = mysqli_fetch_assoc($result_tags)) { $existing_tags_array[] = $
 mysqli_stmt_close($stmt_get_tags);
 $tags_value = implode(',', $existing_tags_array);
 
-// 4. Traitement
+// 4. Traitement SAUVEGARDE
 if (isset($_POST['submit'])) {
     validate_csrf_token();
+
+    // --- SAUVEGARDE VERSION MANUELLE (Avant modification) ---
+    $b_title = mysqli_real_escape_string($connect, $row['title']);
+    $b_content = mysqli_real_escape_string($connect, $row['content']);
+    $u_id = $user['id'];
+    mysqli_query($connect, "INSERT INTO post_revisions (post_id, user_id, title, content, revision_type) VALUES ('$id', '$u_id', '$b_title', '$b_content', 'manual')");
+    // -----------------------------------
 
     $title = $_POST['title'];
     if (!empty($_POST['slug'])) { $slug = generateSeoURL($_POST['slug'], 0); } else { $slug = generateSeoURL($title, 0); }
@@ -53,7 +76,7 @@ if (isset($_POST['submit'])) {
         $string = "0123456789wsderfgtyhjuk"; $new_string = str_shuffle($string);
         $dest = "../uploads/posts/image_" . $new_string;
         $opt_path = optimize_and_save_image($_FILES["image"]["tmp_name"], $dest);
-        if ($opt_path) { $image = str_replace("../", "", $opt_path); } // CORRECTION : utilisation de opt_path
+        if ($opt_path) { $image = str_replace("../", "", $opt_path); } 
     }
 
     $stmt = mysqli_prepare($connect, "UPDATE posts SET title=?, slug=?, meta_title=?, meta_description=?, image=?, active=?, featured=?, category_id=?, content=?, download_link=?, github_link=?, publish_at=? WHERE id=?");
@@ -61,7 +84,7 @@ if (isset($_POST['submit'])) {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
-    // Tags Logic (Identique à add_post)
+    // Tags Logic
     $post_id = $id;
     $new_tag_slugs = []; 
     if (!empty($_POST['tags'])) {
@@ -106,6 +129,7 @@ if (isset($_POST['submit'])) {
 
 <div class="content-header">
     <div class="container-fluid">
+        <?php if(isset($success_msg)) echo $success_msg; ?>
         <div class="row mb-2">
             <div class="col-sm-6 d-flex align-items-center">
                 <h1 class="m-0 mr-3"><i class="fas fa-edit"></i> Edit Post</h1>
@@ -128,7 +152,7 @@ if (isset($_POST['submit'])) {
 
 <section class="content">
     <div class="container-fluid">
-        <form name="edit_post_form" action="" method="post" enctype="multipart/form-data">
+        <form name="edit_post_form" id="edit_post_form" action="" method="post" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             
             <div class="row">
@@ -138,7 +162,7 @@ if (isset($_POST['submit'])) {
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Title</label>
-                                <input class="form-control form-control-lg" name="title" id="title" type="text" value="<?php echo htmlspecialchars($row['title']); ?>" oninput="countText()" required>
+                                <input class="form-control form-control-lg" name="title" id="title" type="text" value="<?php echo htmlspecialchars($row['title']); ?>" required>
                                 <small class="text-muted"><i>Characters: <span id="characters"><?php echo strlen($row['title']); ?></span></i></small>
                             </div>
                             <div class="form-group">
@@ -185,6 +209,45 @@ if (isset($_POST['submit'])) {
                 </div>
                 
                 <div class="col-lg-3 col-md-12">
+                    
+                    <div class="card card-outline card-warning">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-history"></i> Revisions</h3>
+                            <div class="card-tools">
+                                <span id="autosave-status" class="badge badge-light text-muted"> <i class="fas fa-circle text-success" style="font-size: 8px;"></i> Ready</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;">
+                                <?php
+                                $post_id = (int)$_GET['id'];
+                                $q_revs = mysqli_query($connect, "SELECT * FROM post_revisions WHERE post_id=$post_id ORDER BY id DESC LIMIT 10");
+                                
+                                if (mysqli_num_rows($q_revs) > 0) {
+                                    while ($rev = mysqli_fetch_assoc($q_revs)) {
+                                        $type_badge = ($rev['revision_type'] == 'autosave') 
+                                            ? '<span class="badge bg-secondary" style="font-size:0.6em">AUTO</span>' 
+                                            : '<span class="badge bg-info" style="font-size:0.6em">SAVE</span>';
+                                        
+                                        $time_ago = date("d M H:i", strtotime($rev['created_at']));
+                                        
+                                        echo '<li class="list-group-item d-flex justify-content-between align-items-center p-2 small">
+                                                <div>
+                                                    '.$type_badge.' <strong>'.$time_ago.'</strong>
+                                                </div>
+                                                <a href="?id='.$post_id.'&restore='.$rev['id'].'" class="btn btn-xs btn-default border" onclick="return confirm(\'Restore this version? Current changes will be replaced.\')">
+                                                    <i class="fas fa-undo"></i>
+                                                </a>
+                                            </li>';
+                                    }
+                                } else {
+                                    echo '<li class="list-group-item text-center text-muted small">No history yet.</li>';
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </div>
+                                        
                     <div class="card card-warning card-outline">
                         <div class="card-header"><h3 class="card-title">Publishing</h3></div>
                         <div class="card-body">
@@ -289,15 +352,37 @@ if (isset($_POST['submit'])) {
 <script>
 var tagify;
 $(document).ready(function() {
+    
+    // 1. Initialisation Tagify
     var input = document.querySelector('input[name=tags]');
-    tagify = new Tagify(input, { duplicate: false, delimiters: ",", addTagOnBlur: true, whitelist: [<?php $q_tags_js = mysqli_query($connect, "SELECT name FROM tags"); $tags_js_arr = []; while($t = mysqli_fetch_assoc($q_tags_js)) { $tags_js_arr[] = $t['name']; } echo '"' . implode('","', $tags_js_arr) . '"'; ?>], dropdown: { enabled: 1 } });
+    if(input){
+        tagify = new Tagify(input, { 
+            duplicate: false, 
+            delimiters: ",", 
+            addTagOnBlur: true, 
+            whitelist: [<?php 
+                $q_tags_js = mysqli_query($connect, "SELECT name FROM tags"); 
+                $tags_js_arr = []; 
+                while($t = mysqli_fetch_assoc($q_tags_js)) { $tags_js_arr[] = $t['name']; } 
+                echo '"' . implode('","', $tags_js_arr) . '"'; 
+            ?>], 
+            dropdown: { enabled: 1 } 
+        });
+    }
 
+    // 2. Compteur de caractères (jQuery) - PLUS ROBUSTE
+    $('#title').on('input', function() {
+        $('#characters').text($(this).val().length);
+    });
+
+    // 3. Gestionnaire d'images
     $('#filesModal').on('show.bs.modal', function (e) {
         if($('#files-gallery-content').html().indexOf('fa-spinner') !== -1) {
             $.get('ajax_load_files.php', function(data) { $('#files-gallery-content').html(data); });
         }
     });
 
+    // 4. Upload image
     $("#postImage").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
@@ -308,10 +393,60 @@ $(document).ready(function() {
             reader.readAsDataURL(this.files[0]);
         }
     });
+    
+    // 5. AUTOSAVE SCRIPT
+    var postId = <?php echo (int)$_GET['id']; ?>;
+    
+    function doAutoSave() {
+        var title = $('input[name="title"]').val();
+        var content = $('#summernote').val();
+        
+        $('#autosave-status').html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+
+        $.post('ajax_autosave.php', {
+            post_id: postId,
+            title: title,
+            content: content
+        }, function(data) {
+            if (data.status === 'success') {
+                $('#autosave-status').html('<i class="fas fa-check text-success"></i> Saved ' + data.time);
+            } else {
+                console.warn("Autosave:", data.message);
+                $('#autosave-status').html('<i class="fas fa-exclamation-triangle text-danger"></i> Error');
+            }
+        }, 'json').fail(function() {
+             // Erreur réseau
+             $('#autosave-status').html('<i class="fas fa-wifi text-danger"></i> Offline');
+        });
+    }
+
+    // Intervalle de 60 secondes
+    setInterval(doAutoSave, 60000);
+    
+    // Raccourci Ctrl+S
+    $(window).bind('keydown', function(event) {
+        if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+            case 's':
+                event.preventDefault();
+                doAutoSave();
+                return false;
+            }
+        }
+    });
 });
+
+// Helper Functions
 function addTagFromList(element) {
-    var tagName = element.innerText; if (tagify) { tagify.addTags([tagName]); element.style.opacity = "1"; element.classList.remove("badge-secondary"); element.classList.add("badge-primary"); }
+    var tagName = element.innerText; 
+    if (tagify) { 
+        tagify.addTags([tagName]); 
+        element.style.opacity = "1"; 
+        element.classList.remove("badge-secondary"); 
+        element.classList.add("badge-primary"); 
+    }
 }
+
 function selectFile(dbValue, fullPath) {
     document.getElementById('selected_image_input').value = dbValue;
     document.getElementById('preview_image_box').src = fullPath;

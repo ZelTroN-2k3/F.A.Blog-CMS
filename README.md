@@ -1,3 +1,63 @@
+# Mon CMS - v3.5.0 (Mobile & Enterprise Edition)
+
+Ce projet est un Content Management System (CMS) développé en PHP procédural, moderne et performant.
+Il a évolué pour devenir une **Plateforme Multi-Supports (PWA)** dotée d'outils d'analyse, de sécurité avancée et d'une API REST complète.
+
+---
+
+## 🚀 Dernière version majeure (v3.5.0) - "Mobile Experience"
+
+Cette version marque un tournant technologique en transformant le CMS en une application installable sur mobile et PC.
+
+* **📱 Progressive Web App (PWA) :** Le site est installable sur Android/iOS (icône sur écran d'accueil), fonctionne en mode plein écran et gère le mode hors-ligne.
+* **📊 Command Center (Analytics) :** Un tableau de bord administratif repensé avec graphiques interactifs (Visites, Sources, Contenu) et KPIs en temps réel.
+* **🛡️ Content Safety Net :** Système de **Sauvegarde Automatique (Autosave)** lors de la rédaction et gestionnaire d'**Historique des Versions** (Time Machine) pour restaurer les articles.
+* **🎨 Live Customizer :** Un éditeur de thème visuel avec prévisualisation en direct (Iframe) pour changer les couleurs et polices sans code.
+* **🔌 API RESTful :** Ouverture des données (Articles, Catégories) aux applications tierces via des endpoints JSON sécurisés par clé API.
+
+---
+
+## ✨ Fonctionnalités Principales
+
+### 🌐 Front-office (Visiteurs & Membres)
+* **Expérience Mobile Native :** Installation sans Store, navigation fluide, cache intelligent.
+* **Blog & Portfolio :** Articles, Projets techniques (BOM, STL), Catégories, Tags, Recherche.
+* **Espace Membre Social :**
+    * Profils publics et privés avec Avatar.
+    * **Tchat Temps Réel** avec notifications et statuts.
+    * Système de **Notifications (Cloche)** pour les interactions (Likes, Réponses).
+* **Arcade Room :** Section jeux vidéo (Snake, Tetris...) pour l'engagement.
+* **SEO Automatique :** Génération de Sitemap.xml, Open Graph, et gestion fine des Méta-tags.
+
+### 🛠️ Back-office (Administration)
+* **Tableau de bord (Command Center)** :
+    * Graphiques de trafic (Chart.js), Santé du système, Derniers logs.
+* **Gestion de Contenu Sécurisée** :
+    * **Articles :** Éditeur Summernote, Autosave, Gestion des Versions, SEO.
+    * **Média Manager :** Vue en grille, recherche instantanée, copie rapide de liens.
+* **Outils Techniques & Design** :
+    * **Live Theme Customizer :** Personnalisation visuelle (Couleurs, Google Fonts).
+    * **API Manager :** Gestion des clés API pour l'accès externe.
+    * **SEO Center :** Éditeur Robots.txt, Ping Google, Configuration Méta globale.
+* **Sécurité & Maintenance** :
+    * **Double Authentification (2FA)** via Google Authenticator.
+    * Logs d'activité détaillés.
+    * Mode Maintenance avec contournement Admin.
+
+---
+
+## 📜 Historique des évolutions récentes
+
+* ** (Mobile App) :** PWA, Service Workers, Manifest, Mode Hors-ligne.
+* ** (Analytics) :** Dashboard graphique, KPIs, Suivi des visiteurs.
+* ** (Safety) :** Autosave AJAX, Historique de révisions, Restauration.
+* ** (Design) :** Customizer Live avec Iframe, Sélecteurs de couleurs.
+* ** (Media) :** Refonte de la médiathèque (Grille, Filtres, UX).
+* ** (API) :** Création de l'API REST JSON pour apps tierces.
+* ** (SEO & Social) :** Notifications temps réel, Sitemap XML auto.
+
+---
+
 # Mon CMS - v3.4.0 (Arcade & Portfolio Edition)
 
 Ce projet est un Content Management System (CMS) développé en PHP procédural, moderne et performant.
