@@ -1,49 +1,49 @@
 <?php
 include "header.php";
 
-// --- LOGIQUE SUPPRESSION SÉCURISÉE ---
+// --- 1. LOGIQUE SUPPRESSION (Gardée et Sécurisée) ---
+$msg = "";
+
 if (isset($_GET['delete-id'])) {
     validate_csrf_token_get();
     $id = (int) $_GET["delete-id"];
 
-    // 1. Récupérer les infos du fichier (Chemin ET Auteur)
+    // Récupérer les infos
     $stmt = mysqli_prepare($connect, "SELECT path, author_id FROM `files` WHERE id=?");
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($result);
+    $file_data = mysqli_fetch_assoc($result);
     mysqli_stmt_close($stmt);
 
-    if ($row) {
-        // 2. VÉRIFICATION DES PERMISSIONS
-        if ($user['role'] == 'Admin' || $row['author_id'] == $user['id']) {
+    if ($file_data) {
+        // Vérification Permissions
+        if ($rowu['role'] == 'Admin' || $file_data['author_id'] == $rowu['id']) {
             
-            $file_path = "../" . $row['path'];
-            if (file_exists($file_path) && is_file($file_path)) {
-                unlink($file_path);
+            $file_path_disk = "../" . $file_data['path'];
+            
+            // Supprimer le fichier physique
+            if (file_exists($file_path_disk) && is_file($file_path_disk)) {
+                unlink($file_path_disk);
             }
 
-        // 3. Supprimer de la BDD
-        $stmt_delete = mysqli_prepare($connect, "DELETE FROM `files` WHERE id=?");
-        mysqli_stmt_bind_param($stmt_delete, "i", $id);
-        mysqli_stmt_execute($stmt_delete);
-        
-        // --- LOG ACTIVITY ---
-        log_activity($user['id'], "Delete File", "Deleted file ID: " . $id);
-        
-        mysqli_stmt_close($stmt_delete);
+            // Supprimer de la BDD
+            $stmt_del = mysqli_prepare($connect, "DELETE FROM `files` WHERE id=?");
+            mysqli_stmt_bind_param($stmt_del, "i", $id);
+            if(mysqli_stmt_execute($stmt_del)){
+                $msg = '<div class="alert alert-success"><i class="fas fa-check"></i> File deleted successfully.</div>';
+                // Log
+                if(function_exists('log_activity')) { log_activity($rowu['id'], "Delete File", "Deleted file ID: " . $id); }
+            }
+            mysqli_stmt_close($stmt_del);
+            
         } else {
-            echo '<div class="alert alert-danger m-3">Access Denied. You can only delete your own files.</div>';
-            echo '<meta http-equiv="refresh" content="2; url=files.php">';
-            exit;
+            $msg = '<div class="alert alert-danger"><i class="fas fa-ban"></i> Access Denied.</div>';
         }
     }
-    
-    echo '<meta http-equiv="refresh" content="0; url=files.php">';
-    exit;
 }
 
-// Fonction utilitaire pour formater la taille
+// Fonction utilitaire taille
 function formatBytes($bytes, $precision = 2) { 
     $units = array('B', 'KB', 'MB', 'GB', 'TB'); 
     $bytes = max($bytes, 0); 
@@ -58,13 +58,12 @@ function formatBytes($bytes, $precision = 2) {
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0"><i class="fas fa-folder-open"></i> File Manager</h1>
+                <h1 class="m-0"><i class="fas fa-images text-purple"></i> Media Manager</h1>
             </div>
             <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
-                    <li class="breadcrumb-item active">Files</li>
-                </ol>
+                <div class="float-sm-right">
+                    <a href="upload_file.php" class="btn btn-success"><i class="fas fa-cloud-upload-alt"></i> Upload New</a>
+                </div>
             </div>
         </div>
     </div>
@@ -72,162 +71,156 @@ function formatBytes($bytes, $precision = 2) {
 
 <section class="content">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                
-                <div class="card card-primary card-outline">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <a href="upload_file.php" class="btn btn-success btn-sm">
-                                <i class="fas fa-cloud-upload-alt"></i> Upload New File
-                            </a>
-                        </h3>
+        
+        <?php echo $msg; ?>
+
+        <div class="card mb-3">
+            <div class="card-body p-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
-                    
-                    <div class="card-body">
-                        <table id="dt-files" class="table table-bordered table-hover table-striped" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th style="width: 30px;" class="text-center">ID</th>
-                                    <th style="width: 60px;" class="text-center">Preview</th>
-                                    <th>Filename & Details</th>
-                                    <th style="min-width: 180px;">Author</th> <th class="text-center">Type</th>
-                                    <th class="text-center">Size</th>
-                                    <th class="text-center">Date</th>
-                                    <th class="text-center" style="width: 180px;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-<?php
-// REQUÊTE : On récupère l'avatar (u.avatar)
-$query = "
-    SELECT f.*, u.username, u.role, u.avatar 
-    FROM files f 
-    LEFT JOIN users u ON f.author_id = u.id 
-    ORDER BY f.id DESC
-";
-$sql = mysqli_query($connect, $query);
-
-while ($row = mysqli_fetch_assoc($sql)) {
-    
-    $filename = htmlspecialchars($row['filename']);
-    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-    $path = htmlspecialchars($row['path']); 
-    $full_url = $settings['site_url'] . '/' . $path;
-    
-    $full_path = '../' . $row['path'];
-    $file_size = file_exists($full_path) ? formatBytes(filesize($full_path)) : 'N/A';
-
-    // --- LOGIQUE AUTEUR STYLE POSTS.PHP ---
-    $author_name = !empty($row['username']) ? htmlspecialchars($row['username']) : 'Unknown';
-    $author_avatar = !empty($row['avatar']) ? $row['avatar'] : 'assets/img/avatar.png'; // Avatar par défaut
-
-    $role_badge = '';
-    if (isset($row['role'])) {
-        // Ajout de style="font-size: 0.7em;" pour correspondre aux autres pages
-        if ($row['role'] == 'Admin') {
-            $role_badge = '<small class="badge badge-success" style="font-size: 0.7em;">Admin</small>';
-        } elseif ($row['role'] == 'Editor') {
-            $role_badge = '<small class="badge badge-primary" style="font-size: 0.7em;">Editor</small>';
-        } else {
-            $role_badge = '<small class="badge badge-secondary" style="font-size: 0.7em;">User</small>';
-        }
-    }
-    
-    // --- LOGIQUE D'ICÔNES ROBUSTE ---
-    $icon = '<i class="fas fa-file fa-2x text-secondary"></i>';
-    // Nettoyage du chemin pour l'affichage
-    $clean_path = str_replace('../', '', $path);
-    $display_path = '../' . $clean_path;
-    if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'])) {
-        // Ajout de onerror pour la robustesse
-        $icon = '<img src="' . htmlspecialchars($display_path) . '" 
-                      width="50" height="50" 
-                      style="object-fit: cover; border-radius: 4px; border: 1px solid #ddd;"
-                      onerror="this.onerror=null; this.parentNode.innerHTML=\'<i class=\\\'fas fa-image fa-2x text-muted\\\'></i>\';">';
-    } elseif (in_array($ext, ['pdf'])) {
-        $icon = '<i class="fas fa-file-pdf fa-2x text-danger"></i>';
-    } elseif (in_array($ext, ['doc', 'docx', 'odt', 'rtf', 'txt'])) {
-        $icon = '<i class="fas fa-file-word fa-2x text-primary"></i>';
-    } elseif (in_array($ext, ['xls', 'xlsx', 'ods', 'csv'])) {
-        $icon = '<i class="fas fa-file-excel fa-2x text-success"></i>';
-    } elseif (in_array($ext, ['zip', 'rar', '7z', 'tar', 'gz'])) {
-        $icon = '<i class="fas fa-file-archive fa-2x text-warning"></i>';
-    } elseif (in_array($ext, ['mp3', 'wav'])) {
-        $icon = '<i class="fas fa-file-audio fa-2x text-info"></i>';
-    } elseif (in_array($ext, ['mp4', 'avi', 'mov'])) {
-        $icon = '<i class="fas fa-file-video fa-2x text-purple"></i>';
-    }
-
-    // --- PERMISSIONS ---
-    $is_mine = ($row['author_id'] == $user['id']);
-    $is_admin = ($user['role'] == 'Admin');
-
-    echo '
-        <tr>
-            <td class="text-center align-middle">' . $row['id'] . '</td>
-            <td class="text-center align-middle">' . $icon . '</td>
-            <td class="align-middle">
-                <strong>' . $filename . '</strong><br>
-                <small class="text-muted"><i class="fas fa-link"></i> ' . $path . '</small>
-            </td>
-            
-            <td class="align-middle">
-                <div class="user-block">
-                    <img src="../' . htmlspecialchars($author_avatar) . '" width="40" height="40" class="img-circle elevation-1" alt="User" style="float:left; margin-right:10px; object-fit:cover;">
-                    <span class="username" style="font-size:14px;">' . $author_name . '</span>
-                    <span class="description" style="margin-left: 0;">' . $role_badge . '</span>
+                    <input type="text" id="mediaSearch" class="form-control" placeholder="Filter files by name...">
                 </div>
-            </td>
-            
-            <td class="text-center align-middle"><span class="badge badge-light border">' . strtoupper($ext) . '</span></td>
-            <td class="text-center align-middle">' . $file_size . '</td> 
-            <td class="text-center align-middle" data-sort="' . strtotime($row['created_at']) . '">' . date('d M Y', strtotime($row['created_at'])) . '</td>
-            
-            <td class="text-center align-middle">
-                <a href="../' . $path . '" target="_blank" class="btn btn-info btn-sm" title="View/Download"><i class="fas fa-eye"></i></a>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="copyLink(\'' . $full_url . '\')" title="Copy URL"><i class="fas fa-copy"></i></button>';
-                
-                if ($is_admin || $is_mine) {
-                    echo ' <a href="?delete-id=' . $row['id'] . '&token=' . $csrf_token . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this file permanently?\');" title="Delete"><i class="fas fa-trash"></i></a>';
-                }
-                
-    echo '  </td>
-        </tr>';
-}
-?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
             </div>
+        </div>
+
+        <div class="row" id="mediaGrid">
+            <?php
+            // Récupération depuis la BDD (comme avant, mais affichage différent)
+            $query = "SELECT f.*, u.username FROM files f LEFT JOIN users u ON f.author_id = u.id ORDER BY f.id DESC";
+            $sql = mysqli_query($connect, $query);
+            
+            if (mysqli_num_rows($sql) > 0) {
+                while ($row = mysqli_fetch_assoc($sql)) {
+                    
+                    $filename = htmlspecialchars($row['filename']);
+                    $path = $row['path']; // ex: uploads/image.jpg
+                    $full_url = $settings['site_url'] . '/' . $path;
+                    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                    
+                    // Déterminer l'affichage (Image ou Icône)
+                    $preview_html = '';
+                    $is_image = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
+                    
+                    if ($is_image) {
+                        $preview_html = '<img src="../' . htmlspecialchars($path) . '" alt="' . $filename . '" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">';
+                    } else {
+                        // Icônes FontAwesome selon l'extension
+                        $fa_icon = 'fa-file';
+                        $color = 'text-secondary';
+                        
+                        if ($ext == 'pdf') { $fa_icon = 'fa-file-pdf'; $color = 'text-danger'; }
+                        if (in_array($ext, ['zip', 'rar', '7z'])) { $fa_icon = 'fa-file-archive'; $color = 'text-warning'; }
+                        if (in_array($ext, ['doc', 'docx', 'txt'])) { $fa_icon = 'fa-file-word'; $color = 'text-primary'; }
+                        if (in_array($ext, ['xls', 'xlsx', 'csv'])) { $fa_icon = 'fa-file-excel'; $color = 'text-success'; }
+                        if (in_array($ext, ['mp3', 'wav'])) { $fa_icon = 'fa-music'; $color = 'text-info'; }
+                        if (in_array($ext, ['mp4', 'avi'])) { $fa_icon = 'fa-video'; $color = 'text-purple'; }
+                        
+                        $preview_html = '<i class="fas ' . $fa_icon . ' fa-4x ' . $color . '"></i>';
+                    }
+
+                    // Taille du fichier (sur disque)
+                    $disk_path = '../' . $path;
+                    $size_str = file_exists($disk_path) ? formatBytes(filesize($disk_path)) : 'Unknown';
+
+                    // Permissions
+                    $can_delete = ($rowu['role'] == 'Admin' || $row['author_id'] == $rowu['id']);
+
+                    ?>
+                    <div class="col-lg-2 col-md-3 col-6 mb-4 media-item" data-name="<?php echo strtolower($filename); ?>">
+                        <div class="card h-100 shadow-sm media-card border-0">
+                            
+                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light position-relative" style="height: 140px; overflow: hidden;">
+                                <?php echo $preview_html; ?>
+                                <a href="<?php echo $full_url; ?>" target="_blank" class="stretched-link"></a>
+                            </div>
+
+                            <div class="card-body p-2 bg-white">
+                                <h6 class="text-truncate font-weight-bold mb-0 text-dark" title="<?php echo $filename; ?>" style="font-size: 0.85rem;">
+                                    <?php echo $filename; ?>
+                                </h6>
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    <span class="badge bg-light text-dark border"><?php echo strtoupper($ext); ?></span>
+                                    <small class="text-muted" style="font-size: 0.7rem;"><?php echo $size_str; ?></small>
+                                </div>
+                                <small class="d-block text-muted mt-1" style="font-size: 0.65rem;">
+                                    <i class="fas fa-user"></i> <?php echo htmlspecialchars($row['username']); ?>
+                                </small>
+                            </div>
+
+                            <div class="card-footer p-1 bg-light text-center border-top-0">
+                                <div class="btn-group btn-group-sm w-100">
+                                    
+                                    <button type="button" class="btn btn-default" onclick="copyLink('<?php echo $full_url; ?>')" title="Copy Link">
+                                        <i class="fas fa-link"></i>
+                                    </button>
+                                    
+                                    <a href="<?php echo $full_url; ?>" download class="btn btn-default" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+
+                                    <?php if ($can_delete): ?>
+                                    <a href="?delete-id=<?php echo $row['id']; ?>&token=<?php echo $_SESSION['csrf_token']; ?>" class="btn btn-default text-danger" onclick="return confirm('Delete this file permanently?');" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <?php
+                }
+            } else {
+                echo '<div class="col-12 text-center text-muted py-5"><h4><i class="fas fa-box-open fa-2x mb-3"></i><br>No files uploaded yet.</h4></div>';
+            }
+            ?>
         </div>
     </div>
 </section>
 
-<?php include "footer.php"; ?>
+<style>
+.media-card { transition: transform 0.2s, box-shadow 0.2s; }
+.media-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; z-index: 10; }
+.media-card .btn-default:hover { background-color: #e9ecef; color: #007bff; }
+</style>
 
 <script>
-$(document).ready(function() {
-    $('#dt-files').DataTable({
-        "responsive": true,
-        "autoWidth": false,
-        "order": [[ 0, "desc" ]] // Trier par ID descendant
+// 1. Filtrage instantané
+document.getElementById('mediaSearch').addEventListener('keyup', function() {
+    var filter = this.value.toLowerCase();
+    var items = document.querySelectorAll('.media-item');
+    
+    items.forEach(function(item) {
+        var name = item.getAttribute('data-name');
+        if (name.includes(filter)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
     });
 });
 
+// 2. Copier le lien
 function copyLink(url) {
     navigator.clipboard.writeText(url).then(function() {
-        $(document).Toasts('create', {
-            class: 'bg-success',
-            title: 'Copied!',
-            body: 'File URL copied to clipboard.',
-            autohide: true,
-            delay: 2000
-        });
+        // On utilise le Toast de AdminLTE s'il est dispo, sinon alert
+        if (typeof $(document).Toasts === 'function') {
+            $(document).Toasts('create', {
+                class: 'bg-success',
+                title: 'Copied!',
+                body: 'Link copied to clipboard.',
+                autohide: true,
+                delay: 2000
+            });
+        } else {
+            alert('Link copied: ' + url);
+        }
     }, function(err) {
         console.error('Async: Could not copy text: ', err);
     });
 }
 </script>
+
+<?php include "footer.php"; ?>

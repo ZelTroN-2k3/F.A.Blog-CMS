@@ -38,6 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Attribuer le badge
             $b_id = $badge['id'];
             mysqli_query($connect, "INSERT INTO user_badges (user_id, badge_id) VALUES ($user_id, $b_id)");
+            // --- NOTIFICATION BADGE ---
+            $msg = "🏆 Unlocked Badge: " . $badge['name'];
+            $link = "leaderboard.php";
+            send_notification($user_id, 0, 'badge', $msg, $link); // 0 = Système
+            // --------------------------            
             $new_badges[] = $badge['name'];
         }
 

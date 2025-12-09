@@ -1002,4 +1002,19 @@ function clear_site_cache() {
     // Log l'action pour la sécurité
     if(function_exists('log_activity')) { log_activity("System", "Cache cleared automatically."); }
 }
+
+// --- SYSTÈME DE NOTIFICATIONS ---
+function send_notification($to_user_id, $from_user_id, $type, $message, $link) {
+    global $connect;
+    
+    // On ne s'envoie pas de notif à soi-même (sauf système)
+    if ($to_user_id == $from_user_id && $type != 'system' && $type != 'badge') {
+        return;
+    }
+
+    $stmt = mysqli_prepare($connect, "INSERT INTO notifications (user_id, from_user_id, type, message, link, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+    mysqli_stmt_bind_param($stmt, "iisss", $to_user_id, $from_user_id, $type, $message, $link);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
 ?>

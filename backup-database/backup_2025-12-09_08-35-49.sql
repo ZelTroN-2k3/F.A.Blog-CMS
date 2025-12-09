@@ -1,5 +1,5 @@
 -- F.A Blog Database Backup
--- Generated: 2025-12-08 08:25:52
+-- Generated: 2025-12-09 08:35:49
 -- Host: localhost
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -17,10 +17,13 @@ CREATE TABLE `activity_logs` (
   `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `activity_logs`
-INSERT INTO `activity_logs` VALUES("1","1","Login","User logged in successfully","::1","2025-12-08 09:23:48");
+INSERT INTO `activity_logs` VALUES("1","1","Update Settings","Updated global site settings.","::1","2025-12-09 09:26:03");
+INSERT INTO `activity_logs` VALUES("2","1","System","Cache cleared automatically.","::1","2025-12-09 09:26:03");
+INSERT INTO `activity_logs` VALUES("3","1","Update Settings","Updated global site settings.","::1","2025-12-09 09:26:14");
+INSERT INTO `activity_logs` VALUES("4","1","System","Cache cleared automatically.","::1","2025-12-09 09:26:14");
 
 
 -- Table structure for table `ad_clicks`
@@ -48,7 +51,7 @@ CREATE TABLE `ads` (
   `clicks` int(11) NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- Dumping data for table `ads`
 INSERT INTO `ads` VALUES("1","Winter Sale","728x90","uploads/ads/ad_691c4b01726db.jpg","http://localhost/phpBlog","No","0","2025-01-01 12:00:00");
@@ -66,6 +69,27 @@ CREATE TABLE `albums` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+
+-- Table structure for table `badges`
+DROP TABLE IF EXISTS `badges`;
+CREATE TABLE `badges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `icon` varchar(50) NOT NULL,
+  `color` varchar(20) NOT NULL DEFAULT 'primary',
+  `trigger_type` varchar(50) NOT NULL,
+  `trigger_value` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table `badges`
+INSERT INTO `badges` VALUES("1","Snake Novice","Score > 50 at Snake","fas fa-worm","success","score_snake","50");
+INSERT INTO `badges` VALUES("2","Snake Master","Score > 200 at Snake","fas fa-crown","warning","score_snake","200");
+INSERT INTO `badges` VALUES("3","Tetris Builder","Score > 1000 at Tetris","fas fa-cubes","info","score_tetris","1000");
+INSERT INTO `badges` VALUES("4","Space Defender","Score > 500 at Space Invaders","fas fa-rocket","danger","score_space","500");
+INSERT INTO `badges` VALUES("5","VIP Member","Premium Community Member","fas fa-gem","primary","manual","0");
 
 
 -- Table structure for table `bans`
@@ -108,7 +132,7 @@ CREATE TABLE `chat_conversations` (
   `archived_user_1` enum('No','Yes') DEFAULT 'No',
   `archived_user_2` enum('No','Yes') DEFAULT 'No',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -123,7 +147,7 @@ CREATE TABLE `chat_messages` (
   `is_read` enum('Yes','No') DEFAULT 'No',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -194,7 +218,7 @@ CREATE TABLE `files` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `author_id` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 
@@ -230,6 +254,19 @@ CREATE TABLE `gallery` (
   `author_id` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+-- Table structure for table `game_scores`
+DROP TABLE IF EXISTS `game_scores`;
+CREATE TABLE `game_scores` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `game_name` varchar(50) NOT NULL,
+  `score` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -309,6 +346,23 @@ CREATE TABLE `newsletter` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+-- Table structure for table `notifications`
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL COMMENT 'Destinataire',
+  `from_user_id` int(11) DEFAULT NULL COMMENT 'Qui a fait l action (0 = SystÃ¨me)',
+  `type` varchar(50) NOT NULL COMMENT 'comment, like, badge, system',
+  `message` varchar(255) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `is_read` enum('No','Yes') NOT NULL DEFAULT 'No',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -448,7 +502,7 @@ CREATE TABLE `posts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `posts`
-INSERT INTO `posts` VALUES("1","1","Demo Test Post","demo-test-post","demo test Post","demo meta description","","<p>demo test post 1</p>",NULL,"1","Yes","Yes","https://localhost/download/test1.zip","https://github.com/","2025-01-01 12:00:00","0","2025-01-01 12:00:00");
+INSERT INTO `posts` VALUES("1","1","Demo Test Post","demo-test-post","demo test Post","demo meta description","","<p>demo test post 1</p>",NULL,"1","Yes","Yes","https://localhost/download/test1.zip","https://github.com/","2025-01-01 12:00:00","1","2025-01-01 12:00:00");
 
 
 -- Table structure for table `project_categories`
@@ -651,14 +705,20 @@ CREATE TABLE `settings` (
   `cookie_message` text COLLATE utf8mb4_unicode_ci,
   `event_mode` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'None' COMMENT 'None, Christmas, Halloween, BlackFriday...',
   `event_effect` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'None' COMMENT 'Snow, Confetti, Bats...',
-  `event_banner_active` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
+  `event_banner_active` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
   `event_banner_content` text COLLATE utf8mb4_unicode_ci,
   `event_banner_color` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#dc3545',
+  `design_font` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'Nunito',
+  `design_color_primary` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '#0d6efd',
+  `design_color_secondary` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '#6c757d',
+  `design_custom_css` text COLLATE utf8mb4_unicode_ci,
+  `api_enabled` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
+  `api_key` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `settings`
-INSERT INTO `settings` VALUES("1","http://localhost/F.A.Blog-CMS-main","F.A-Blog","Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.","admin@freelance-addons.net","6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI","6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe","IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==","Off","https://www.facebook.com/","https://www.instagram.com/","","https://www.youtube.com/","","https://discord.com/","guests","No","d.m.Y","Fixed","Enabled","Right","2","Bootstrap 5","","4","4","F.A Blog - Titre SEO","assets/img/favicon.png","assets/img/favicon.png","ZelTroN2K3_WEB","faBlog","index, follow","Off","Off","Site Under Maintenance","<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>","Featured","PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==","uploads/other/logo_693034e757e31.png","assets/img/maintenance.jpg","default.jpg","smtp","","","","0","","","tls","0","viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,whatsapp,telegram,dm me,cash app,paypal,marketing,seo,ranking,traffic,website,domain,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,viagra,pÃƒÂ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,marketing,seo,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,pÃƒÂ©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,suicide,kill yourself,die,http,https,www,.com,.net,.org,.biz,.info","1","This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.","None","None","No","0","#dc3545");
+INSERT INTO `settings` VALUES("1","http://localhost/F.A.Blog-CMS-main","F.A-Blog","Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.","admin@freelance-addons.net","6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI","6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe","IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==","Off","https://www.facebook.com/","https://www.instagram.com/","https://x.com/","https://www.youtube.com/","https://www.linkedin.com/","https://discord.com/","guests","No","d.m.Y","Fixed","Enabled","Right","2","Bootstrap 5","","4","3","F.A Blog - Titre SEO","assets/img/favicon.png","assets/img/favicon.png","ZelTroN2K3_WEB","faBlog","index, follow","Off","Off","Site Under Maintenance","<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>","Featured","PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==","uploads/other/logo_693034e757e31.png","assets/img/maintenance.jpg","default.jpg","smtp","","","","0","","","tls","0","viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,whatsapp,telegram,dm me,cash app,paypal,marketing,seo,ranking,traffic,website,domain,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,viagra,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,marketing,seo,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,pede,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,suicide,kill yourself,die,http,https,www,.com,.net,.org,.biz,.info","1","This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.","Off","None","No","None","#dc3545","Nunito","#0d69fd","#6c757d","","Yes","hplzZ9tEUR5morONsysiqqAVSvkeHgnHZ");
 
 
 -- Table structure for table `slides`
@@ -708,6 +768,18 @@ CREATE TABLE `testimonials` (
 
 
 
+-- Table structure for table `user_badges`
+DROP TABLE IF EXISTS `user_badges`;
+CREATE TABLE `user_badges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `badge_id` int(11) NOT NULL,
+  `awarded_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
 -- Table structure for table `user_favorites`
 DROP TABLE IF EXISTS `user_favorites`;
 CREATE TABLE `user_favorites` (
@@ -749,13 +821,15 @@ CREATE TABLE `users` (
   `location` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `last_activity` datetime DEFAULT NULL,
   `typing_in_chat_with` int(11) DEFAULT '0',
+  `two_factor_secret` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `two_factor_enabled` enum('Yes','No') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `users`
-INSERT INTO `users` VALUES("1","admin","$2y$10$EJ0EoghPtDD44ttsBQ2MV.C0HkKS80YLLSUkczGclHyRBJCUG6vgC","zeltron2k3@gmail.com","assets/img/avatar.png",NULL,"Admin",NULL,NULL,"2025-12-08 09:25:51","0");
+INSERT INTO `users` VALUES("1","admin","$2y$10$jBwlTHeWYYvop2a9pHciJux6YmO89t/udjL4b467wv86IA8GDUH66","zeltron2k3@gmail.com","assets/img/avatar.png",NULL,"Admin",NULL,NULL,"2025-12-09 09:35:49","0","EIT3NRVV4HQJUOHK","Yes");
 
 
 -- Table structure for table `visitor_analytics`
@@ -770,12 +844,28 @@ CREATE TABLE `visitor_analytics` (
   PRIMARY KEY (`id`),
   KEY `idx_date` (`visit_date`),
   KEY `idx_url` (`page_url`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
 
 -- Dumping data for table `visitor_analytics`
-INSERT INTO `visitor_analytics` VALUES("1","::1","/F.A.Blog-CMS-main/","http://localhost/F.A.Blog-CMS-main/install/done.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 09:23:27");
-INSERT INTO `visitor_analytics` VALUES("2","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 09:23:43");
-INSERT INTO `visitor_analytics` VALUES("3","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/login","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 09:23:48");
+INSERT INTO `visitor_analytics` VALUES("1","::1","/F.A.Blog-CMS-main/","http://localhost/F.A.Blog-CMS-main/install/done.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 22:03:54");
+INSERT INTO `visitor_analytics` VALUES("2","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 22:03:57");
+INSERT INTO `visitor_analytics` VALUES("3","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 22:04:02");
+INSERT INTO `visitor_analytics` VALUES("4","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 22:04:05");
+INSERT INTO `visitor_analytics` VALUES("5","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 22:04:18");
+INSERT INTO `visitor_analytics` VALUES("6","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 22:04:19");
+INSERT INTO `visitor_analytics` VALUES("7","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/login","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-08 22:04:26");
+INSERT INTO `visitor_analytics` VALUES("8","::1","/F.A.Blog-CMS-main/index.php","http://localhost/F.A.Blog-CMS-main/","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:20:06");
+INSERT INTO `visitor_analytics` VALUES("9","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/index.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:20:09");
+INSERT INTO `visitor_analytics` VALUES("10","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/index.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:24:48");
+INSERT INTO `visitor_analytics` VALUES("11","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/index.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:25:45");
+INSERT INTO `visitor_analytics` VALUES("12","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/index.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:27:44");
+INSERT INTO `visitor_analytics` VALUES("13","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/index.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:28:28");
+INSERT INTO `visitor_analytics` VALUES("14","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/admin/security_2fa.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:33:07");
+INSERT INTO `visitor_analytics` VALUES("15","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/login","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:33:16");
+INSERT INTO `visitor_analytics` VALUES("16","::1","/F.A.Blog-CMS-main/index.php","http://localhost/F.A.Blog-CMS-main/admin/dashboard.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:33:47");
+INSERT INTO `visitor_analytics` VALUES("17","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/index.php","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:33:49");
+INSERT INTO `visitor_analytics` VALUES("18","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/login","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:33:54");
+INSERT INTO `visitor_analytics` VALUES("19","::1","/F.A.Blog-CMS-main/login","http://localhost/F.A.Blog-CMS-main/login","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","2025-12-09 08:34:11");
 
 
 -- Table structure for table `widgets`

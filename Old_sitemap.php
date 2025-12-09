@@ -1,14 +1,7 @@
 <?php
-// sitemap.php
-// Génère un fichier XML pour les moteurs de recherche (Google, Bing...)
-
 include "core.php";
 
-// Indiquer au navigateur que c'est du XML
-header("Content-Type: application/xml; charset=utf-8");
-
-// Désactiver les limites de mémoire pour les gros sites
-ini_set('memory_limit', '128M');
+header("Content-type: text/xml");
 
 // On génère l'en-tête via PHP pour éviter le conflit "short_open_tag"
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";

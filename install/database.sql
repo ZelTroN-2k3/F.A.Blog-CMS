@@ -50,6 +50,7 @@ DROP TABLE IF EXISTS `user_project_favorites`;
 DROP TABLE IF EXISTS `game_scores`;
 DROP TABLE IF EXISTS `badges`;
 DROP TABLE IF EXISTS `user_badges`;
+DROP TABLE IF EXISTS `notifications`;
 
 -- --------------------------------------------------------
 -- Base de données : `localhost`
@@ -591,22 +592,24 @@ CREATE TABLE `settings` (
   `cookie_message` text COLLATE utf8mb4_unicode_ci,
   `event_mode` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'None' COMMENT 'None, Christmas, Halloween, BlackFriday...',
   `event_effect` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'None' COMMENT 'Snow, Confetti, Bats...',
-  `event_banner_active` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
+  `event_banner_active` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
   `event_banner_content` text COLLATE utf8mb4_unicode_ci,
   `event_banner_color` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#dc3545',
   `design_font` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'Nunito',
   `design_color_primary` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '#0d6efd',
   `design_color_secondary` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '#6c757d',
-  `design_custom_css` text COLLATE utf8mb4_unicode_ci
+  `design_custom_css` text COLLATE utf8mb4_unicode_ci,
+  `api_enabled` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
+  `api_key` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`id`, `site_url`, `sitename`, `description`, `email`, `gcaptcha_sitekey`, `gcaptcha_secretkey`, `head_customcode`, `head_customcode_enabled`, `facebook`, `instagram`, `twitter`, `youtube`, `linkedin`, `discord`, `comments`, `rtl`, `date_format`, `layout`, `latestposts_bar`, `sidebar_position`, `posts_per_row`, `theme`, `background_image`, `posts_per_page`, `projects_per_page`, `meta_title`, `favicon_url`, `apple_touch_icon_url`, `meta_author`, `meta_generator`, `meta_robots`, `sticky_header`, `maintenance_mode`, `maintenance_title`, `maintenance_message`, `homepage_slider`, `google_maps_code`, `site_logo`, `maintenance_image`, `ban_bg_image`, `mail_protocol`, `mail_from_name`, `mail_from_email`, `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_enc`, `comments_approval`, `comments_blacklist`, `cookie_consent_enabled`, `cookie_message`, `event_mode`, `event_effect`, `event_banner_active`, `event_banner_content`, `event_banner_color`, `design_font`, `design_color_primary`, `design_color_secondary`, `design_custom_css`) VALUES
-(1, 'http://localhost/F.A.Blog-CMS', 'F.A-Blog', 'Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.', 'admin@exemple.com', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==', 'Off', 'https://www.facebook.com/', 'https://www.instagram.com/', '', 'https://www.youtube.com/', '', 'https://discord.com/', 'guests', 'No', 'd.m.Y', 'Fixed', 'Enabled', 'Right', '2', 'Bootstrap 5', '', '4', '3', 'F.A Blog - Titre SEO', 'assets/img/favicon.png', 'assets/img/favicon.png', 'ZelTroN2K3_WEB', 'faBlog', 'index, follow', 'Off', 'Off', 'Site Under Maintenance', '<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>', 'Featured', 'PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==', 'uploads/other/logo_693034e757e31.png', 'assets/img/maintenance.jpg', 'default.jpg', 'smtp', '', '', '', 0, '', '', 'tls', 0, 
-'viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,whatsapp,telegram,dm me,cash app,paypal,marketing,seo,ranking,traffic,website,domain,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,viagra,pÃƒÆ’Ã‚Â©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,marketing,seo,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,pÃƒÆ’Ã‚Â©nis,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,suicide,kill yourself,die,http,https,www,.com,.net,.org,.biz,.info', 1, 'This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.', 'None', 'None', 'No', '0', '#dc3545', 'Nunito', '#0d6efd', '#6c757d', NULL);
+INSERT INTO `settings` (`id`, `site_url`, `sitename`, `description`, `email`, `gcaptcha_sitekey`, `gcaptcha_secretkey`, `head_customcode`, `head_customcode_enabled`, `facebook`, `instagram`, `twitter`, `youtube`, `linkedin`, `discord`, `comments`, `rtl`, `date_format`, `layout`, `latestposts_bar`, `sidebar_position`, `posts_per_row`, `theme`, `background_image`, `posts_per_page`, `projects_per_page`, `meta_title`, `favicon_url`, `apple_touch_icon_url`, `meta_author`, `meta_generator`, `meta_robots`, `sticky_header`, `maintenance_mode`, `maintenance_title`, `maintenance_message`, `homepage_slider`, `google_maps_code`, `site_logo`, `maintenance_image`, `ban_bg_image`, `mail_protocol`, `mail_from_name`, `mail_from_email`, `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_enc`, `comments_approval`, `comments_blacklist`, `cookie_consent_enabled`, `cookie_message`, `event_mode`, `event_effect`, `event_banner_active`, `event_banner_content`, `event_banner_color`, `design_font`, `design_color_primary`, `design_color_secondary`, `design_custom_css`, `api_enabled`, `api_key`) VALUES
+(1, 'http://localhost/F.A.Blog-CMS', 'F.A-Blog', 'Don t miss a thing: Subscribe to our newsletter to get our best insights delivered straight to your inbox.', 'admin@exemple.com', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'IDwhLS0gR29vZ2xlIEFuYWx5dGljcyA0IChHQTQpIFRyYWNraW5nIENvZGUgLS0+DQogPHNjcmlwdCBhc3luYyBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZXRhZ21hbmFnZXIuY29tL2d0YWcvanM/aWQ9Ry1YWFhYWFhYWFhYIj48L3NjcmlwdD4NCiA8c2NyaXB0Pg0KICAgd2luZG93LmRhdGFMYXllciA9IHdpbmRvdy5kYXRhTGF5ZXIgfHwgW107DQogICBmdW5jdGlvbiBndGFnKCl7ZGF0YUxheWVyLnB1c2goYXJndW1lbnRzKTt9DQogICBndGFnKCdqcycsIG5ldyBEYXRlKCkpOw0KICAgZ3RhZygnY29uZmlnJywgJ0ctWFhYWFhYWFhYWCcpOw0KIDwvc2NyaXB0Pg0KPCEtLSBSZXN0IG9mIHlvdXIgaGVhZCBjb250ZW50IC0tPg==', 'Off', 'https://www.facebook.com/', 'https://www.instagram.com/', 'https://x.com/', 'https://www.youtube.com/', 'https://www.linkedin.com/', 'https://discord.com/', 'guests', 'No', 'd.m.Y', 'Fixed', 'Enabled', 'Right', '2', 'Bootstrap 5', '', '4', '3', 'F.A Blog - Titre SEO', 'assets/img/favicon.png', 'assets/img/favicon.png', 'ZelTroN2K3_WEB', 'faBlog', 'index, follow', 'Off', 'Off', 'Site Under Maintenance', '<p>Our website is currently undergoing maintenance. We apologize for the inconvenience. We will be back soon!</p>', 'Featured', 'PGlmcmFtZSBzcmM9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcy9lbWJlZD9wYj0hMW0xOCExbTEyITFtMyExZDI2MTcuMTA4MjAzNDg0ODA5ITJkMzEuMzg3NTAxMjc2NzYyNzghM2Q0OS4wMDg1MjYzOTAxMjg4OCEybTMhMWYwITJmMCEzZjAhM20yITFpMTAyNCEyaTc2OCE0ZjEzLjEhM20zITFtMiExczB4NDBkMTc3OWU5NTEwYjM5MyUzQTB4YWQyN2YwZTRkOTVmOWNjYiEyc0xlbmluYSUyMFN0JTJDJTIwMzUlMkMlMjBTaHBvbGElMkMlMjBDaGVya2FzJiMzOTtrYSUyMG9ibGFzdCUyQyUyMFVrcmFpbmUlMkMlMjAyMDYwMCE1ZTAhM20yITFzZnIhMnNmciE0djE3NjM1NjkyNTk5ODIhNW0yITFzZnIhMnNmciIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI0NTAiIHN0eWxlPSJib3JkZXI6MDsiIGFsbG93ZnVsbHNjcmVlbj0iIiBsb2FkaW5nPSJsYXp5IiByZWZlcnJlcnBvbGljeT0ibm8tcmVmZXJyZXItd2hlbi1kb3duZ3JhZGUiPjwvaWZyYW1lPg==', 'uploads/other/logo_693034e757e31.png', 'assets/img/maintenance.jpg', 'default.jpg', 'smtp', '', '', '', 0, '', '', 'tls', 0, 
+'viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,whatsapp,telegram,dm me,cash app,paypal,marketing,seo,ranking,traffic,website,domain,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,viagra,penis,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,viagra,cialis,levitra,xanax,valium,tramadol,percocet,casino,poker,roulette,slots,gambling,betting,jackpot,bitcoin,crypto,ethereum,dogecoin,wallet,invest,investment,forex,trading,binary options,loan,lender,credit,debt,insurance,mortgage,passive income,marketing,seo,porn,porno,sexe,sex,hentai,xxx,nude,naked,camgirl,webcam,milf,orgy,incest,erotic,escort,pede,vagin,vagina,anal,oral,blowjob,tits,boobs,seins,fesses,ass,booty,merde,putain,salope,connard,connasse,encule,encule,fils de pute,batard,nique,niquer,bouffon,abruti,trou du cul,bite,couille,chatte,foutre,bordel,pede,pede,gouine,negre,bougnoule,youpin,raton,triso,fuck,shit,bitch,asshole,bastard,dick,cock,pussy,cunt,whore,slut,faggot,nigger,retard,idiot,stupid,suck,jerk,wanker,suicide,kill yourself,die,http,https,www,.com,.net,.org,.biz,.info', 1, 'This site uses cookies to provide you with the best service. By continuing to browse the site, you agree to our use of cookies.', 'Off', 'None', 'No', 'None', '#dc3545', 'Nunito', '#0d6efd', '#6c757d', '', 'Yes', 'hplzZ9tEUR5morONsysiqqAVSvkeHgnHZ');
 
 -- --------------------------------------------------------
 
@@ -970,6 +973,23 @@ INSERT INTO `badges` (`id`, `name`, `description`, `icon`, `color`, `trigger_typ
 
 -- --------------------------------------------------------
 
+--
+-- Structure de la table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL COMMENT 'Destinataire',
+  `from_user_id` int(11) DEFAULT NULL COMMENT 'Qui a fait l action (0 = Système)',
+  `type` varchar(50) NOT NULL COMMENT 'comment, like, badge, system',
+  `message` varchar(255) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `is_read` enum('No','Yes') NOT NULL DEFAULT 'No',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
 -- --------------------------------------------------------
 -- Index pour les tables déchargées
 -- --------------------------------------------------------
@@ -1282,6 +1302,13 @@ ALTER TABLE `badges`
 ALTER TABLE `user_badges`
   ADD PRIMARY KEY (`id`);
 
+--
+-- Index pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
 -- --------------------------------------------------------
 -- AUTO_INCREMENT pour les tables déchargées
 -- --------------------------------------------------------
@@ -1560,5 +1587,11 @@ ALTER TABLE `badges`
 -- AUTO_INCREMENT pour la table `user_badges`
 --
 ALTER TABLE `user_badges`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `notifications`
+--
+ALTER TABLE `notifications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;

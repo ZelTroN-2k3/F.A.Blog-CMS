@@ -32,6 +32,22 @@ if ($id > 0) {
         }
         $response['count'] = get_project_like_count($id);
         $response['status'] = 'success';
+        
+        // --- NOTIFICATION (CORRIGÉE) ---
+        // On cherche dans la table PROJECTS, pas POSTS
+        $q_p = mysqli_query($connect, "SELECT author_id, title, slug FROM projects WHERE id=$id");
+        if ($q_p && mysqli_num_rows($q_p) > 0) {
+            $p = mysqli_fetch_assoc($q_p);
+            
+            // On envoie la notif seulement si l'utilisateur est connecté (sinon $uid n'existe pas ou est vide)
+            if ($logged == 'Yes') {
+                $msg = "Liked your project: " . short_text($p['title'], 20);
+                $link = "project?name=" . $p['slug']; // Lien vers le projet
+                
+                send_notification($p['author_id'], $uid, 'like', $msg, $link); 
+            }
+        }
+        // -------------------------------
     }
 
     // --- FAVORIS PROJET ---

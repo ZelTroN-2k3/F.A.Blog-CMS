@@ -4,8 +4,8 @@ $user     = "<DB_USER>"; // Database Username
 $password = "<DB_PASSWORD>"; // Database's user Password
 $database = "<DB_NAME>"; // Database Name
 
-$phpblog_version = "3.4.5"; // PHPBlog Version
-$admin_version = "4.2.6"; // Admin Version
+$phpblog_version = "3.4.9"; // PHPBlog Version
+$admin_version = "4.2.9"; // Admin Version
 
 $connect = new mysqli($host, $user, $password, $database);
 

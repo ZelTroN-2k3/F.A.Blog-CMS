@@ -1,4 +1,7 @@
 <?php
+// admin/settings/save_logic.php
+// Gestion de la sauvegarde de TOUS les paramètres du site (Version finale corrigée v4.3)
+
 // --- LOGIQUE : Suppression d'image de fond (BDD) ---
 if (isset($_GET['delete_bgrimg'])) {
     validate_csrf_token_get();
@@ -77,10 +80,16 @@ if (isset($_POST['save'])) {
         }
     }
 
-    // 3. Mise à jour BDD
+    // 3. Sauvegarde Robots.txt (Fichier)
+    if (isset($_POST['robots_txt'])) {
+        $robots_content = $_POST['robots_txt'];
+        @file_put_contents('../robots.txt', $robots_content);
+    }
+
+    // 4. Mise à jour BDD
     if ($uploadOk == 1) {
         try {
-            // REQUÊTE SQL COMPLÈTE (55 variables)
+            // REQUÊTE SQL COMPLÈTE
             $sql = "UPDATE settings SET 
                             site_url = ?, sitename = ?, description = ?, email = ?, 
                             gcaptcha_sitekey = ?, gcaptcha_secretkey = ?, head_customcode = ?, 
@@ -101,20 +110,36 @@ if (isset($_POST['save'])) {
 
                             event_mode = ?, event_effect = ?, event_banner_active = ?, event_banner_content = ?, event_banner_color = ?,
                             
-                            design_font = ?, design_color_primary = ?, design_color_secondary = ?, design_custom_css = ?
+                            design_font = ?, design_color_primary = ?, design_color_secondary = ?, design_custom_css = ?,
+                            
+                            api_enabled = ?, api_key = ?
 
                         WHERE id = 1";
                         
             $stmt = mysqli_prepare($connect, $sql);
             if ($stmt === false) { throw new Exception("MySQL preparation error: " . mysqli_error($connect)); }
 
-            // MISE À JOUR DES TYPES : 55 caractères
-            // 38 string + 1 int + 3 string + 1 int + 1 string + 1 int + 1 string = 46 (Base)
-            // + 5 string (Event) = 51
-            // + 4 string (Design) = 55
-            // Code Type : "s" x 38 . "isssisis" . "sssss" . "ssss"
-            $types = str_repeat('s', 38) . 'isssisis' . 'sssss' . 'ssss'; 
+            // CONSTRUCTION DU TYPES STRING
+            $types = "";
+            $types .= "ssssss"; // URL, name, desc, email, keys...
+            $types .= "ss"; // Custom code
+            $types .= "ssssss"; // Socials
+            $types .= "ssssss"; // RTL, date, layout...
+            $types .= "ssss";   // Theme, posts/page...
+            $types .= "s";      // BG Image
+            $types .= "ssssss"; // Meta, favicon...
+            $types .= "sss";    // Sticky, maps, logo
             
+            $types .= "sss";    // Mail protocol, from...
+            $types .= "sisss";  // SMTP (Host=s, Port=i, User=s, Pass=s, Enc=s)
+            
+            $types .= "is";     // Comments (Approval=i, Blacklist=s)
+            $types .= "is";     // Cookie (Enabled=i, Msg=s)
+            
+            $types .= "sssss";  // Event
+            $types .= "ssss";   // Design
+            $types .= "ss";     // API
+
             // Encodage Base64
             $head_customcode_encoded = base64_encode($_POST['head_customcode']);
             $google_maps_encoded = base64_encode($_POST['google_maps_code']);
@@ -124,17 +149,22 @@ if (isset($_POST['save'])) {
             $cookie_consent_val = isset($_POST['cookie_consent_enabled']) ? (int)$_POST['cookie_consent_enabled'] : 0;
             $smtp_port_val = (int)$_POST['smtp_port'];
             
-            // Valeurs Event (avec défauts)
+            // --- CORRECTION ICI : DÉFINITION SÉCURISÉE DES VARIABLES EVENT ---
+            $event_mode = $_POST['event_mode'] ?? 'Off'; // Valeur par défaut 'Off' si vide
             $event_effect = $_POST['event_effect'] ?? 'None';
             $event_banner_active = $_POST['event_banner_active'] ?? 'No';
             $event_banner_content = $_POST['event_banner_content'] ?? '';
             $event_banner_color = $_POST['event_banner_color'] ?? '#dc3545';
 
-            // Valeurs Design (avec défauts) - V3.4.4
+            // Valeurs Design
             $design_font = $_POST['design_font'] ?? 'Nunito';
             $design_primary = $_POST['design_color_primary'] ?? '#0d6efd';
             $design_secondary = $_POST['design_color_secondary'] ?? '#6c757d';
             $design_css = $_POST['design_custom_css'] ?? '';
+
+            // Valeurs API
+            $api_enabled = $_POST['api_enabled'] ?? 'No';
+            $api_key = $_POST['api_key'] ?? '';
 
             mysqli_stmt_bind_param($stmt, $types,
                 $_POST['site_url'], $_POST['sitename'], $_POST['description'], $_POST['email'],
@@ -154,30 +184,34 @@ if (isset($_POST['save'])) {
                 $comments_approval_val, $_POST['comments_blacklist'],
                 $cookie_consent_val, $_POST['cookie_message'],
 
-                // EVENTS
-                $event_effect, 
+                // EVENTS (On utilise les variables sécurisées ici)
+                $event_mode, 
                 $event_effect,
                 $event_banner_active,
                 $event_banner_content,
                 $event_banner_color,
 
-                // DESIGN (V3.8)
+                // DESIGN
                 $design_font,
                 $design_primary,
                 $design_secondary,
-                $design_css
+                $design_css,
+
+                // API
+                $api_enabled,
+                $api_key
             );
 
             if (mysqli_stmt_execute($stmt)) {
                 
-                // --- AJOUT LOGS & CACHE (V3.4.3) ---
+                // --- LOGS & CACHE ---
                 if(function_exists('log_activity')) {
                     log_activity("Update Settings", "Updated global site settings.");
                 }
                 if(function_exists('clear_site_cache')) {
-                    clear_site_cache(); // Vide le cache pour appliquer le nouveau thème immédiatement
+                    clear_site_cache();
                 }
-                // ---------------------------------
+                // --------------------
 
                 echo '
                 <div class="alert alert-success alert-dismissible">
@@ -191,7 +225,7 @@ if (isset($_POST['save'])) {
 
             mysqli_stmt_close($stmt);
             
-            // Rechargement immédiat des settings pour l'affichage
+            // Rechargement immédiat
             $stmt_reload = mysqli_prepare($connect, "SELECT * FROM settings WHERE id = 1");
             mysqli_stmt_execute($stmt_reload);
             $result_reload = mysqli_stmt_get_result($stmt_reload);

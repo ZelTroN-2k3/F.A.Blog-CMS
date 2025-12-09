@@ -884,6 +884,20 @@ while ($row = mysqli_fetch_assoc($runq)) {
 
                 <!-- Right side of navbar -->
                 <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+                    <?php if($logged == 'Yes'): ?>
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link text-dark position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell fa-lg"></i>
+                                <span id="notif-badge" class="position-absolute top-2 start-95 translate-middle badge rounded bg-primary" style="font-size: 0.6rem; display:none;">
+                                    0
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="notifDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; padding: 0;" id="notif-list">
+                                <li class="text-center p-3 text-muted"><i class="fas fa-spinner fa-spin"></i> Loading...</li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+
                     <li class="nav-item me-2">
                         <button class="btn btn-link nav-link theme-switcher" id="theme-switcher-btn" type="button" aria-label="Toggle theme">
                             <i class="fas fa-moon" id="theme-icon-moon"></i>
@@ -1024,7 +1038,69 @@ if ($current_page == 'my-comments.php') {
 			</div><!-- End navbar collapse -->
 		</div><!-- End container -->
 	</nav> <!-- End nav -->
+
+<?php if($logged == 'Yes'): ?>
+<script>
+$(document).ready(function() {
+    // URL de base dynamique pour éviter les erreurs 404
+    var baseUrl = '<?php echo !empty($settings['site_url']) ? $settings['site_url'] : ".."; ?>';
+
+    function fetchNotifications() {
+        $.ajax({
+            url: baseUrl + '/ajax_notifications.php',
+            type: 'POST',
+            data: { action: 'fetch' },
+            dataType: 'json',
+            success: function(data) {
+                if (data.html) {
+                    $('#notif-list').html(data.html);
+                    if (data.count > 0) {
+                        $('#notif-badge').text(data.count).show();
+                        $('#notifDropdown i').addClass('text-danger'); // Cloche rouge
+                        // Animation optionnelle
+                        $('#notifDropdown i').addClass('fa-shake'); 
+                        setTimeout(function(){ $('#notifDropdown i').removeClass('fa-shake'); }, 1000);
+                    } else {
+                        $('#notif-badge').hide();
+                        $('#notifDropdown i').removeClass('text-danger'); // Cloche normale
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Notification Error:", error);
+            }
+        });
+    }
+
+    // 1. Charger au démarrage
+    fetchNotifications();
     
+    // 2. Charger toutes les 10 secondes
+    setInterval(fetchNotifications, 10000);
+    
+    // 3. Quand on clique sur la cloche, on force le chargement
+    $('#notifDropdown').click(function() {
+        fetchNotifications();
+    });
+});
+
+// Fonction pour marquer une notif comme lue
+function markRead(id) {
+    var baseUrl = '<?php echo !empty($settings['site_url']) ? $settings['site_url'] : ".."; ?>';
+    $.post(baseUrl + '/ajax_notifications.php', { action: 'mark_read', id: id });
+}
+
+// Fonction pour tout marquer comme lu
+function markAllRead() {
+    var baseUrl = '<?php echo !empty($settings['site_url']) ? $settings['site_url'] : ".."; ?>';
+    $.post(baseUrl + '/ajax_notifications.php', { action: 'mark_all_read' }, function() {
+        $('#notif-badge').hide();
+        $('#notifDropdown i').removeClass('text-danger');
+    });
+}
+</script>
+<?php endif; ?>
+
 <?php
 if ($settings['latestposts_bar'] == 'Enabled') {
 ?>

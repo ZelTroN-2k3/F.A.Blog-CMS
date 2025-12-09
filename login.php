@@ -282,7 +282,30 @@ if (isset($_POST['register'])) {
                                 </button>
                             </div>
                         </form>
-
+                        <hr>
+                    <div class="alert alert-warning border-warning shadow-sm p-3 mb-4">
+                            <div class="d-flex">
+                                <div class="me-3 mt-1">
+                                    <i class="fas fa-shield-alt fa-2x text-warning"></i>
+                                </div>
+                                <div>
+                                    <h6 class="alert-heading fw-bold mb-1">Important Security Step</h6>
+                                    <p class="mb-2 small" style="line-height: 1.4;">
+                                        To secure your account, <strong>Two-Factor Authentication (2FA)</strong> is required. 
+                                        Please install <strong>Google Authenticator</strong> on your phone <em>before</em> your first login.
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" class="btn btn-light border btn-sm px-2" style="font-size: 0.75rem;">
+                                            <i class="fab fa-google-play text-success"></i> Android
+                                        </a>
+                                        <a href="https://apps.apple.com/us/app/google-authenticator/id388497605" target="_blank" class="btn btn-light border btn-sm px-2" style="font-size: 0.75rem;">
+                                            <i class="fab fa-app-store-ios text-primary"></i> iOS
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                     <?php else: // --- MODE 2FA (CODE) --- ?>
 
                         <div class="alert alert-info">

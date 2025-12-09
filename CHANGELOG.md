@@ -1,3 +1,92 @@
+## [v3.4.9.b] - 2025-12-08
+### 🎨 Nouveautés Majeures : Live Theme Customizer
+Cette version transforme l'administration en studio de design avec des outils de personnalisation en temps réel.
+
+#### 🖌️ Éditeur Visuel
+* **Aperçu en Direct (Live Preview) :** Intégration d'une fenêtre interactive (Iframe) permettant de voir les modifications de design instantanément sans recharger la page.
+* **Sélecteur de Couleurs :** Color Pickers natifs pour définir la couleur Primaire (Boutons, Liens) et Secondaire (Bordures, Accents).
+* **Typographie Dynamique :** Liste déroulante des polices Google Fonts populaires (Nunito, Roboto, Open Sans, Playfair Display...) avec application immédiate dans l'aperçu.
+
+#### ⚡ Expérience Utilisateur
+* **Mode Réactif :** Boutons pour tester l'affichage du site en format Desktop, Tablette et Mobile directement depuis l'éditeur.
+* **CSS Custom :** Zone de texte avancée pour injecter des règles CSS spécifiques qui surchargent le thème par défaut.
+
+---
+
+## [v3.4.9.a] - 2025-12-08
+### 🖼️ Nouveautés Majeures : Media Manager
+Refonte complète du gestionnaire de fichiers pour offrir une expérience visuelle et rapide.
+
+#### 📂 Médiathèque Visuelle
+* **Vue en Grille :** Remplacement du tableau classique par une grille de cartes affichant des vignettes (Thumbnails) pour les images et des icônes pour les autres types de fichiers.
+* **Smart Preview :** Détection automatique du type de fichier (Image, PDF, Audio, Vidéo, Archive) pour adapter l'affichage.
+* **Performance :** Chargement différé des images (`loading="lazy"`) pour ne pas ralentir l'administration.
+
+#### ⚡ Outils Rapides
+* **Recherche Instantanée :** Filtrage en temps réel des fichiers par nom sans rechargement de page (JavaScript pur).
+* **Copie Rapide :** Bouton "Copy Link" pour récupérer l'URL du fichier dans le presse-papier en un clic.
+* **Renommage Sécurisé :** Fenêtre modale pour renommer les fichiers en conservant automatiquement l'extension d'origine.
+
+#### 🛡️ Sécurité
+* **Cloisonnement :** Les éditeurs ne peuvent voir et supprimer que leurs propres fichiers, tandis que l'Admin a un accès global.
+* **Nettoyage :** Suppression sécurisée avec confirmation et nettoyage simultané du fichier sur le disque et de l'entrée en base de données.
+
+---
+
+## [v3.4.9] - 2025-12-08
+### 📱 Nouveautés Majeures : Open World API
+Cette version ouvre le CMS aux applications tierces (Mobile, Desktop, Web) via une interface REST sécurisée.
+
+#### 🔌 API RESTful
+* **Endpoints JSON :** Création de points d'accès pour récupérer les articles (`get_posts`), le détail d'un article (`get_post`) et les catégories.
+* **Sécurité Token :** Système d'authentification par Clé API (API Key) générée depuis l'administration.
+* **Interrupteur Global :** Possibilité d'activer ou désactiver totalement l'accès externe en un clic.
+
+#### 🛠️ Correctifs Base de Données
+* **Structure SQL :** Agrandissement des colonnes `event_banner_active` et `api_enabled` pour éviter les erreurs de troncature ("Data too long").
+* **Sauvegarde Robuste :** Refonte complète du fichier `save_logic.php` pour sécuriser l'ordre des variables et empêcher les erreurs NULL sur les champs optionnels.
+
+---
+
+## [v3.4.8] - 2025-12-08
+### 🔍 Nouveautés Majeures : SEO Master
+Cette version dote le CMS d'une suite d'outils professionnels pour le référencement naturel et l'indexation.
+
+#### ⚙️ SEO Technique
+* **Sitemap Dynamique :** Création du script `sitemap.php` qui génère un XML en temps réel listant toutes les pages, articles, projets et catégories avec leur priorité et fréquence de mise à jour.
+* **Éditeur Robots.txt :** Interface d'administration pour modifier le fichier `robots.txt` directement depuis le navigateur.
+* **Ping Automatique :** Ajout d'un bouton pour signaler immédiatement à Google la mise à jour du Sitemap.
+
+#### 🏷️ Metadonnées & Social
+* **Meta Tags Avancés :** Gestion fine des titres, descriptions, auteurs et mots-clés pour chaque page.
+* **Open Graph & Twitter Cards :** Intégration automatique des balises pour un affichage riche lors du partage sur Facebook, Twitter, LinkedIn, etc.
+* **Gestion des Icônes :** Champs dédiés pour configurer le Favicon (.ico) et l'Apple Touch Icon (.png) directement depuis l'admin.
+
+#### 📱 Réseaux Sociaux
+* **Social Links Manager :** Interface centralisée pour gérer les liens vers les profils sociaux du site (Facebook, Twitter, Instagram, YouTube, Discord, LinkedIn).
+
+---
+
+## [v3.4.6] - 2025-12-08
+### 🔔 Nouveautés Majeures : Real-Time Interactions
+Cette version introduit un système de notification instantané pour maximiser l'engagement des utilisateurs.
+
+#### 📡 Système de Notification
+* **Centre de Notifications :** Ajout d'une icône "Cloche" dans la barre de navigation avec compteur de non-lus.
+* **Technologie AJAX :** Vérification automatique des nouvelles notifications toutes les 10 secondes sans recharger la page (Polling).
+* **Marquage :** Les notifications passent en "lues" au clic ou via le bouton "Tout marquer comme lu".
+
+#### ⚡ Déclencheurs Automatiques (Triggers)
+* **Social :** Notification envoyée à l'auteur lorsqu'un utilisateur commente un article ou like un projet.
+* **Gamification :** Notification instantanée lors du déblocage d'un badge Arcade.
+* **Système :** Support pour les notifications administratives ou de bienvenue.
+
+#### 🛠️ Correctifs
+* **API JSON :** Sécurisation et standardisation des réponses AJAX (`ajax_notifications.php`) pour éviter les erreurs de parsing.
+* **Compatibilité PHP 8.2+ :** Correction de la fonction de calcul du temps écoulé (`time_elapsed_string`) pour supporter les objets DateTime modernes.
+
+---
+
 ## [v3.4.5.c] - 2025-12-08
 ### 👥 Nouveautés Majeures : Community Hub
 Cette version transforme le site en un véritable réseau social où chaque membre possède une identité publique et des accomplissements.

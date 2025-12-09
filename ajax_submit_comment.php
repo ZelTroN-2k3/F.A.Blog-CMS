@@ -192,7 +192,19 @@ if (mysqli_stmt_execute($stmt)) {
         $response['parent_id'] = $parent_id;
         $response['moderation'] = false;
     }
-
+        // --- NOTIFICATION ---
+        $q_auth = mysqli_query($connect, "SELECT author_id, title, slug FROM posts WHERE id=$post_id");
+        $post_info = mysqli_fetch_assoc($q_auth);
+        
+        $msg = "Commented on your post: " . short_text($post_info['title'], 20);
+        $link = "post?name=" . $post_info['slug'] . "#comments";
+        
+        // Définir l'ID de l'envoyeur (0 si invité)
+        $sender_id = ($logged == 'Yes' && isset($rowu['id'])) ? $rowu['id'] : 0;
+        
+        // Envoi notif à l'auteur de l'article
+        send_notification($post_info['author_id'], $sender_id, 'comment', $msg, $link);
+        // --------------------
 } else {
     // Erreur SQL
     $response['message'] = 'Error saving comment.';
